@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--navbar-height: calc(100svh / 8);
+	--menu-button-h: calc(var(--navbar-height) - 3rem);
+	--menu-button-hover-h: calc(var(--navbar-height) - 2.5rem);
+}
