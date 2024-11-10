@@ -11,11 +11,11 @@ export default function MainMenuButton() {
 		<>
 			<button
 				onClick={backToMenu}
-				className={`flex justify-center items-center transform transition-all duration-500 
-					size-[--menu-button-h] 
+				className={`-translate-x-1 flex justify-center items-center transform transition-all duration-500 
+					size-[--menu-button-h]
 					hover:size-[--menu-button-hover-h] hover:-rotate-90`}
 			>
-				<img src="src/assets/svg/back-to-home.svg" className=""></img>
+				<img src="src/assets/svg/back-to-home.svg"></img>
 			</button>
 		</>
 	)

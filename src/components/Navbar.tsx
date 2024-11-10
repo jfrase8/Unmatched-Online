@@ -1,13 +1,14 @@
-import { Link } from '@tanstack/react-router'
 import MainMenuButton from './MainMenuButton'
+import GradientBar from './GradientBar'
+import NavbarPage from './NavbarPage'
 
 export default function Navbar() {
 	return (
-		<div className="flex flex-row items-center justify-between p-2 bg-gray-600 h-[--navbar-height]">
-			<MainMenuButton />
-			<Link to="/about" className="[&.active]:font-bold">
-				New Page
-			</Link>
+		<div className="flex flex-row gap-4 items-center justify-center p-2 bg-gray-600 h-[--navbar-height]">
+			<GradientBar>
+				<MainMenuButton />
+				<NavbarPage pageTitle="Play" />
+			</GradientBar>
 		</div>
 	)
 }

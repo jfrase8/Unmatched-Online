@@ -4,6 +4,7 @@
 
 :root {
 	--navbar-height: calc(100svh / 8);
-	--menu-button-h: calc(var(--navbar-height) - 3rem);
-	--menu-button-hover-h: calc(var(--navbar-height) - 2.5rem);
+	--menu-button-h: calc(var(--navbar-height) - 5svh);
+	--menu-button-hover-h: calc(var(--navbar-height) - 3svh);
+	--nav-button-w: 10svw;
 }
