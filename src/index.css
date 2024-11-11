@@ -1,10 +1,15 @@
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
 	--navbar-height: calc(100svh / 8);
+	--gradient-bar-h: calc(var(--navbar-height) / 2);
 	--menu-button-h: calc(var(--navbar-height) - 5svh);
 	--menu-button-hover-h: calc(var(--navbar-height) - 3svh);
 	--nav-button-w: 10svw;
+	--nav-button-hover-w: 9svw;
 }
