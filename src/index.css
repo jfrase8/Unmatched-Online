@@ -10,6 +10,8 @@
 	--gradient-bar-h: calc(var(--navbar-height) / 2);
 	--menu-button-h: calc(var(--navbar-height) - 5svh);
 	--menu-button-hover-h: calc(var(--navbar-height) - 3svh);
-	--nav-button-w: 10svw;
-	--nav-button-hover-w: 9svw;
+	--nav-button-w: 4svw;
+	--nav-button-h: 8svh;
+	--nav-button-hover-w: 4.5svw;
+	--nav-button-hover-h: 9svh;
 }

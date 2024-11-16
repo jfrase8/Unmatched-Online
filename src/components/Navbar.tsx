@@ -8,6 +8,8 @@ export default function Navbar() {
 			<GradientBar>
 				<MainMenuButton />
 				<NavbarPage pageTitle="Play" />
+				<NavbarPage pageTitle="Tutorial" />
+				<NavbarPage pageTitle="Settings" />
 			</GradientBar>
 		</div>
 	)
