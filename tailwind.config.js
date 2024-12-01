@@ -7,12 +7,18 @@ export default {
 				navBarButtons: ['Rubik Dirt'],
 			},
 			screens: {
-				'xs': '500px',
-				'xxs': '420px',
+				xs: '500px',
+				xxs: '420px',
+				'1.5xl': '1410px',
+				'1.8xl': '1460px',
+
+				long: { raw: '(min-height: 800px)' },
+				short: { raw: '(min-height: 710px)' },
+				shorter: { raw: '(min-height: 650px)' },
 			},
 			fontSize: {
-				'xxs': '0.725rem',  // Custom size smaller than text-xs
-			  },
+				xxs: '0.725rem', // Custom size smaller than text-xs
+			},
 		},
 	},
 	plugins: [],
