@@ -6,6 +6,8 @@ import Text from '../components/Text'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import { useState } from 'react'
 import CharacterDescription from '../components/CharacterDescription'
+import { AttackTypeEnum } from '../enums/AttackTypeEnum'
+import { CharacterColorEnum } from '../enums/CharacterColorEnum'
 
 export const Route = createLazyFileRoute('/play')({
 	component: Play,
@@ -32,6 +34,7 @@ function Play() {
 				<ScrollableCardOptions
 					options={options}
 					onSelect={setSelectedCharacter}
+					selected={selectedCharacter}
 				/>
 			</div>
 		</div>
@@ -40,35 +43,43 @@ function Play() {
 
 const options = [
 	{
-		bg: 'src/assets/img/monk.png',
-		title: CharacterNameEnum.MONK,
+		bg: 'src/assets/img/medusa.png',
+		bgColor: CharacterColorEnum.GREEN,
+		title: CharacterNameEnum.MEDUSA,
 		stats: {
-			health: 10,
-			damage: 10,
+			health: 16,
+			move: 3,
+			attackType: AttackTypeEnum.RANGED,
 		},
 	},
 	{
-		bg: 'src/assets/img/knight.png',
-		title: CharacterNameEnum.KNIGHT,
+		bg: 'src/assets/img/sinbad.png',
+		bgColor: CharacterColorEnum.ORANGE,
+		title: CharacterNameEnum.SINBAD,
 		stats: {
 			health: 20,
-			damage: 8,
+			move: 3,
+			attackType: AttackTypeEnum.MELEE,
 		},
 	},
 	{
-		bg: 'src/assets/img/frog.png',
-		title: CharacterNameEnum.FROG,
+		bg: 'src/assets/img/alice.png',
+		bgColor: CharacterColorEnum.BLUE,
+		title: CharacterNameEnum.ALICE,
 		stats: {
 			health: 5,
-			damage: 30,
+			move: 3,
+			attackType: AttackTypeEnum.MELEE,
 		},
 	},
 	{
-		bg: 'src/assets/img/princess.png',
-		title: CharacterNameEnum.PRINCESS,
+		bg: 'src/assets/img/king-arthur.png',
+		bgColor: CharacterColorEnum.RED,
+		title: CharacterNameEnum.KING_ARTHUR,
 		stats: {
 			health: 30,
-			damage: 5,
+			move: 3,
+			attackType: AttackTypeEnum.MELEE,
 		},
 	},
 ]

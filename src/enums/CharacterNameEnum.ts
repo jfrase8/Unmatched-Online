@@ -1,6 +1,6 @@
 export enum CharacterNameEnum {
-	MONK = 'Monk',
-	KNIGHT = 'Knight',
-	FROG = 'Frog',
-	PRINCESS = 'Princess',
+	MEDUSA = 'Medusa',
+	SINBAD = 'Sinbad',
+	KING_ARTHUR = 'King Arthur',
+	ALICE = 'Alice',
 }

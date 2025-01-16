@@ -57,7 +57,10 @@ export default function CharacterDescription({
 								Health: {selected.stats.health}
 							</Text>
 							<Text as="h2" className="text-black text-center">
-								Damage: {selected.stats.damage}
+								Move: {selected.stats.move}
+							</Text>
+							<Text as="h2" className="text-black text-center">
+								Attack Type: {selected.stats.attackType}
 							</Text>
 						</div>
 					</div>

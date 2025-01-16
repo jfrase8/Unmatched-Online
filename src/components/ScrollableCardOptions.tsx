@@ -1,20 +1,30 @@
+import clsx from 'clsx'
+import { AttackTypeEnum } from '../enums/AttackTypeEnum'
+import { CharacterColorEnum } from '../enums/CharacterColorEnum'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import Text from './Text'
 
 interface ScrollableCardOptionsProps {
 	options: OptionObj[]
 	onSelect: (character: OptionObj) => void
+	selected: OptionObj | undefined
 }
 
 export default function ScrollableCardOptions({
 	options,
 	onSelect,
+	selected,
 }: ScrollableCardOptionsProps) {
 	return (
-		<div className="flex flex-row mx-2 w-auto max-w-[90svw] h-[20rem] bg-white rounded-lg overflow-x-auto">
+		<div className="flex flex-row mx-2 w-auto max-w-[90svw] h-[16rem] bg-slate-300 rounded-lg overflow-x-auto">
 			{options.map((option, i) => (
-				<div className="flex items-center justify-center p-2 aspect-[341/860]">
-					<OptionCard option={option} key={i} onClick={onSelect} />
+				<div className="flex items-center justify-center p-2 aspect-[300/500]">
+					<OptionCard
+						option={option}
+						key={i}
+						onClick={onSelect}
+						isSelected={selected?.title === option.title}
+					/>
 				</div>
 			))}
 		</div>
@@ -24,15 +34,20 @@ export default function ScrollableCardOptions({
 interface OptionCardProps {
 	option: OptionObj
 	onClick: (character: OptionObj) => void
+	isSelected: boolean
 }
 
-function OptionCard({ option, onClick }: OptionCardProps) {
+function OptionCard({ option, onClick, isSelected }: OptionCardProps) {
 	return (
 		<button
-			className={`flex items-end justify-center bg-cover bg-no-repeat size-full rounded-lg 
-                transition-all duration-500 hover:opacity-90 hover:shadow-black hover:shadow-lg`}
+			className={clsx(
+				`flex items-end justify-center bg-cover bg-no-repeat bg-center size-full rounded-lg border
+                transition-all duration-500 hover:opacity-90 hover:shadow-black hover:shadow-lg`,
+				isSelected && 'border-black shadow-black shadow-lg'
+			)}
 			style={{
 				backgroundImage: `url(${option.bg})`,
+				backgroundColor: option.bgColor,
 			}}
 			onClick={() => onClick(option)}
 		>
@@ -45,9 +60,11 @@ function OptionCard({ option, onClick }: OptionCardProps) {
 
 export interface OptionObj {
 	bg: string
+	bgColor: CharacterColorEnum
 	title: CharacterNameEnum
 	stats: {
 		health: number
-		damage: number
+		move: number
+		attackType: AttackTypeEnum
 	}
 }
