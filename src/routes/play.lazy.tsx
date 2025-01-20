@@ -4,10 +4,11 @@ import ScrollableCardOptions, {
 } from '../components/ScrollableCardOptions'
 import Text from '../components/Text'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import CharacterDescription from '../components/CharacterDescription'
 import { AttackTypeEnum } from '../enums/AttackTypeEnum'
 import { CharacterColorEnum } from '../enums/CharacterColorEnum'
+import SlidingPanel from '../components/SlidingPanel'
 
 export const Route = createLazyFileRoute('/play')({
 	component: Play,
@@ -18,13 +19,23 @@ function Play() {
 		OptionObj | undefined
 	>(undefined)
 
-	return (
-		<div className="relative bg-gray-900">
-			{selectedCharacter && (
-				<CharacterDescription selected={selectedCharacter} />
-			)}
+	const slidingPanelRef = useRef<HTMLDivElement>(null)
 
-			<div className="flex flex-col w-full min-h-screen items-center">
+	return (
+		<div className="flex w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center items-center">
+			<SlidingPanel
+				elementRef={slidingPanelRef}
+				show={!!selectedCharacter}
+				xSlide={-300}
+				className="rounded-lg"
+			>
+				<div className="flex bg-white border-[4] size-full rounded-lg justify-center items-center">
+					<Text as="p">Sliding Content</Text>
+				</div>
+				{/* <CharacterDescription selected={selectedCharacter} /> */}
+			</SlidingPanel>
+
+			<div className="flex flex-col size-full items-center">
 				<Text
 					as="h1"
 					className="text-white text-center font-navBarButtons text-[1.5rem] xs:text-[2rem] mt-4"
@@ -32,6 +43,7 @@ function Play() {
 					CHOOSE YOUR CHARACTER
 				</Text>
 				<ScrollableCardOptions
+					ref={slidingPanelRef}
 					options={options}
 					onSelect={setSelectedCharacter}
 					selected={selectedCharacter}

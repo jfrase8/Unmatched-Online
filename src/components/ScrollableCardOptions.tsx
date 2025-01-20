@@ -3,6 +3,7 @@ import { AttackTypeEnum } from '../enums/AttackTypeEnum'
 import { CharacterColorEnum } from '../enums/CharacterColorEnum'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import Text from './Text'
+import { forwardRef } from 'react'
 
 interface ScrollableCardOptionsProps {
 	options: OptionObj[]
@@ -10,18 +11,22 @@ interface ScrollableCardOptionsProps {
 	selected: OptionObj | undefined
 }
 
-export default function ScrollableCardOptions({
-	options,
-	onSelect,
-	selected,
-}: ScrollableCardOptionsProps) {
+const ScrollableCardOptions = forwardRef<
+	HTMLDivElement,
+	ScrollableCardOptionsProps
+>(({ options, onSelect, selected }, ref) => {
 	return (
-		<div className="flex flex-row mx-2 w-auto max-w-[90svw] h-[16rem] bg-slate-300 rounded-lg overflow-x-auto">
+		<div
+			ref={ref}
+			className="relative flex flex-row mx-2 w-auto max-w-[90svw] h-[16rem] bg-slate-300 rounded-lg overflow-x-auto"
+		>
 			{options.map((option, i) => (
-				<div className="flex items-center justify-center p-2 aspect-[300/500]">
+				<div
+					key={i}
+					className="flex items-center justify-center p-2 aspect-[300/500]"
+				>
 					<OptionCard
 						option={option}
-						key={i}
 						onClick={onSelect}
 						isSelected={selected?.title === option.title}
 					/>
@@ -29,7 +34,7 @@ export default function ScrollableCardOptions({
 			))}
 		</div>
 	)
-}
+})
 
 interface OptionCardProps {
 	option: OptionObj
@@ -68,3 +73,5 @@ export interface OptionObj {
 		attackType: AttackTypeEnum
 	}
 }
+
+export default ScrollableCardOptions
