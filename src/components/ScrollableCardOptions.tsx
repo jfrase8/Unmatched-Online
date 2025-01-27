@@ -18,7 +18,7 @@ const ScrollableCardOptions = forwardRef<
 	return (
 		<div
 			ref={ref}
-			className="relative flex flex-row mx-2 w-auto max-w-[90svw] h-[16rem] bg-slate-300 rounded-lg overflow-x-auto"
+			className="relative flex flex-row w-auto max-w-[90svw] h-[16rem] bg-slate-300 rounded-lg overflow-x-auto"
 		>
 			{options.map((option, i) => (
 				<div

@@ -9,6 +9,7 @@ import CharacterDescription from '../components/CharacterDescription'
 import { AttackTypeEnum } from '../enums/AttackTypeEnum'
 import { CharacterColorEnum } from '../enums/CharacterColorEnum'
 import SlidingPanel from '../components/SlidingPanel'
+import { DirectionalEnum } from '../enums/DirectionalEnum'
 
 export const Route = createLazyFileRoute('/play')({
 	component: Play,
@@ -17,8 +18,12 @@ export const Route = createLazyFileRoute('/play')({
 function Play() {
 	const [selectedCharacter, setSelectedCharacter] = useState<
 		OptionObj | undefined
-	>(undefined)
-	const [showPanel, setShowPanel] = useState<boolean>(false)
+	>(undefined) // The character the user has selected
+	const [displayCharacter, setDisplayCharacter] = useState<
+		OptionObj | undefined
+	>(undefined) // The character that should be displayed on the panel
+	const [showPanel, setShowPanel] = useState<boolean>(false) // True if the panel should be showing
+	const [isClosing, setIsClosing] = useState<boolean>(false) // Track if the panel is currently closing
 
 	const slidingPanelRef = useRef<HTMLDivElement>(null)
 
@@ -28,12 +33,33 @@ function Play() {
 	const showPanelRef = useRef<boolean>()
 	showPanelRef.current = showPanel
 
+	// isClosing must be a ref so the useEffect will not reset the timeout after closing
+	const isClosingRef = useRef<boolean>()
+	isClosingRef.current = isClosing
+
+	// selectedCharacter needs to be a ref so that the timeout sets the display character to the newest selected character
+	const selectedCharacterRef = useRef<OptionObj | undefined>()
+	selectedCharacterRef.current = selectedCharacter
+
 	// After a character is selected, set the panel to show, unless it is already showing, then time it so it closes then opens again
 	useEffect(() => {
+		if (isClosingRef.current) return // early return if the panel is in the middle of closing
+
+		// Currently showing the panel
 		if (showPanelRef.current) {
 			setShowPanel(false)
-			setTimeout(() => setShowPanel(true), waitToReopen)
-		} else if (selectedCharacter) setShowPanel(true)
+			setIsClosing(true)
+			setTimeout(() => {
+				setShowPanel(true)
+				setDisplayCharacter(selectedCharacterRef.current)
+				setIsClosing(false)
+			}, waitToReopen)
+		}
+		// First time panel has been opened
+		else if (selectedCharacter) {
+			setShowPanel(true)
+			setDisplayCharacter(selectedCharacterRef.current)
+		}
 	}, [selectedCharacter])
 
 	return (
@@ -41,19 +67,19 @@ function Play() {
 			<SlidingPanel
 				elementRef={slidingPanelRef}
 				show={showPanelRef.current ?? false}
-				xSlide={-600}
+				sameLength={DirectionalEnum.RIGHT}
 				className="rounded-lg"
 			>
 				<div
 					className="flex border-[4] size-full rounded-lg justify-center items-center"
-					style={{ backgroundColor: selectedCharacter?.bgColor }}
+					style={{ backgroundColor: displayCharacter?.bgColor }}
 				>
-					<Text as="p">{selectedCharacter?.title}</Text>
+					<Text as="p">{displayCharacter?.title}</Text>
 				</div>
 				{/* <CharacterDescription selected={selectedCharacter} /> */}
 			</SlidingPanel>
 
-			<div className="flex flex-col size-full items-center">
+			<div className="flex flex-col size-full items-end mx-16">
 				<Text
 					as="h1"
 					className="text-white text-center font-navBarButtons text-[1.5rem] xs:text-[2rem] mt-4"
