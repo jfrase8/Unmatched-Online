@@ -12,20 +12,18 @@ export default function DeckInfoPopup({ character }: DeckInfoPopupProps) {
 
 	return (
 		<div
-			className="fixed inset-10 bg-white rounded-lg flex flex-col justify-center items-center z-[100] backdrop-blur bg-black/50 border-l-4 border-b-4"
+			className="fixed inset-10 rounded-lg flex flex-col justify-center items-center z-[100] backdrop-blur bg-black/50 border-l-4 border-b-4"
 			style={{ borderColor: data.bgColor }}
 		>
 			<div
-				className="h-fit w-full  rounded-tr-lg"
+				className="h-fit w-full rounded-tr-lg"
 				style={{
 					backgroundColor: data.bgColor,
 				}}
 			>
-				<Text as="h1" className="">
-					{data.title} Deck Info
-				</Text>
+				<Text as="h1">{data.title} Deck Info</Text>
 			</div>
-			<div className="grid grid-cols-3 2xl:grid-cols-5 justify-items-center gap-4 overflow-y-auto w-full p-8">
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 justify-items-center gap-4 overflow-y-auto w-full p-8">
 				{images?.map((img) => <img src={img} />)}
 			</div>
 		</div>
