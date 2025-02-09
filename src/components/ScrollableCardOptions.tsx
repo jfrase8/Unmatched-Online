@@ -1,9 +1,7 @@
 import clsx from 'clsx'
-import { AttackTypeEnum } from '../enums/AttackTypeEnum'
-import { CharacterColorEnum } from '../enums/CharacterColorEnum'
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import Text from './Text'
 import { forwardRef } from 'react'
+import { OptionObj } from '../constants/characterInfo'
 
 interface ScrollableCardOptionsProps {
 	options: OptionObj[]
@@ -56,22 +54,11 @@ function OptionCard({ option, onClick, isSelected }: OptionCardProps) {
 			}}
 			onClick={() => onClick(option)}
 		>
-			<Text as="h1" className="text-white font-navBarButtons">
+			<Text as="h1" className="text-[1.0rem]">
 				{option.title.toUpperCase()}
 			</Text>
 		</button>
 	)
-}
-
-export interface OptionObj {
-	bg: string
-	bgColor: CharacterColorEnum
-	title: CharacterNameEnum
-	stats: {
-		health: number
-		move: number
-		attackType: AttackTypeEnum
-	}
 }
 
 export default ScrollableCardOptions

@@ -57,8 +57,6 @@ export default function SlidingPanel({
 	const upSlide = ySlide < 0 || sameLength === DirectionalEnum.UP
 	const downSlide = ySlide > 0 || sameLength === DirectionalEnum.DOWN
 
-	console.log(leftSlide, rightSlide, upSlide, downSlide)
-
 	// Update `rect` whenever the referenced element changes
 	useEffect(() => {
 		const updateRect = () => {
