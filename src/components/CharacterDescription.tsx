@@ -28,7 +28,12 @@ export default function CharacterDescription({
 
 	return (
 		<div className="flex flex-col size-full p-2">
-			{showPopup && <DeckInfoPopup character={character.title} />}
+			{showPopup && (
+				<DeckInfoPopup
+					character={character.title}
+					setShowPopup={setShowPopup}
+				/>
+			)}
 			<div className="w-full h-1/3 flex justify-center items-center border border-white">
 				<Text as="h2" className="text-white">
 					{character.description}
