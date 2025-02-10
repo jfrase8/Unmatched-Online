@@ -71,7 +71,7 @@ function Play() {
 				className="rounded-lg"
 			>
 				<div
-					className="flex border-[4] size-full rounded-lg justify-center items-center"
+					className="flex border-2 border-slate-300 size-full rounded-lg justify-center items-center"
 					style={{
 						backgroundColor: 'black',
 					}}
