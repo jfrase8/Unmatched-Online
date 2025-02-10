@@ -75,7 +75,7 @@ export default function CharacterDescription({
 					<div className="w-[40%] h-fit flex justify-center items-center hover:rotate-90 transition-all duration-300 cursor-pointer">
 						<button className="size-fit" onClick={() => setShowPopup(true)}>
 							<img
-								src={character.deck.images.back}
+								src={character.deck.cardBack}
 								className="object-contain w-full h-fit"
 							/>
 						</button>

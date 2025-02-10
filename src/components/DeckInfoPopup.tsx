@@ -2,6 +2,9 @@ import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import { useCharacterData } from '../hooks/useCharacterInfo'
 import Text from './Text'
+import { Decks, decks } from '../constants/deckInfo'
+import { SortTypeEnum } from '../enums/SortTypeEnum'
+import { sortDeck } from '../utils/sort'
 
 interface DeckInfoPopupProps {
 	character: CharacterNameEnum
@@ -32,10 +35,14 @@ export default function DeckInfoPopup({
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside)
 		}
-	}, [])
+	}, [setShowPopup])
 
 	if (!data) return
-	const images = data.deck.images.front
+	// We want the images displayed here to be sorted by card type
+	const sortedImages = sortDeck(
+		decks[character as keyof Decks],
+		SortTypeEnum.TYPE
+	).map((card) => card.imagePath)
 
 	return (
 		<div
@@ -52,7 +59,9 @@ export default function DeckInfoPopup({
 				<Text as="h1">{data.title} Deck Info</Text>
 			</div>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 justify-items-center gap-4 overflow-y-auto w-full p-8">
-				{images?.map((img) => <img src={img} key={img} />)}
+				{sortedImages.map((img) => (
+					<img src={img} key={img} />
+				))}
 			</div>
 		</div>
 	)

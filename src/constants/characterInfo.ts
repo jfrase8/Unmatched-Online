@@ -2,6 +2,7 @@ import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import { AttackTypeEnum } from '../enums/AttackTypeEnum'
 import { CharacterColorEnum } from '../enums/CharacterColorEnum'
 import { SidekickNameEnum } from '../enums/SidekickNameEnum'
+import { decks } from './deckInfo'
 
 export const characters = [
 	{
@@ -22,16 +23,7 @@ export const characters = [
 			attackType: AttackTypeEnum.MELEE,
 			amount: 3,
 		},
-		deck: {
-			images: {
-				back: 'src/assets/img/Decks/Medusa/medusa_deck_back.png',
-				front: Object.keys(
-					import.meta.glob('/src/assets/img/Decks/Medusa/front/*.png', {
-						eager: true,
-					})
-				),
-			},
-		},
+		deck: decks.Medusa,
 	},
 	{
 		title: CharacterNameEnum.SINBAD,
@@ -51,16 +43,7 @@ export const characters = [
 			attackType: AttackTypeEnum.MELEE,
 			amount: 1,
 		},
-		deck: {
-			images: {
-				back: 'src/assets/img/Decks/Sinbad/sinbad_deck_back.png',
-				front: Object.keys(
-					import.meta.glob('/src/assets/img/Decks/Sinbad/front/*.png', {
-						eager: true,
-					})
-				),
-			},
-		},
+		deck: decks.Sinbad,
 	},
 	{
 		title: CharacterNameEnum.ALICE,
@@ -81,16 +64,7 @@ export const characters = [
 			attackType: AttackTypeEnum.MELEE,
 			amount: 1,
 		},
-		deck: {
-			images: {
-				back: 'src/assets/img/Decks/Alice/alice_deck_back.png',
-				front: Object.keys(
-					import.meta.glob('/src/assets/img/Decks/Alice/front/*.png', {
-						eager: true,
-					})
-				),
-			},
-		},
+		deck: decks.Sinbad,
 	},
 	{
 		title: CharacterNameEnum.KING_ARTHUR,
@@ -111,16 +85,7 @@ export const characters = [
 			attackType: AttackTypeEnum.RANGED,
 			amount: 1,
 		},
-		deck: {
-			images: {
-				back: 'src/assets/img/Decks/King Arthur/king_arthur_deck_back.png',
-				front: Object.keys(
-					import.meta.glob('/src/assets/img/Decks/King Arthur/front/*.png', {
-						eager: true,
-					})
-				),
-			},
-		},
+		deck: decks.Sinbad,
 	},
 ]
 
