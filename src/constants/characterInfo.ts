@@ -8,6 +8,7 @@ export const characters = [
 		title: CharacterNameEnum.MEDUSA,
 		description:
 			'The Gorgon with the gaze that felled thousands. With her harpies at her side, you better have a defense in hand when she turns her eyes to you.',
+		specialAbility: `At the start of your turn, you may deal 1 damage to an opposing fighter in Medusa's zone.`,
 		optionBg: 'src/assets/img/medusa.png',
 		bgColor: CharacterColorEnum.GREEN,
 		stats: {
@@ -24,6 +25,11 @@ export const characters = [
 		deck: {
 			images: {
 				back: 'src/assets/img/Decks/Medusa/medusa_deck_back.png',
+				front: Object.keys(
+					import.meta.glob('/src/assets/img/Decks/Medusa/front/*.png', {
+						eager: true,
+					})
+				),
 			},
 		},
 	},
@@ -31,6 +37,7 @@ export const characters = [
 		title: CharacterNameEnum.SINBAD,
 		description:
 			'With every thrilling voyage, he grows in wisdom and power. Get to him and the faithful Porter quickly, before his experience makes him nigh unstoppable and your story ends too soon.',
+		specialAbility: `When you maneuver, you may move fighters +1 space for each VOYAGE card in your discard pile.`,
 		optionBg: 'src/assets/img/sinbad.png',
 		bgColor: CharacterColorEnum.ORANGE,
 		stats: {
@@ -38,21 +45,41 @@ export const characters = [
 			move: 3,
 			attackType: AttackTypeEnum.MELEE,
 		},
+		sideKick: {
+			name: SidekickNameEnum.THE_PORTER,
+			health: 6,
+			attackType: AttackTypeEnum.MELEE,
+			amount: 1,
+		},
 		deck: {
 			images: {
 				back: 'src/assets/img/Decks/Sinbad/sinbad_deck_back.png',
+				front: Object.keys(
+					import.meta.glob('/src/assets/img/Decks/Sinbad/front/*.png', {
+						eager: true,
+					})
+				),
 			},
 		},
 	},
 	{
 		title: CharacterNameEnum.ALICE,
 		description: `Big trouble in a little package. She's been through the looking glass and came back with a vorpal blade and the Jabberwock in tow. Catch her at the wrong size, and it'll be checkmate for you.`,
+		specialAbility: `When you place Alice, choose whether she starts the game BIG or SMALL.
+						When Alice is BIG, add 2 to the value of her attack cards.
+						When Alice is SMALL, add 1 to the value of her defense cards.`,
 		optionBg: 'src/assets/img/alice.png',
 		bgColor: CharacterColorEnum.BLUE,
 		stats: {
 			health: 5,
 			move: 3,
 			attackType: AttackTypeEnum.MELEE,
+		},
+		sideKick: {
+			name: SidekickNameEnum.THE_JABBERWOCK,
+			health: 8,
+			attackType: AttackTypeEnum.MELEE,
+			amount: 1,
 		},
 		deck: {
 			images: {
@@ -69,6 +96,8 @@ export const characters = [
 		title: CharacterNameEnum.KING_ARTHUR,
 		description:
 			'With mighty Excalibur in his mailed fist and the tricky Merlin at his back, his greatest weapon is his faith and willingness to sacrifice to see that deed is done.',
+		specialAbility: `When King Arthur attacks, you may BOOST that attack, Play the BOOST card, face down, along with your attack card.
+							If your opponent cancels the effects on your attack card, the BOOST is discarded without effect.`,
 		optionBg: 'src/assets/img/king-arthur.png',
 		bgColor: CharacterColorEnum.RED,
 		stats: {
@@ -76,9 +105,20 @@ export const characters = [
 			move: 3,
 			attackType: AttackTypeEnum.MELEE,
 		},
+		sideKick: {
+			name: SidekickNameEnum.MERLIN,
+			health: 7,
+			attackType: AttackTypeEnum.RANGED,
+			amount: 1,
+		},
 		deck: {
 			images: {
 				back: 'src/assets/img/Decks/King Arthur/king_arthur_deck_back.png',
+				front: Object.keys(
+					import.meta.glob('/src/assets/img/Decks/King Arthur/front/*.png', {
+						eager: true,
+					})
+				),
 			},
 		},
 	},

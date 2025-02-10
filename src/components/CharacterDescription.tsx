@@ -34,13 +34,19 @@ export default function CharacterDescription({
 					setShowPopup={setShowPopup}
 				/>
 			)}
-			<div className="w-full h-1/3 flex justify-center items-center border border-white">
+			<div
+				className="w-full max-h-1/2 flex justify-center items-center border p-2"
+				style={{ borderColor: character.bgColor }}
+			>
 				<Text as="h2" className="text-white">
-					{character.description}
+					<b>Hero Ability:</b> {character.specialAbility}
 				</Text>
 			</div>
 			<div className="flex size-full">
-				<div className="w-1/3 h-full flex flex-col border border-white">
+				<div
+					className="w-1/3 h-full flex flex-col border justify-center"
+					style={{ borderColor: character.bgColor }}
+				>
 					<Text as="h1">Stats</Text>
 					{Object.keys(characterStats).map((key) => (
 						<Text key={key} as="h2" className="text-white pl-4">
@@ -48,7 +54,10 @@ export default function CharacterDescription({
 						</Text>
 					))}
 				</div>
-				<div className="w-1/3 h-full flex flex-col border border-white">
+				<div
+					className="w-1/3 h-full flex flex-col border justify-center"
+					style={{ borderColor: character.bgColor }}
+				>
 					<Text as="h1">Sidekick</Text>
 					{sidekick
 						? Object.keys(sidekick).map((key) => (
@@ -58,9 +67,12 @@ export default function CharacterDescription({
 							))
 						: 'None'}
 				</div>
-				<div className="w-1/3 h-full flex flex-col border border-white items-center gap-3">
+				<div
+					className="w-1/3 h-full flex flex-col border items-center gap-1 justify-center"
+					style={{ borderColor: character.bgColor }}
+				>
 					<Text as="h1">Deck Info</Text>
-					<div className="w-[40%] h-fit flex justify-center items-center hover:w-[45%] transition-all duration-300 cursor-pointer">
+					<div className="w-[40%] h-fit flex justify-center items-center hover:rotate-90 transition-all duration-300 cursor-pointer">
 						<button className="size-fit" onClick={() => setShowPopup(true)}>
 							<img
 								src={character.deck.images.back}

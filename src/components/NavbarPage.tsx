@@ -15,7 +15,7 @@ export default function NavbarPage({ pageTitle, isCurrent }: NavbarPageProps) {
 			onClick={() => navigate({ to: `/${pageTitle.toLowerCase()}` })}
 			className={clsx(
 				`relative h-[--nav-button-h] w-[--nav-button-w] p-2 text-black group shadow-white shadow-[0_4px_8px_0_rgba(0,0,0,0.25)]
-				transition-all duration-500 border-2 border-cyan-400 bg-black rounded-md min-w-[20%]
+				transition-all duration-500 border-2 border-cyan-400 rounded-md min-w-[20%]
 				 hover:bg-cyan-400 hover:border-black`,
 				isCurrent &&
 					'!border-black !bg-cyan-400 !transition-none !rounded-none box-border'
@@ -52,11 +52,7 @@ export default function NavbarPage({ pageTitle, isCurrent }: NavbarPageProps) {
 			<div className="relative z-10 flex justify-center items-center h-full">
 				<Text
 					as="h1"
-					className={clsx(
-						`transition-all duration-300 text-white text-xxs xxs:text-sm font-navBarButtons xs:text-base lg:text-2xl 
-           group-hover:text-black`,
-						isCurrent && '!text-black'
-					)}
+					className={`transition-all duration-300 text-black font-navBarButtons text-lg md:text-xl xl:text-[1.5rem]`}
 				>
 					{pageTitle.toUpperCase()}
 				</Text>
