@@ -34,10 +34,7 @@ interface SlidingPanelWithSameLength extends UnconditionalSlidingPanelProps {
 	xSlide?: never
 }
 
-type SlidingPanelProps =
-	| SlidingPanelWithXSlide
-	| SlidingPanelWithYSlide
-	| SlidingPanelWithSameLength
+type SlidingPanelProps = SlidingPanelWithXSlide | SlidingPanelWithYSlide | SlidingPanelWithSameLength
 
 export default function SlidingPanel({
 	elementRef,
@@ -79,19 +76,9 @@ export default function SlidingPanel({
 		if (!rect) return {}
 		return {
 			// If we want to slide up, we need to move the top position up by an offset equal to the height increase
-			top:
-				show && upSlide
-					? ySlide
-						? rect.top + ySlide
-						: rect.top - rect.height
-					: rect.top,
+			top: show && upSlide ? (ySlide ? rect.top + ySlide : rect.top - rect.height) : rect.top,
 			// If we want to slide left, we need to move the left position to the left by an offset equal to the width increase
-			left:
-				show && leftSlide
-					? xSlide
-						? rect.left + xSlide
-						: rect.left - rect.width
-					: rect.left,
+			left: show && leftSlide ? (xSlide ? rect.left + xSlide : rect.left - rect.width) : rect.left,
 			// Width and height will always increase by the value of slide, or double if you input sameLength. Negative or positive is for direction
 			width:
 				show && xSlide
@@ -123,12 +110,11 @@ export default function SlidingPanel({
 		}
 	}, [downSlide, leftSlide, rect, rightSlide, upSlide, xSlide, ySlide])
 
+	console.log(panelStyles)
+
 	return (
-		<div
-			className={clsx('absolute transition-all duration-500', className)}
-			style={panelStyles}
-		>
-			<div className="absolute" style={childStyles}>
+		<div className={clsx('absolute transition-all duration-500', className)} style={panelStyles}>
+			<div className='absolute' style={childStyles}>
 				{children}
 			</div>
 		</div>

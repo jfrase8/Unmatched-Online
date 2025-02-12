@@ -16,9 +16,7 @@ function Play() {
 	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
 	const [displayCharacter, setDisplayCharacter] = useState<OptionObj | undefined>(undefined) // The character that should be displayed on the panel
 	const [showPanel, setShowPanel] = useState<boolean>(false) // True if the panel should be showing
-	const [characterOptionsSlide, setCharacterOptionsSlide] = useState<boolean>(false) // True if the character options should slide over
 	const [isClosing, setIsClosing] = useState<boolean>(false) // Track if the panel is currently closing
-	const [optionsSliding, setOptionsSliding] = useState<boolean>(false) // Track if the character options are currently sliding over
 
 	const slidingPanelRef = useRef<HTMLDivElement>(null)
 
@@ -31,8 +29,6 @@ function Play() {
 	// isClosing must be a ref so the useEffect will not reset the timeout after closing
 	const isClosingRef = useRef<boolean>()
 	isClosingRef.current = isClosing
-	const optionsSlidingRef = useRef<boolean>() // Same reason for this ref
-	optionsSlidingRef.current = optionsSliding
 
 	// selectedCharacter needs to be a ref so that the timeout sets the display character to the newest selected character
 	const selectedCharacterRef = useRef<OptionObj | undefined>()
@@ -40,7 +36,7 @@ function Play() {
 
 	// After a character is selected, set the panel to show, unless it is already showing, then time it so it closes then opens again
 	useEffect(() => {
-		if (isClosingRef.current || optionsSlidingRef.current) return // early return if the panel is in the middle of closing or sliding over
+		if (isClosingRef.current) return // early return if the panel is in the middle of closing or sliding over
 
 		// Currently showing the panel
 		if (showPanelRef.current) {
@@ -54,24 +50,15 @@ function Play() {
 		}
 		// First time panel has been opened
 		else if (selectedCharacter) {
-			console.log('+')
-			setOptionsSliding(true)
-			setCharacterOptionsSlide(true)
-			setTimeout(() => {
-				console.log('-')
-				setCharacterOptionsSlide(false)
-				setShowPanel(true)
-				setDisplayCharacter(selectedCharacterRef.current)
-			}, 1000)
+			setShowPanel(true)
+			setDisplayCharacter(selectedCharacterRef.current)
 		}
 	}, [selectedCharacter])
 
-	const [optionsClassName, setOptionsClassName] = useState<string | undefined>(undefined)
-
 	// Fires once when a character is first selected so the character options can slide over
-	useEffect(() => {
-		if (characterOptionsSlide) setOptionsClassName('transition-transform duration-500 translate-x-[100%]')
-	}, [characterOptionsSlide])
+	// useEffect(() => {
+	// 	if (characterOptionsSlide) setOptionsClassName('transition-transform duration-500 translate-x-[100%]')
+	// }, [characterOptionsSlide])
 
 	// Will be true if the screen size is above small
 	const sm = useBreakpoint('sm')
@@ -81,7 +68,7 @@ function Play() {
 			<SlidingPanel
 				elementRef={slidingPanelRef}
 				show={showPanelRef.current ?? false}
-				sameLength={sm ? DirectionalEnum.LEFT : DirectionalEnum.DOWN}
+				sameLength={sm ? DirectionalEnum.RIGHT : DirectionalEnum.DOWN}
 				className='rounded-lg'
 			>
 				<div
@@ -94,7 +81,7 @@ function Play() {
 				</div>
 			</SlidingPanel>
 
-			<div className='flex flex-col size-full items-center mx-16'>
+			<div className='flex flex-col size-full items-center'>
 				<div className='flex flex-col items-center'>
 					<Text as='h1' className='xs:text-[2rem] mt-4'>
 						CHOOSE YOUR CHARACTER
@@ -104,7 +91,6 @@ function Play() {
 						options={options}
 						onSelect={setSelectedCharacter}
 						selected={selectedCharacter}
-						className={optionsClassName}
 					/>
 				</div>
 			</div>
