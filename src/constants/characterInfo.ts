@@ -85,7 +85,7 @@ export const characters = [
 			attackType: AttackTypeEnum.RANGED,
 			amount: 1,
 		},
-		deck: decks['King Arthur'],
+		deck: decks[CharacterNameEnum.KING_ARTHUR],
 	},
 ]
 
