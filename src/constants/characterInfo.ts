@@ -33,8 +33,8 @@ export const characters = [
 		optionBg: 'src/assets/img/sinbad.png',
 		bgColor: CharacterColorEnum.ORANGE,
 		stats: {
-			health: 20,
-			move: 3,
+			health: 15,
+			move: 2,
 			attackType: AttackTypeEnum.MELEE,
 		},
 		sideKick: {
@@ -54,8 +54,8 @@ export const characters = [
 		optionBg: 'src/assets/img/alice.png',
 		bgColor: CharacterColorEnum.BLUE,
 		stats: {
-			health: 5,
-			move: 3,
+			health: 13,
+			move: 2,
 			attackType: AttackTypeEnum.MELEE,
 		},
 		sideKick: {
@@ -75,8 +75,8 @@ export const characters = [
 		optionBg: 'src/assets/img/king-arthur.png',
 		bgColor: CharacterColorEnum.RED,
 		stats: {
-			health: 30,
-			move: 3,
+			health: 18,
+			move: 2,
 			attackType: AttackTypeEnum.MELEE,
 		},
 		sideKick: {

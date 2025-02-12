@@ -2,21 +2,26 @@ import clsx from 'clsx'
 import Text from './Text'
 import { forwardRef } from 'react'
 import { OptionObj } from '../constants/characterInfo'
+import { cn } from '../utils/cn'
 
 interface ScrollableCardOptionsProps {
 	options: OptionObj[]
 	onSelect: (character: OptionObj) => void
 	selected: OptionObj | undefined
+	className?: string
 }
 
 const ScrollableCardOptions = forwardRef<
 	HTMLDivElement,
 	ScrollableCardOptionsProps
->(({ options, onSelect, selected }, ref) => {
+>(({ options, onSelect, selected, className }, ref) => {
 	return (
 		<div
 			ref={ref}
-			className="relative flex flex-row w-auto max-w-[90svw] h-[16rem] bg-slate-300 rounded-lg overflow-x-auto"
+			className={cn(
+				`relative flex flex-row w-auto max-w-[90svw] h-[16rem] bg-slate-300 rounded-lg overflow-x-auto`,
+				className
+			)}
 		>
 			{options.map((option, i) => (
 				<div
