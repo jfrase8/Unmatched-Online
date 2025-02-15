@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 import { DirectionalEnum } from '../enums/DirectionalEnum'
+import { cn } from '../utils/cn'
 
 interface SlidingPanelProps {
 	dir: DirectionalEnum
@@ -24,7 +25,7 @@ export default function SlidingPanel({
 		<div className={clsx('relative size-fit', className)}>
 			<div className={clsx('relative size-fit z-[1]', childrenClassName)}>{children}</div>
 			<div
-				className={clsx(
+				className={cn(
 					'absolute inset-0 bg-black bg-opacity-50 duration-700 transition-transform',
 					panelClassName,
 					isOpen ? DirClass[dir] : 'translate-x-0 translate-y-0'

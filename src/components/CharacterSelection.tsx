@@ -20,8 +20,6 @@ export default function CharacterSelection() {
 
 	const { dir, isOpen, changeDir, open, close } = useSlidingPanel()
 
-	const slidingPanelRef = useRef<HTMLDivElement>(null)
-
 	const waitToReopen = 700 // Milliseconds
 
 	// isOpenRef is used so the useEffect will not be called infinitely
@@ -108,7 +106,6 @@ export default function CharacterSelection() {
 							dir={dir}
 						>
 							<ScrollableCardOptions
-								ref={slidingPanelRef}
 								options={options}
 								onSelect={setSelectedCharacter}
 								selected={selectedCharacter}
