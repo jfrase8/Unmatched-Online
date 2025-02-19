@@ -1,16 +1,17 @@
-import { useEffect } from 'react'
-import { SocketEvents } from '../types/socketEvents'
+import { useCallback, useEffect } from 'react'
+import { SocketCallback, SocketEvents } from '../types/socketEvents'
 import { socket } from '../utils/socket'
 
-interface useSocketProps<K extends keyof SocketEvents> {
-	eventName: string
-	callBack: (data: SocketEvents[K]) => void
+interface useSocketProps<T extends keyof SocketEvents> {
+	eventName: T
+	callBack: SocketCallback<T>
 }
-export default function useSocket<K extends keyof SocketEvents>({ eventName, callBack }: useSocketProps<K>) {
+export default function useSocket<T extends keyof SocketEvents>({ eventName, callBack }: useSocketProps<T>) {
+	const memoizedCallback = useCallback(callBack, [eventName, callBack])
 	useEffect(() => {
-		socket.on(eventName, callBack)
+		socket.on(eventName as string, memoizedCallback)
 		return () => {
-			socket.off(eventName, callBack)
+			socket.off(eventName as string, memoizedCallback)
 		}
-	}, [eventName, callBack])
+	}, [eventName, memoizedCallback])
 }

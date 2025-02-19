@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { DirectionalEnum } from '../enums/DirectionalEnum'
 
+/** Hook for the SlidingPanel component */
 export default function useSlidingPanel() {
 	const [dir, setDir] = useState<DirectionalEnum>(DirectionalEnum.LEFT)
 	const [isOpen, setIsOpen] = useState(false)
