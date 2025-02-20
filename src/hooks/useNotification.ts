@@ -1,39 +1,30 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { Notification } from '../components/NotificationList'
+import { NotificationTypeEnum } from '../enums/NotificationTypeEnum'
 
 /** Hook for the Notification Component. You can set a custom time for how long
  * you want the notification to show beore disappearing.
  */
 export default function useNotification(showTime: number = 3000) {
-	const [isShowing, setIsShowing] = useState<boolean>(false)
-	const [fade, setFade] = useState<'in' | 'out' | null>(null)
-	const [message, setMessage] = useState<string>('')
+	const [notifList, setNotifList] = useState<Notification[]>([])
+	const fadeTime = 1000 // Time for fade-out effect
 
-	const fadeTime = 1000 // milliseconds
+	const setNotif = useCallback(
+		(message: string, type: NotificationTypeEnum) => {
+			const id = Date.now()
+			const newNotif: Notification = { id, message, fade: 'in', type }
+			setNotifList((prev) => [...prev, newNotif])
 
-	const setNotif = useCallback((message: string) => {
-		setMessage(message)
-		setTimeout(() => setFade('in'), 1)
-		setIsShowing(true)
-	}, [])
-
-	useEffect(() => {
-		if (isShowing)
 			setTimeout(() => {
-				setFade('out')
+				setNotifList((prev) => prev.map((notif) => (notif.id === id ? { ...notif, fade: 'out' } : notif)))
+
 				setTimeout(() => {
-					setIsShowing(false)
-					setFade(null)
+					setNotifList((prev) => prev.filter((notif) => notif.id !== id))
 				}, fadeTime)
 			}, showTime)
-	}, [isShowing, showTime])
-
-	return useMemo(
-		() => ({
-			isShowing,
-			fade,
-			message,
-			setNotif,
-		}),
-		[fade, isShowing, message, setNotif]
+		},
+		[showTime, fadeTime]
 	)
+
+	return { notifList, setNotif }
 }

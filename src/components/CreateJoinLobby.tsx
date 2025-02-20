@@ -6,12 +6,12 @@ import { cn } from '../utils/cn'
 import { socket } from '../utils/socket'
 import useSocket from '../hooks/useSocket'
 import useNotification from '../hooks/useNotification'
-import Notification from './Notification'
 import { NotificationTypeEnum } from '../enums/NotificationTypeEnum'
+import NotificationList from './NotificationList'
 
 export default function CreateJoinLobby() {
 	const { dir, isOpen, open } = useSlidingPanel()
-	const { setNotif, message, isShowing, fade } = useNotification()
+	const { notifList, setNotif } = useNotification()
 
 	const [lobbyName, setLobbyName] = useState<string>('')
 
@@ -24,14 +24,12 @@ export default function CreateJoinLobby() {
 	useSocket({
 		eventName: 'createLobbyError',
 		callBack: (message: string) => {
-			setNotif(message)
+			setNotif(message, NotificationTypeEnum.ERROR)
 		},
 	})
 
-	console.log(message)
-
 	const createLobby = () => {
-		if (lobbyName === '') return setNotif('Must input lobby name.')
+		if (lobbyName === '') return setNotif('Must input lobby name.', NotificationTypeEnum.ERROR)
 		socket.emit('createLobby', (socket.id, lobbyName))
 	}
 
@@ -42,13 +40,7 @@ export default function CreateJoinLobby() {
 				wrapperClassName
 			)}
 		>
-			<Notification
-				message={message}
-				isShowing={isShowing}
-				fade={fade}
-				type={NotificationTypeEnum.ERROR}
-				className='top-40 left-[50%] -translate-x-[50%]'
-			/>
+			<NotificationList notifList={notifList} className='top-40 left-[50%] -translate-x-[50%]' />
 			<div className='flex flex-col gap-4 justify-center w-full'>
 				<SlidingPanel
 					panelContent={
