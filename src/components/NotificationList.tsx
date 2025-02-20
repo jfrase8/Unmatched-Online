@@ -9,7 +9,9 @@ interface NotificationListProps {
 }
 export default function NotificationList({ notifList, className }: NotificationListProps) {
 	return (
-		<div className={cn('fixed size-fit flex flex-col-reverse gap-4 max-h-[13rem] overflow-auto', className)}>
+		<div
+			className={cn('fixed size-fit flex flex-col-reverse items-center gap-4 max-h-[13rem] overflow-auto', className)}
+		>
 			{notifList.map((notif) => (
 				<Notification key={notif.id} {...notif} />
 			))}

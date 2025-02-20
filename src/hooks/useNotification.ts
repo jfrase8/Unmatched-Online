@@ -3,7 +3,7 @@ import { Notification } from '../components/NotificationList'
 import { NotificationTypeEnum } from '../enums/NotificationTypeEnum'
 
 /** Hook for the Notification Component. You can set a custom time for how long
- * you want the notification to show beore disappearing.
+ * you want the notification to show before disappearing.
  */
 export default function useNotification(showTime: number = 3000) {
 	const [notifList, setNotifList] = useState<Notification[]>([])
