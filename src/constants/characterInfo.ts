@@ -10,7 +10,7 @@ export const characters = [
 		description:
 			'The Gorgon with the gaze that felled thousands. With her harpies at her side, you better have a defense in hand when she turns her eyes to you.',
 		specialAbility: `At the start of your turn, you may deal 1 damage to an opposing fighter in Medusa's zone.`,
-		optionBg: 'src/assets/img/medusa.png',
+		optionBg: '/assets/img/medusa.png',
 		bgColor: CharacterColorEnum.GREEN,
 		stats: {
 			health: 16,
@@ -30,7 +30,7 @@ export const characters = [
 		description:
 			'With every thrilling voyage, he grows in wisdom and power. Get to him and the faithful Porter quickly, before his experience makes him nigh unstoppable and your story ends too soon.',
 		specialAbility: `When you maneuver, you may move fighters +1 space for each VOYAGE card in your discard pile.`,
-		optionBg: 'src/assets/img/sinbad.png',
+		optionBg: '/assets/img/sinbad.png',
 		bgColor: CharacterColorEnum.ORANGE,
 		stats: {
 			health: 15,
@@ -51,7 +51,7 @@ export const characters = [
 		specialAbility: `When you place Alice, choose whether she starts the game BIG or SMALL.
 						When Alice is BIG, add 2 to the value of her attack cards.
 						When Alice is SMALL, add 1 to the value of her defense cards.`,
-		optionBg: 'src/assets/img/alice.png',
+		optionBg: '/assets/img/alice.png',
 		bgColor: CharacterColorEnum.BLUE,
 		stats: {
 			health: 13,
@@ -72,7 +72,7 @@ export const characters = [
 			'With mighty Excalibur in his mailed fist and the tricky Merlin at his back, his greatest weapon is his faith and willingness to sacrifice to see that deed is done.',
 		specialAbility: `When King Arthur attacks, you may BOOST that attack, Play the BOOST card, face down, along with your attack card.
 							If your opponent cancels the effects on your attack card, the BOOST is discarded without effect.`,
-		optionBg: 'src/assets/img/king-arthur.png',
+		optionBg: '/assets/img/king-arthur.png',
 		bgColor: CharacterColorEnum.RED,
 		stats: {
 			health: 18,

@@ -1,6 +1,13 @@
 export interface SocketEvents {
-	lobbyCreated: { hostID: number; lobbyName: string }
-	createLobbyError: string
+	lobbyCreated: Lobby
+	errorMessage: string
+	lobbyReturned: Lobby
 }
 
 export type SocketCallback<T extends keyof SocketEvents> = (data: SocketEvents[T]) => void
+
+export type Lobby = {
+	name: string
+	players: number[]
+	maxPlayers: number
+}

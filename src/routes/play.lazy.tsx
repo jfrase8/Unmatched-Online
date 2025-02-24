@@ -1,5 +1,4 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
-import CharacterSelection from '../components/CharacterSelection'
 import CreateJoinLobby from '../components/CreateJoinLobby'
 
 export const Route = createLazyFileRoute('/play')({
@@ -9,7 +8,6 @@ export const Route = createLazyFileRoute('/play')({
 function Play() {
 	return (
 		<div className='flex w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center items-center'>
-			{/* <CharacterSelection /> */}
 			<CreateJoinLobby />
 		</div>
 	)

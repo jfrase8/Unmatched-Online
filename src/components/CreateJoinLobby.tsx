@@ -8,10 +8,12 @@ import useSocket from '../hooks/useSocket'
 import useNotification from '../hooks/useNotification'
 import { NotificationTypeEnum } from '../enums/NotificationTypeEnum'
 import NotificationList from './NotificationList'
+import { useRouter } from '@tanstack/react-router'
 
 export default function CreateJoinLobby() {
 	const { dir, isOpen, open } = useSlidingPanel()
 	const { notifList, setNotif } = useNotification()
+	const router = useRouter()
 
 	const [lobbyName, setLobbyName] = useState<string>('')
 
@@ -22,9 +24,17 @@ export default function CreateJoinLobby() {
 
 	// Listens to socket events with the name 'createLobbyError'
 	useSocket({
-		eventName: 'createLobbyError',
+		eventName: 'errorMessage',
 		callBack: (message: string) => {
 			setNotif(message, NotificationTypeEnum.ERROR)
+		},
+	})
+
+	useSocket({
+		eventName: 'lobbyCreated',
+		callBack: (lobby) => {
+			console.log(lobby.name)
+			router.navigate({ to: `/lobbies/${lobby.name}` })
 		},
 	})
 
