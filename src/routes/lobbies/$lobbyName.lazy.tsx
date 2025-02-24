@@ -27,6 +27,13 @@ function LobbyScreen() {
 		},
 	})
 
+	useSocket({
+		eventName: 'lobbyJoined',
+		callBack: () => {
+			socket.emit('getLobby', lobbyName)
+		},
+	})
+
 	return (
 		<div className='relative flex flex-col w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center items-center'>
 			{lobby ? (

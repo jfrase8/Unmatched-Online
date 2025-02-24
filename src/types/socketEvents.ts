@@ -1,5 +1,6 @@
 export interface SocketEvents {
 	lobbyCreated: Lobby
+	lobbyJoined: Lobby
 	errorMessage: string
 	lobbyReturned: Lobby
 }

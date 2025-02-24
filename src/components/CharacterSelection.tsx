@@ -18,13 +18,16 @@ export default function CharacterSelection() {
 	const [ready, setReady] = useState<boolean>(false) // Whether the player has clicked ready yet
 	const [showDeckOverlay, setShowDeckOverlay] = useState<boolean>(false) // Whether a characters deck overlay should show
 
-	const { dir, isOpen, changeDir, open, close } = useSlidingPanel()
+	const { getPanelState, changeDir, open, close } = useSlidingPanel()
+
+	const panelID = 'panel1'
+	const panel = getPanelState('panel1')
 
 	const waitToReopen = 700 // Milliseconds
 
 	// isOpenRef is used so the useEffect will not be called infinitely
 	const isOpenRef = useRef<boolean>()
-	isOpenRef.current = isOpen
+	isOpenRef.current = panel.isOpen
 
 	// isClosing must be a ref so the useEffect will not reset the timeout after closing
 	const isClosingRef = useRef<boolean>()
@@ -36,7 +39,7 @@ export default function CharacterSelection() {
 
 	// Direction ref
 	const dirRef = useRef<DirectionalEnum>(DirectionalEnum.LEFT)
-	dirRef.current = dir
+	dirRef.current = panel.dir
 
 	// After a character is selected, set the panel to show, unless it is already showing, then time it so it closes then opens again
 	useEffect(() => {
@@ -44,17 +47,17 @@ export default function CharacterSelection() {
 
 		// Currently showing the panel
 		if (isOpenRef.current) {
-			close()
+			close(panelID)
 			setIsClosing(true)
 			setTimeout(() => {
-				open(dirRef.current)
+				open(panelID, dirRef.current)
 				setDisplayCharacter(selectedCharacterRef.current)
 				setIsClosing(false)
 			}, waitToReopen)
 		}
 		// First time panel has been opened
 		else if (selectedCharacter) {
-			open(dirRef.current)
+			open(panelID, dirRef.current)
 			setDisplayCharacter(selectedCharacterRef.current)
 		}
 	}, [close, open, selectedCharacter])
@@ -63,8 +66,8 @@ export default function CharacterSelection() {
 	const xxl = useBreakpoint('2xl')
 
 	useEffect(() => {
-		if (xl) changeDir(DirectionalEnum.LEFT)
-		else changeDir(DirectionalEnum.DOWN)
+		if (xl) changeDir(panelID, DirectionalEnum.LEFT)
+		else changeDir(panelID, DirectionalEnum.DOWN)
 	}, [changeDir, xl])
 
 	const optionsClassName = useMemo(
@@ -102,8 +105,8 @@ export default function CharacterSelection() {
 								</div>
 							}
 							className='rounded-lg'
-							isOpen={isOpen}
-							dir={dir}
+							isOpen={panel.isOpen}
+							dir={panel.dir}
 						>
 							<ScrollableCardOptions
 								options={options}
