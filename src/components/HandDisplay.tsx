@@ -1,19 +1,12 @@
-import { useRef } from 'react'
 import { Card } from '../constants/deckInfo'
-import { cn } from '../utils/cn'
-import { getOverlapMargin } from '../utils/getOverlapMargin'
 
 interface HandDisplayProps {
 	cards: Card[]
 }
 export default function HandDisplay({ cards }: HandDisplayProps) {
 	return (
-		<div
-			className={cn(
-				'bg-slate-500 w-[50%] absolute bottom-0 h-[30%] rounded-t-3xl flex items-end justify-center transition-all duration-500 overflow-x-auto'
-			)}
-		>
-			<div className='flex justify-center min-w-full'>
+		<div className='relative flex justify-center items-center w-[40%] h-[30vh] overflow-x-auto bg-slate-400 p-2'>
+			<div className='flex gap-2 min-w-max'>
 				{cards.map((card, i) => (
 					<CardDisplay key={i} {...card} index={i} cardsInHand={cards.length} />
 				))}
@@ -27,13 +20,16 @@ interface CardDisplayProps {
 	cardsInHand: number
 }
 export function CardDisplay({ name, imagePath, index, cardsInHand }: Card & CardDisplayProps) {
-	const overlapMargin = index === 0 || cardsInHand < 4 ? 0 : getOverlapMargin(cardsInHand)
-
 	return (
-		<img
-			src={imagePath}
-			style={{ marginLeft: overlapMargin }}
-			className='transition-all duration-500 h-[95%] w-[11rem]'
-		></img>
+		<div
+			className='bg-gray-200 shadow-lg rounded-md transition-all duration-500 flex-shrink-0'
+			style={{
+				// Dynamically set width & height based on parent height
+				width: `calc(5vh + 5vw)`, // Scales with both height and width for consistency
+				height: `90%`, // Keeps the height proportional to HandDisplay
+			}}
+		>
+			<img src={imagePath} className='aspect-[] object-cover rounded-md' />
+		</div>
 	)
 }
