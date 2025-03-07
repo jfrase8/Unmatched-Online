@@ -13,4 +13,7 @@
 	--nav-button-w: 4svw;
 	--nav-button-h: 8svh;
 	--nav-button-hover-h: 9svh;
+
+	/* Cards */
+	--card-aspect: calc(250px / 349px);
 }
