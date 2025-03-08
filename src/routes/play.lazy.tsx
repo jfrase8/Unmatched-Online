@@ -12,7 +12,7 @@ function Play() {
 	return (
 		<div className='flex w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center items-center'>
 			{/* <CreateJoinLobby /> */}
-			<HandDisplay cards={[...decks.Alice.cards.slice(0, 3), ...decks.Alice.cards.slice(0, 1)]} />
+			<HandDisplay cards={[...decks.Alice.cards.slice(0, 15), ...decks.Alice.cards.slice(0, 0)]} />
 			{/* <CharacterSelection /> */}
 		</div>
 	)

@@ -1,17 +1,29 @@
 import clsx from 'clsx'
 import { Card } from '../constants/deckInfo'
-import { useState } from 'react'
+import { useHoveredElements } from '../hooks/useHoveredElemens'
 
 interface HandDisplayProps {
 	cards: Card[]
 }
 export default function HandDisplay({ cards }: HandDisplayProps) {
+	const { handleHover, hoveredElements, handleMouseLeave } = useHoveredElements('.card')
+
 	return (
 		<div className='flex items-center max-w-[40%] h-[30vh] overflow-x-auto overflow-y-hidden bg-slate-400 transition-all duration-500'>
 			<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
-				{cards.map((card, i) => (
-					<CardDisplay key={i} {...card} index={i} cardsInHand={cards.length} />
-				))}
+				{cards.map((card, i) => {
+					return (
+						<CardDisplay
+							key={i}
+							{...card}
+							index={i}
+							cardsInHand={cards.length}
+							hoveredElements={hoveredElements}
+							handleHover={handleHover}
+							handleMouseLeave={handleMouseLeave}
+						/>
+					)
+				})}
 			</div>
 		</div>
 	)
@@ -20,10 +32,18 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 interface CardDisplayProps {
 	index: number
 	cardsInHand: number
+	hoveredElements: Element[]
+	handleHover: (event: React.MouseEvent<HTMLDivElement>) => void
+	handleMouseLeave: () => void
 }
-export function CardDisplay({ name, imagePath, index, cardsInHand }: Card & CardDisplayProps) {
-	const [hovering, setHovering] = useState(false)
-
+export function CardDisplay({
+	imagePath,
+	index,
+	cardsInHand,
+	hoveredElements,
+	handleHover,
+	handleMouseLeave,
+}: Card & CardDisplayProps) {
 	const getMargin = () => {
 		if (cardsInHand < 4) return '-ml-[1rem]'
 		switch (cardsInHand) {
@@ -45,15 +65,20 @@ export function CardDisplay({ name, imagePath, index, cardsInHand }: Card & Card
 		if (cardsInHand > 10) return '-ml-[8rem]'
 	}
 
+	const hovering = hoveredElements.some((e) => Number(e.getAttribute('data-index')) === index)
+
+	const lowestIndex = !hoveredElements.some((e) => Number(e.getAttribute('data-index')) > index)
+
 	return (
 		<div
 			className={clsx(
-				'shadow-lg rounded-md transition-all duration-500 border border-black h-full',
+				'shadow-lg rounded-md transition-all duration-500 border border-black h-full card',
 				index !== 0 && getMargin(),
-				hovering && 'z-[100] scale-[110%]'
+				hovering && lowestIndex && 'z-[100] scale-[110%]'
 			)}
-			onMouseEnter={() => setHovering(true)}
-			onMouseLeave={() => setHovering(false)}
+			onMouseMove={handleHover}
+			onMouseLeave={handleMouseLeave}
+			data-index={index}
 		>
 			<img src={imagePath} className={clsx('aspect-[--card-aspect] size-full rounded-md')} />
 		</div>
