@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Card } from '../constants/deckInfo'
 
 interface DeckProps {
