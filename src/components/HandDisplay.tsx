@@ -10,22 +10,23 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 
 	return (
 		<>
-			<img src='/assets/img/match-screen/wood.jpg' className='absolute z-[0] w-[40%] h-[30vh]' />
-			<div className='flex items-center max-w-[40%] z-[1] h-[30vh] border border-black overflow-x-auto overflow-y-hidden transition-all duration-500'>
-				<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
-					{cards.map((card, i) => {
-						return (
-							<CardDisplay
-								key={i}
-								{...card}
-								index={i}
-								cardsInHand={cards.length}
-								hoveredElements={hoveredElements}
-								handleHover={handleHover}
-								handleMouseLeave={handleMouseLeave}
-							/>
-						)
-					})}
+			<div className='w-[40%] [background-image:url(/assets/img/match-screen/wood.jpg)] h-[30vh]'>
+				<div className='flex items-center max-w-full z-[1] h-full border border-black overflow-x-auto overflow-y-hidden transition-all duration-500'>
+					<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
+						{cards.map((card, i) => {
+							return (
+								<CardDisplay
+									key={i}
+									{...card}
+									index={i}
+									cardsInHand={cards.length}
+									hoveredElements={hoveredElements}
+									handleHover={handleHover}
+									handleMouseLeave={handleMouseLeave}
+								/>
+							)
+						})}
+					</div>
 				</div>
 			</div>
 		</>
@@ -83,7 +84,7 @@ export function CardDisplay({
 			onMouseLeave={handleMouseLeave}
 			data-index={index}
 		>
-			<img src={imagePath} className={clsx('aspect-[--card-aspect] size-full rounded-md')} />
+			<img src={imagePath} className={'aspect-[--card-aspect] size-full rounded-md'} />
 		</div>
 	)
 }

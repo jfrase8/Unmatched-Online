@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { decks } from '../constants/deckInfo'
 import { useDeck } from '../hooks/useDeck'
 import DeckDisplay from './Deck'
@@ -6,6 +7,13 @@ import Text from './Text'
 
 export default function MatchUI() {
 	const { addCardToHand, cardsInDeck, cardsInHand, drawCard, drawnCard, shuffleDeck } = useDeck(decks.Sinbad.cards)
+
+	const clickEffect = useMemo(
+		() => (!drawnCard ? drawCard : () => addCardToHand(drawnCard)),
+		[addCardToHand, drawCard, drawnCard]
+	)
+
+	console.log(clickEffect)
 
 	return (
 		<>
@@ -17,7 +25,7 @@ export default function MatchUI() {
 			{/* Hand Area */}
 			<div className='flex w-full h-[50%] justify-center items-end'>
 				<HandDisplay cards={cardsInHand} />
-				<DeckDisplay drawnCard={drawnCard} cards={cardsInDeck} />
+				<DeckDisplay drawnCard={drawnCard} cards={cardsInDeck} onClick={clickEffect} cardBack={decks.Sinbad.cardBack} />
 			</div>
 		</>
 	)
