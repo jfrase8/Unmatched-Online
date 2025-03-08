@@ -9,23 +9,26 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 	const { handleHover, hoveredElements, handleMouseLeave } = useHoveredElements('.card')
 
 	return (
-		<div className='flex items-center max-w-[40%] h-[30vh] overflow-x-auto overflow-y-hidden bg-slate-400 transition-all duration-500'>
-			<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
-				{cards.map((card, i) => {
-					return (
-						<CardDisplay
-							key={i}
-							{...card}
-							index={i}
-							cardsInHand={cards.length}
-							hoveredElements={hoveredElements}
-							handleHover={handleHover}
-							handleMouseLeave={handleMouseLeave}
-						/>
-					)
-				})}
+		<>
+			<img src='/assets/img/match-screen/wood.jpg' className='absolute z-[0] w-[40%] h-[30vh]' />
+			<div className='flex items-center max-w-[40%] z-[1] h-[30vh] border border-black overflow-x-auto overflow-y-hidden transition-all duration-500'>
+				<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
+					{cards.map((card, i) => {
+						return (
+							<CardDisplay
+								key={i}
+								{...card}
+								index={i}
+								cardsInHand={cards.length}
+								hoveredElements={hoveredElements}
+								handleHover={handleHover}
+								handleMouseLeave={handleMouseLeave}
+							/>
+						)
+					})}
+				</div>
 			</div>
-		</div>
+		</>
 	)
 }
 

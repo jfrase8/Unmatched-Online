@@ -20,8 +20,6 @@ export function useHoveredElements(querySelector?: string) {
 			// Filter elements that match the querySelector
 			const matchingElements = elements.filter((element) => element.matches(querySelector))
 
-			console.log(matchingElements)
-
 			setHoveredElements(matchingElements)
 		},
 		[querySelector]

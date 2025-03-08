@@ -535,4 +535,8 @@ export const decks = {
 
 export type Decks = typeof decks
 export type DeckInfo = (typeof decks)[keyof typeof decks]
-export type Card = (typeof decks)[CharacterNameEnum.ALICE]['cards'][0]
+export type Card =
+	| (typeof decks)[CharacterNameEnum.SINBAD]['cards'][0]
+	| (typeof decks)[CharacterNameEnum.ALICE]['cards'][0]
+	| (typeof decks)[CharacterNameEnum.KING_ARTHUR]['cards'][0]
+	| (typeof decks)[CharacterNameEnum.MEDUSA]['cards'][0]
