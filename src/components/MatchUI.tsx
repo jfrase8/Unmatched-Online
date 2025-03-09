@@ -13,8 +13,6 @@ export default function MatchUI() {
 		[addCardToHand, drawCard, drawnCard]
 	)
 
-	console.log(clickEffect)
-
 	return (
 		<>
 			<div className='h-[100%] w-full flex justify-center items-center border border-white'>

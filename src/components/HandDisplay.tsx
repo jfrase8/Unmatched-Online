@@ -1,12 +1,15 @@
 import clsx from 'clsx'
 import { Card } from '../constants/deckInfo'
 import { useHoveredElements } from '../hooks/useHoveredElemens'
+import { useMemo, useState } from 'react'
+import { cn } from '../utils/cn'
 
 interface HandDisplayProps {
 	cards: Card[]
 }
 export default function HandDisplay({ cards }: HandDisplayProps) {
 	const { handleHover, hoveredElements, handleMouseLeave } = useHoveredElements('.card')
+	const [selected, setSelected] = useState<number>(-1)
 
 	return (
 		<>
@@ -23,6 +26,8 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 									hoveredElements={hoveredElements}
 									handleHover={handleHover}
 									handleMouseLeave={handleMouseLeave}
+									setSelected={setSelected}
+									selected={selected}
 								/>
 							)
 						})}
@@ -37,8 +42,10 @@ interface CardDisplayProps {
 	index: number
 	cardsInHand: number
 	hoveredElements: Element[]
-	handleHover: (event: React.MouseEvent<HTMLDivElement>) => void
+	handleHover: (event: React.MouseEvent<HTMLButtonElement>) => void
 	handleMouseLeave: () => void
+	selected: number
+	setSelected: (index: number) => void
 }
 export function CardDisplay({
 	imagePath,
@@ -47,6 +54,8 @@ export function CardDisplay({
 	hoveredElements,
 	handleHover,
 	handleMouseLeave,
+	selected,
+	setSelected,
 }: Card & CardDisplayProps) {
 	const getMargin = () => {
 		if (cardsInHand < 4) return '-ml-[1rem]'
@@ -68,23 +77,24 @@ export function CardDisplay({
 		}
 		if (cardsInHand > 10) return '-ml-[8rem]'
 	}
-
 	const hovering = hoveredElements.some((e) => Number(e.getAttribute('data-index')) === index)
 
 	const lowestIndex = !hoveredElements.some((e) => Number(e.getAttribute('data-index')) > index)
 
 	return (
-		<div
-			className={clsx(
+		<button
+			className={cn(
 				'shadow-lg rounded-md transition-all duration-500 border border-black h-full card',
 				index !== 0 && getMargin(),
-				hovering && lowestIndex && 'z-[100] scale-[110%]'
+				hovering && lowestIndex && 'z-[100] scale-[110%]',
+				selected === index && 'z-[100] scale-[110%] brightness-125'
 			)}
 			onMouseMove={handleHover}
 			onMouseLeave={handleMouseLeave}
 			data-index={index}
+			onClick={() => (selected === index ? setSelected(-1) : setSelected(index))}
 		>
 			<img src={imagePath} className={'aspect-[--card-aspect] size-full rounded-md'} />
-		</div>
+		</button>
 	)
 }

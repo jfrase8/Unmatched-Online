@@ -28,6 +28,7 @@ export function useDeck(cards: Card[]) {
 	const addCardToHand = (card: Card) => {
 		setCardsInDeck((prev) => prev.slice(0, -1))
 		setCardsInHand((prev) => [...prev, card])
+		setDrawnCard(undefined)
 	}
 
 	// Initial shuffle of cards
