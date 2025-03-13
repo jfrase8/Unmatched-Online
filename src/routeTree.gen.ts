@@ -18,6 +18,7 @@ import { Route as rootRoute } from './routes/__root'
 
 const PlayLazyImport = createFileRoute('/play')()
 const IndexLazyImport = createFileRoute('/')()
+const LobbiesLobbyNameLazyImport = createFileRoute('/lobbies/$lobbyName')()
 
 // Create/Update Routes
 
@@ -32,6 +33,14 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const LobbiesLobbyNameLazyRoute = LobbiesLobbyNameLazyImport.update({
+  id: '/lobbies/$lobbyName',
+  path: '/lobbies/$lobbyName',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/lobbies/$lobbyName.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -51,6 +60,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayLazyImport
       parentRoute: typeof rootRoute
     }
+    '/lobbies/$lobbyName': {
+      id: '/lobbies/$lobbyName'
+      path: '/lobbies/$lobbyName'
+      fullPath: '/lobbies/$lobbyName'
+      preLoaderRoute: typeof LobbiesLobbyNameLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -59,36 +75,41 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/play': typeof PlayLazyRoute
+  '/lobbies/$lobbyName': typeof LobbiesLobbyNameLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/play': typeof PlayLazyRoute
+  '/lobbies/$lobbyName': typeof LobbiesLobbyNameLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/play': typeof PlayLazyRoute
+  '/lobbies/$lobbyName': typeof LobbiesLobbyNameLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/play'
+  fullPaths: '/' | '/play' | '/lobbies/$lobbyName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/play'
-  id: '__root__' | '/' | '/play'
+  to: '/' | '/play' | '/lobbies/$lobbyName'
+  id: '__root__' | '/' | '/play' | '/lobbies/$lobbyName'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   PlayLazyRoute: typeof PlayLazyRoute
+  LobbiesLobbyNameLazyRoute: typeof LobbiesLobbyNameLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   PlayLazyRoute: PlayLazyRoute,
+  LobbiesLobbyNameLazyRoute: LobbiesLobbyNameLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -102,7 +123,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/play"
+        "/play",
+        "/lobbies/$lobbyName"
       ]
     },
     "/": {
@@ -110,6 +132,9 @@ export const routeTree = rootRoute
     },
     "/play": {
       "filePath": "play.lazy.tsx"
+    },
+    "/lobbies/$lobbyName": {
+      "filePath": "lobbies/$lobbyName.lazy.tsx"
     }
   }
 }

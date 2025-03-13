@@ -7,8 +7,8 @@ export default {
 				navBarButtons: ['Rubik Dirt'],
 			},
 			screens: {
-				xs: '500px',
 				xxs: '420px',
+				xs: '500px',
 				'1.5xl': '1410px',
 				'1.8xl': '1460px',
 
