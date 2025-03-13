@@ -10,6 +10,8 @@ import useSlidingPanel from '../hooks/useSlidingPanel'
 import clsx from 'clsx'
 import DeckInfoPopup from '../components/DeckInfoPopup'
 import colors from 'tailwindcss/colors'
+import useSocket from '../hooks/useSocket'
+import { SocketEvents } from '../types/socketEvents'
 
 export default function CharacterSelection() {
 	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
@@ -69,6 +71,14 @@ export default function CharacterSelection() {
 		if (xl) changeDir(panelID, DirectionalEnum.LEFT)
 		else changeDir(panelID, DirectionalEnum.DOWN)
 	}, [changeDir, xl])
+
+	// Socket events
+	useSocket({
+		eventName: 'characterChosen',
+		callBack: (eventData: SocketEvents['characterChosen']) => {
+			setNotif(message, NotificationTypeEnum.ERROR)
+		},
+	})
 
 	const optionsClassName = useMemo(
 		() => (selectedCharacter ? 'transition-transform duration-700 translate-x-[50%]' : ''),

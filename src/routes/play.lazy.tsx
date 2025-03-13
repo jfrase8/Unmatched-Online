@@ -1,5 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import MatchUI from '../components/MatchUI'
+import CreateJoinLobby from '../components/CreateJoinLobby'
 
 export const Route = createLazyFileRoute('/play')({
 	component: Play,

@@ -3,6 +3,10 @@ export interface SocketEvents {
 	lobbyJoined: Lobby
 	errorMessage: string
 	lobbyReturned: Lobby
+	characterChosen: {
+		playerID: number
+		characterName: string
+	}
 }
 
 export type SocketCallback<T extends keyof SocketEvents> = (data: SocketEvents[T]) => void
