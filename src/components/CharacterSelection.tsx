@@ -12,10 +12,13 @@ import DeckInfoPopup from '../components/DeckInfoPopup'
 import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
 import { SocketEvents } from '../types/socketEvents'
+import { socket } from '../utils/socket'
+import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 
 export default function CharacterSelection() {
 	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
 	const [displayCharacter, setDisplayCharacter] = useState<OptionObj | undefined>(undefined) // The character that should be displayed on the panel
+	const [takenCharacters, setTakenCharacters] = useState<TakenCharacter[]>([])
 	const [isClosing, setIsClosing] = useState<boolean>(false) // Track if the panel is currently closing
 	const [ready, setReady] = useState<boolean>(false) // Whether the player has clicked ready yet
 	const [showDeckOverlay, setShowDeckOverlay] = useState<boolean>(false) // Whether a characters deck overlay should show
@@ -76,7 +79,12 @@ export default function CharacterSelection() {
 	useSocket({
 		eventName: 'characterChosen',
 		callBack: (eventData: SocketEvents['characterChosen']) => {
-			setNotif(message, NotificationTypeEnum.ERROR)
+			// Check if you chose the character
+			if (eventData.playerID === socket.id) {
+				setReady((prev) => !prev)
+			} else {
+				setTakenCharacters((prev) => [...prev, eventData])
+			}
 		},
 	})
 
@@ -123,6 +131,7 @@ export default function CharacterSelection() {
 								onSelect={setSelectedCharacter}
 								selected={selectedCharacter}
 								lockOption={ready}
+								takenCharacters={takenCharacters}
 							/>
 						</SlidingPanel>
 					</div>
@@ -135,14 +144,32 @@ export default function CharacterSelection() {
 							backgroundColor: selectedCharacter ? (!ready ? selectedCharacter.bgColor : colors.slate['300']) : 'gray',
 						}}
 						onClick={() => {
-							setReady((prev) => !prev)
+							socket.emit('chooseCharacter', selectedCharacter?.title, socket.id)
 						}}
 						disabled={!selectedCharacter}
 					>
 						{buttonText}
 					</button>
+					{ready && takenCharacters.length >= 1 && (
+						<button
+							className={clsx(
+								'py-4 rounded-lg animate-pulse bg-slate-300 w-[235px] hover:animate-none hover:bg-slate-200'
+							)}
+							onClick={() => {
+								socket.emit('startMatch', socket.id)
+							}}
+						>
+							Start Game
+						</button>
+					)}
 				</div>
 			</div>
 		</>
 	)
+}
+
+export type TakenCharacter = {
+	characterName: CharacterNameEnum
+	playerName: string
+	playerID: string
 }

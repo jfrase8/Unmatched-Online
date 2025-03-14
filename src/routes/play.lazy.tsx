@@ -9,9 +9,9 @@ export const Route = createLazyFileRoute('/play')({
 function Play() {
 	return (
 		<div className='flex flex-col w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center items-center relative overflow-y-hidden'>
-			{/* <CreateJoinLobby /> */}
+			<CreateJoinLobby />
 			{/* <CharacterSelection /> */}
-			<MatchUI />
+			{/* <MatchUI /> */}
 		</div>
 	)
 }

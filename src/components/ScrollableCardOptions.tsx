@@ -1,8 +1,9 @@
 import clsx from 'clsx'
-import Text from './Text'
 import { forwardRef } from 'react'
 import { OptionObj } from '../constants/characterInfo'
 import { cn } from '../utils/cn'
+import OptionCard from './OptionCard'
+import { TakenCharacter } from './CharacterSelection'
 
 interface ScrollableCardOptionsProps {
 	/** The set of options to choose from */
@@ -13,11 +14,13 @@ interface ScrollableCardOptionsProps {
 	selected: OptionObj | undefined
 	/** If you should lock in the selected option */
 	lockOption?: boolean
+	/** A list of the names of characters already chosen by other players */
+	takenCharacters: TakenCharacter[]
 	className?: string
 }
 
 const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsProps>(
-	({ options, onSelect, selected, className, lockOption }, ref) => {
+	({ options, onSelect, selected, className, lockOption, takenCharacters }, ref) => {
 		return (
 			<div
 				ref={ref}
@@ -27,15 +30,24 @@ const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsPr
 				)}
 			>
 				{options.map((option, i) => {
-					const isSelected = selected?.title === option.title
-					const optionClassName = lockOption
-						? isSelected
-							? 'brightness-110 pointer-events-none'
-							: 'brightness-50 pointer-events-none'
-						: ''
+					const selectedByYou = selected?.title === option.title
+					const chosenByOther = takenCharacters.some((char) => char.characterName === option.title)
+					const chosenBaseStyle = (lockOption || chosenByOther) && 'pointer-events-none'
+					const brightnessStyle = chosenByOther
+						? 'brightness-[.4]'
+						: selectedByYou
+							? 'brightness-110'
+							: lockOption && 'brightness-[.9]'
+
 					return (
 						<div key={i} className='flex items-center justify-center p-2 aspect-[300/500]'>
-							<OptionCard option={option} onClick={onSelect} isSelected={isSelected} className={optionClassName} />
+							<OptionCard
+								option={option}
+								onClick={onSelect}
+								isSelected={selectedByYou}
+								className={clsx(chosenBaseStyle, brightnessStyle)}
+								playerWhoSelected={takenCharacters.find((char) => char.characterName === option.title)?.playerName}
+							/>
 						</div>
 					)
 				})}
@@ -43,34 +55,5 @@ const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsPr
 		)
 	}
 )
-
-interface OptionCardProps {
-	option: OptionObj
-	onClick: (character: OptionObj) => void
-	isSelected: boolean
-	className?: string
-}
-
-function OptionCard({ option, onClick, isSelected, className }: OptionCardProps) {
-	return (
-		<button
-			className={clsx(
-				`flex items-end justify-center bg-cover bg-no-repeat bg-center size-full rounded-lg border
-                transition-all duration-500 hover:opacity-90 hover:shadow-black hover:shadow-lg`,
-				isSelected && 'border-black shadow-black shadow-lg',
-				className
-			)}
-			style={{
-				backgroundImage: `url(${option.bg})`,
-				backgroundColor: option.bgColor,
-			}}
-			onClick={() => onClick(option)}
-		>
-			<Text as='h1' className='text-[1.0rem]'>
-				{option.title.toUpperCase()}
-			</Text>
-		</button>
-	)
-}
 
 export default ScrollableCardOptions

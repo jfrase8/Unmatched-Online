@@ -1,7 +1,6 @@
-import clsx from 'clsx'
 import { Card } from '../constants/deckInfo'
 import { useHoveredElements } from '../hooks/useHoveredElemens'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { cn } from '../utils/cn'
 
 interface HandDisplayProps {
