@@ -11,7 +11,7 @@ export const characters = [
 			'The Gorgon with the gaze that felled thousands. With her harpies at her side, you better have a defense in hand when she turns her eyes to you.',
 		specialAbility: `At the start of your turn, you may deal 1 damage to an opposing fighter in Medusa's zone.`,
 		optionBg: '/assets/img/medusa.png',
-		bgColor: CharacterColorEnum.GREEN,
+		bgColor: CharacterColorEnum.MEDUSA,
 		stats: {
 			health: 16,
 			move: 3,
@@ -31,7 +31,7 @@ export const characters = [
 			'With every thrilling voyage, he grows in wisdom and power. Get to him and the faithful Porter quickly, before his experience makes him nigh unstoppable and your story ends too soon.',
 		specialAbility: `When you maneuver, you may move fighters +1 space for each VOYAGE card in your discard pile.`,
 		optionBg: '/assets/img/sinbad.png',
-		bgColor: CharacterColorEnum.ORANGE,
+		bgColor: CharacterColorEnum.SINBAD,
 		stats: {
 			health: 15,
 			move: 2,
@@ -52,7 +52,7 @@ export const characters = [
 						When Alice is BIG, add 2 to the value of her attack cards.
 						When Alice is SMALL, add 1 to the value of her defense cards.`,
 		optionBg: '/assets/img/alice.png',
-		bgColor: CharacterColorEnum.BLUE,
+		bgColor: CharacterColorEnum.ALICE,
 		stats: {
 			health: 13,
 			move: 2,
@@ -73,7 +73,7 @@ export const characters = [
 		specialAbility: `When King Arthur attacks, you may BOOST that attack, Play the BOOST card, face down, along with your attack card.
 							If your opponent cancels the effects on your attack card, the BOOST is discarded without effect.`,
 		optionBg: '/assets/img/king-arthur.png',
-		bgColor: CharacterColorEnum.RED,
+		bgColor: CharacterColorEnum.KING_ARTHUR,
 		stats: {
 			health: 18,
 			move: 2,

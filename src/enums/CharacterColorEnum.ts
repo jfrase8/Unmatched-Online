@@ -1,6 +1,6 @@
 export enum CharacterColorEnum {
-	GREEN = '#26b64f',
-	ORANGE = '#e19600',
-	BLUE = '#008cce',
-	RED = '#ca2424',
+	MEDUSA = '#26b64f',
+	SINBAD = '#e19600',
+	ALICE = '#008cce',
+	KING_ARTHUR = '#ca2424',
 }

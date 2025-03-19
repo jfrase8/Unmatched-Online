@@ -6,7 +6,7 @@ export interface SocketEvents {
 	lobbyJoined: Lobby
 	errorMessage: string
 	lobbyReturned: Lobby
-	characterChosen: TakenCharacter
+	characterChosen: Player
 	sendPlayerInfo: Player
 }
 
@@ -14,7 +14,7 @@ export type SocketCallback<T extends keyof SocketEvents> = (data: SocketEvents[T
 
 export type Lobby = {
 	name: string
-	players: number[]
+	players: Player[]
 	maxPlayers: number
 }
 
