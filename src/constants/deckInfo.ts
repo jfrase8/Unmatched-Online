@@ -4,6 +4,22 @@ import { CardTypeEnum } from '../enums/CardTypeEnum'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import { universalCards } from './universalCards'
 
+export type Card = {
+	name: string
+	effectTiming: CardEffectTimingEnum | CardEffectTimingEnum[]
+	value?: number
+	type: CardTypeEnum
+	playableBy: CardPlayableByEnum
+	boostValue: number
+	cardAmount: number
+	imagePath: string
+}
+
+export type Deck = {
+	cardBack: string
+	cards: Card[]
+}
+
 export const decks = {
 	[CharacterNameEnum.MEDUSA]: {
 		cardBack: '/assets/img/Decks/Medusa/medusa_deck_back.png',
@@ -532,11 +548,3 @@ export const decks = {
 		],
 	},
 }
-
-export type Decks = typeof decks
-export type DeckInfo = (typeof decks)[keyof typeof decks]
-export type Card =
-	| (typeof decks)[CharacterNameEnum.SINBAD]['cards'][0]
-	| (typeof decks)[CharacterNameEnum.ALICE]['cards'][0]
-	| (typeof decks)[CharacterNameEnum.KING_ARTHUR]['cards'][0]
-	| (typeof decks)[CharacterNameEnum.MEDUSA]['cards'][0]

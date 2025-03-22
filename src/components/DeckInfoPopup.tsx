@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import { useCharacterData } from '../hooks/useCharacterInfo'
 import Text from './Text'
-import { Decks, decks } from '../constants/deckInfo'
+import { decks } from '../constants/deckInfo'
 import { SortTypeEnum } from '../enums/SortTypeEnum'
 import { sortDeck } from '../utils/sort'
 
@@ -33,7 +33,7 @@ export default function DeckInfoPopup({ character, setShowPopup }: DeckInfoPopup
 
 	if (!data) return
 	// We want the images displayed here to be sorted by card type
-	const sortedImages = sortDeck(decks[character as keyof Decks], SortTypeEnum.TYPE).map((card) => card.imagePath)
+	const sortedImages = sortDeck(decks[character], SortTypeEnum.TYPE).map((card) => card.imagePath)
 
 	return (
 		<div className='fixed inset-0 flex flex-col justify-center items-center z-[100] backdrop-blur bg-gray-400/10 cursor-pointer'>

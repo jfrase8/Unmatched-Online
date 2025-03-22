@@ -2,7 +2,18 @@ import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import { AttackTypeEnum } from '../enums/AttackTypeEnum'
 import { CharacterColorEnum } from '../enums/CharacterColorEnum'
 import { SidekickNameEnum } from '../enums/SidekickNameEnum'
-import { decks } from './deckInfo'
+import { Deck, decks } from './deckInfo'
+
+export type Character = {
+	title: CharacterNameEnum
+	description: string
+	specialAbility: string
+	optionBg: string
+	bgColor: CharacterColorEnum
+	stats: { health: number; move: number; attackType: AttackTypeEnum }
+	sideKick: { name: SidekickNameEnum; health: number; attackType: AttackTypeEnum; amount: number }
+	deck: Deck
+}
 
 export const characters = [
 	{
@@ -89,15 +100,27 @@ export const characters = [
 	},
 ]
 
+export type CharacterStats = {
+	health: number
+	move: number
+	attackType: AttackTypeEnum
+}
+
+export type SideKick = {
+	name: SidekickNameEnum
+	health: number
+	attackType: AttackTypeEnum
+	amount: number
+}
+
+export type OptionObj = {
+	title: CharacterNameEnum
+	bg: string
+	bgColor: CharacterColorEnum
+}
+
 export const options = characters.map((character) => ({
 	title: character.title,
 	bg: character.optionBg,
 	bgColor: character.bgColor,
 }))
-export type OptionObj = (typeof options)[0]
-
-export const characterStats = characters.map((character) => character.stats)
-export type CharacterStats = (typeof characterStats)[0]
-
-export const sideKicks = characters.map((character) => character.sideKick)
-export type SideKick = (typeof sideKicks)[0]
