@@ -1,7 +1,7 @@
 import { DirectionalEnum } from '../enums/DirectionalEnum'
 import useSlidingPanel, { PanelState } from '../hooks/useSlidingPanel'
 import SlidingPanel from './SlidingPanel'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { cn } from '../utils/cn'
 import { socket } from '../utils/socket'
 import useSocket from '../hooks/useSocket'
@@ -9,11 +9,13 @@ import useNotification from '../hooks/useNotification'
 import { NotificationTypeEnum } from '../enums/NotificationTypeEnum'
 import NotificationList from './NotificationList'
 import { useRouter } from '@tanstack/react-router'
+import { useBreakpoint } from '../hooks/useBreakpoint'
 
 export default function CreateJoinLobby() {
-	const { getPanelState, open, close } = useSlidingPanel()
+	const { getPanelState, open, close, changeDir } = useSlidingPanel()
 	const { notifList, setNotif } = useNotification()
 	const router = useRouter()
+	const sm = useBreakpoint('sm')
 
 	const [lobbyName, setLobbyName] = useState<string>('')
 
@@ -21,21 +23,31 @@ export default function CreateJoinLobby() {
 	const joinPanelID = 'panel2'
 	const createPanel = getPanelState(createPanelID)
 	const joinPanel = getPanelState(joinPanelID)
+	const openDir = useMemo(() => (sm ? DirectionalEnum.RIGHT : DirectionalEnum.DOWN), [sm])
 
 	const createButtonText = useMemo(() => (createPanel.isOpen ? 'Confirm' : 'Create Lobby'), [createPanel.isOpen])
 	const joinButtonText = useMemo(() => (joinPanel.isOpen ? 'Confirm' : 'Join Lobby'), [joinPanel.isOpen])
-	const wrapperClassName = useMemo(
-		() => (createPanel.isOpen || joinPanel.isOpen ? 'w-[32rem]' : ''),
-		[createPanel.isOpen, joinPanel.isOpen]
-	)
+	const wrapperClassName = useMemo(() => {
+		if (!createPanel.isOpen && !joinPanel.isOpen) return ''
+		return sm ? 'w-[32rem]' : 'h-[13.5rem]'
+	}, [createPanel.isOpen, joinPanel.isOpen, sm])
 
 	const getButtonStyles = (panel: PanelState) => {
-		return panel.isOpen ? 'rounded-l-xl' : 'rounded-xl'
+		if (!panel.isOpen) return 'rounded-xl'
+		return sm ? 'rounded-l-xl' : 'rounded-t-xl'
 	}
 
 	const getInputStyles = (panel: PanelState) => {
-		return panel.isOpen ? 'transition-all duration-500 rounded-r-xl' : 'rounded-xl'
+		if (!panel.isOpen) return 'rounded-xl'
+		return sm ? 'transition-all duration-500 rounded-r-xl' : 'transition-all duration-500 rounded-b-xl'
 	}
+
+	console.log(getPanelState(createPanelID), sm)
+
+	useEffect(() => {
+		changeDir(createPanelID, openDir)
+		changeDir(joinPanelID, openDir)
+	}, [changeDir, openDir])
 
 	// Listens to socket events with the name 'createLobbyError'
 	useSocket({
@@ -74,18 +86,23 @@ export default function CreateJoinLobby() {
 		else close(createPanelID)
 
 		// Open this panel
-		open(panelID, DirectionalEnum.RIGHT)
+		open(panelID, openDir)
 	}
 
 	return (
 		<div
 			className={cn(
-				'w-[17rem] h-fit bg-slate-700 p-4 rounded-xl transition-all duration-700 relative',
+				'w-[17rem] h-[10rem] bg-slate-700 p-4 rounded-xl transition-all duration-700 relative',
 				wrapperClassName
 			)}
 		>
 			<NotificationList notifList={notifList} className='top-40 left-[50%] -translate-x-[50%]' />
-			<div className='flex flex-col gap-4 justify-center w-full'>
+			<div
+				className={cn(
+					'flex flex-col gap-4 size-full justify-start transition-all duration-500',
+					!sm && getPanelState(createPanelID).isOpen && 'gap-[4.5rem]'
+				)}
+			>
 				<SlidingPanel
 					panelContent={
 						<div className={cn('p-1 bg-slate-800 size-full', getInputStyles(createPanel))}>
