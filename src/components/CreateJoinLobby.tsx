@@ -42,8 +42,6 @@ export default function CreateJoinLobby() {
 		return sm ? 'transition-all duration-500 rounded-r-xl' : 'transition-all duration-500 rounded-b-xl'
 	}
 
-	console.log(getPanelState(createPanelID), sm)
-
 	useEffect(() => {
 		changeDir(createPanelID, openDir)
 		changeDir(joinPanelID, openDir)

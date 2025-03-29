@@ -8,8 +8,6 @@ export function usePlayerInfo(socketID?: string) {
 
 	const [playerInfo, setPlayerInfo] = useState<Player | undefined>(undefined)
 
-	console.log(playerInfo)
-
 	useEffect(() => {
 		socket.emit('getPlayerInfo', socket.id)
 	}, [])

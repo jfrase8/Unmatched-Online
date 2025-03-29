@@ -5,6 +5,7 @@ import Text from './Text'
 import { decks } from '../constants/deckInfo'
 import { SortTypeEnum } from '../enums/SortTypeEnum'
 import { sortDeck } from '../utils/sort'
+import CloseIcon from 'src/assets/svg/close.svg'
 
 interface DeckInfoPopupProps {
 	character: CharacterNameEnum
@@ -49,6 +50,7 @@ export default function DeckInfoPopup({ character, setShowPopup }: DeckInfoPopup
 					}}
 				>
 					<Text as='h1'>{data.title} Deck Info</Text>
+					<CloseIcon />
 				</div>
 				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 justify-items-center gap-4 overflow-y-auto w-full p-8'>
 					{sortedImages.map((img) => (

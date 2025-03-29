@@ -1,6 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import MatchUI from '../components/MatchUI'
 import CreateJoinLobby from '../components/CreateJoinLobby'
+import CharacterSelection from '../components/CharacterSelection'
 
 export const Route = createLazyFileRoute('/play')({
 	component: Play,
@@ -8,9 +9,9 @@ export const Route = createLazyFileRoute('/play')({
 
 function Play() {
 	return (
-		<div className='flex flex-col w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center items-center relative overflow-y-hidden'>
-			<CreateJoinLobby />
-			{/* <CharacterSelection /> */}
+		<div className='flex flex-col w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center gap-20 items-center relative overflow-y-hidden'>
+			{/* <CreateJoinLobby /> */}
+			<CharacterSelection />
 			{/* <MatchUI /> */}
 		</div>
 	)
