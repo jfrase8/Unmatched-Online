@@ -123,7 +123,11 @@ export default function CharacterSelection() {
 										backgroundColor: 'black',
 									}}
 								>
-									<CharacterDescription selected={displayCharacter} onDeckClick={() => setShowOverlay('deck')} />
+									<CharacterDescription
+										selected={displayCharacter}
+										onDeckClick={() => setShowOverlay('deck')}
+										onHeroClick={() => setShowOverlay('hero')}
+									/>
 								</div>
 							}
 							className='rounded-lg'

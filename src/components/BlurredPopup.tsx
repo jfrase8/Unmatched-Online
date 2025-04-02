@@ -32,12 +32,12 @@ export function BlurredPopup<T extends string | boolean | undefined>({
 						backgroundColor: borderColor,
 					}}
 				>
-					<Text as='h1'>{headerText} Deck Info</Text>
+					<Text as='h1'>{headerText}</Text>
 					<button
 						className='size-fit absolute top-[.3rem] right-[.3rem]'
 						onClick={() => setShowPopup((prev) => (typeof prev === 'boolean' ? false : undefined) as T)}
 					>
-						<CloseIcon className='size-6' />
+						<CloseIcon className='size-6 fill-white' />
 					</button>
 				</div>
 				{children}
