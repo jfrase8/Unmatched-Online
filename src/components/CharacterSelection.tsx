@@ -8,20 +8,20 @@ import { useBreakpoint } from '../hooks/useBreakpoint'
 import { OptionObj, options } from '../constants/characterInfo'
 import useSlidingPanel from '../hooks/useSlidingPanel'
 import clsx from 'clsx'
-import DeckInfoPopup from '../components/DeckInfoPopup'
 import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
 import { SocketEvents } from '../types/socketEvents'
 import { socket } from '../utils/socket'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
+import CharacterInfoPopup from './CharacterInfoPopup'
 
 export default function CharacterSelection() {
 	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
 	const [displayCharacter, setDisplayCharacter] = useState<OptionObj | undefined>(undefined) // The character that should be displayed on the panel
 	const [takenCharacters, setTakenCharacters] = useState<TakenCharacter[]>([])
-	const [isClosing, setIsClosing] = useState<boolean>(false) // Track if the panel is currently closing
-	const [ready, setReady] = useState<boolean>(false) // Whether the player has clicked ready yet
-	const [showDeckOverlay, setShowDeckOverlay] = useState<boolean>(false) // Whether a characters deck overlay should show
+	const [isClosing, setIsClosing] = useState(false) // Track if the panel is currently closing
+	const [ready, setReady] = useState(false) // Whether the player has clicked ready yet
+	const [showOverlay, setShowOverlay] = useState<string | undefined>(undefined) // Whether a characters deck/hero overlay should show
 
 	const { getPanelState, changeDir, open, close } = useSlidingPanel()
 
@@ -97,8 +97,12 @@ export default function CharacterSelection() {
 
 	return (
 		<>
-			{selectedCharacter && showDeckOverlay && (
-				<DeckInfoPopup character={selectedCharacter.title} setShowPopup={setShowDeckOverlay} />
+			{selectedCharacter && showOverlay && (
+				<CharacterInfoPopup
+					character={selectedCharacter.title}
+					setShowPopup={setShowOverlay}
+					infoContent={showOverlay}
+				/>
 			)}
 			<div
 				className={clsx(
@@ -119,7 +123,7 @@ export default function CharacterSelection() {
 										backgroundColor: 'black',
 									}}
 								>
-									<CharacterDescription selected={displayCharacter} onDeckClick={() => setShowDeckOverlay(true)} />
+									<CharacterDescription selected={displayCharacter} onDeckClick={() => setShowOverlay('deck')} />
 								</div>
 							}
 							className='rounded-lg'

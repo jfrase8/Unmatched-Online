@@ -1,5 +1,3 @@
-/// <reference types="vite-plugin-svgr/client" />
-
 import FightIcon from 'src/assets/svg/fight.svg?react'
 import QuestionIcon from 'src/assets/svg/question.svg?react'
 import SettingsIcon from 'src/assets/svg/settings.svg?react'
