@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import CharacterSelection from '../../components/CharacterSelection'
 import { socket } from '../../utils/socket'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Lobby, Player } from '../../types/socketEvents'
 import useSocket from '../../hooks/useSocket'
 import LoadingState from '../../components/LoadingState'

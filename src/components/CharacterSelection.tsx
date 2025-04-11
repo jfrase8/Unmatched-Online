@@ -7,18 +7,19 @@ import { DirectionalEnum } from '../enums/DirectionalEnum'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { OptionObj, options } from '../constants/characterInfo'
 import useSlidingPanel from '../hooks/useSlidingPanel'
-import clsx from 'clsx'
 import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
 import { SocketEvents } from '../types/socketEvents'
 import { socket } from '../utils/socket'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import CharacterInfoPopup from './CharacterInfoPopup'
+import { cn } from 'src/utils/cn'
 
+/** Component for selecting a character when in a lobby. */
 export default function CharacterSelection() {
 	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
 	const [displayCharacter, setDisplayCharacter] = useState<OptionObj | undefined>(undefined) // The character that should be displayed on the panel
-	const [takenCharacters, setTakenCharacters] = useState<TakenCharacter[]>([])
+	const [takenCharacters, setTakenCharacters] = useState<TakenCharacter[]>([]) // Characters that have been chosen by other players
 	const [isClosing, setIsClosing] = useState(false) // Track if the panel is currently closing
 	const [ready, setReady] = useState(false) // Whether the player has clicked ready yet
 	const [showOverlay, setShowOverlay] = useState<string | undefined>(undefined) // Whether a characters deck/hero overlay should show
@@ -89,8 +90,8 @@ export default function CharacterSelection() {
 	})
 
 	const optionsClassName = useMemo(
-		() => (selectedCharacter ? 'transition-transform duration-700 translate-x-[50%]' : ''),
-		[selectedCharacter]
+		() => (selectedCharacter && xl ? 'transition-transform duration-700 translate-x-[50%]' : ''),
+		[selectedCharacter, xl]
 	)
 
 	const buttonText = useMemo(() => (ready ? 'Cancel' : 'Ready'), [ready])
@@ -105,8 +106,8 @@ export default function CharacterSelection() {
 				/>
 			)}
 			<div
-				className={clsx(
-					'flex flex-col h-fit w-full px-12 pb-12 pt-8 items-center bg-gray-800',
+				className={cn(
+					'flex flex-col h-full xl:h-fit w-full px-12 pb-12 pt-2 xl:pt-8 items-center xl:bg-gray-800 transition-all duration-500',
 					xxl && 'rounded-full max-w-[calc(100dvw-10rem)]'
 				)}
 			>
@@ -144,9 +145,10 @@ export default function CharacterSelection() {
 						</SlidingPanel>
 					</div>
 					<button
-						className={clsx(
-							'py-4 px-24 rounded-lg transition-all duration-300',
-							selectedCharacter && 'hover:brightness-90'
+						className={cn(
+							'py-4 px-24 rounded-lg transition-all duration-[670ms]',
+							selectedCharacter && 'hover:brightness-90 mt-[16rem] xl:m-0',
+							isClosing && 'm-0'
 						)}
 						style={{
 							backgroundColor: selectedCharacter ? (!ready ? selectedCharacter.bgColor : colors.slate['300']) : 'gray',
@@ -160,8 +162,8 @@ export default function CharacterSelection() {
 					</button>
 					{ready && takenCharacters.length >= 1 && (
 						<button
-							className={clsx(
-								'py-4 rounded-lg animate-pulse bg-slate-300 w-[235px] hover:animate-none hover:bg-slate-200'
+							className={cn(
+								'pt-[10rem] xl:py-4 rounded-lg animate-pulse bg-slate-300 w-[235px] hover:animate-none hover:bg-slate-200'
 							)}
 							onClick={() => {
 								socket.emit('startMatch', socket.id)
