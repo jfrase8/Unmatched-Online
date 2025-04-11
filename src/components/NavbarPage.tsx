@@ -13,7 +13,7 @@ interface NavbarPageProps {
 export default function NavbarPage({ pageTitle, isCurrent }: NavbarPageProps) {
 	const navigate = useNavigate()
 	const llg = useBreakpoint('llg')
-	const xs = useBreakpoint('xs')
+	const xsm = useBreakpoint('xsm')
 
 	return (
 		<button
@@ -25,12 +25,12 @@ export default function NavbarPage({ pageTitle, isCurrent }: NavbarPageProps) {
 				isCurrent && 'pointer-events-none',
 				isCurrent && llg && '!border-black !bg-cyan-400 !transition-none !rounded-none box-border',
 				!llg && 'bg-cyan-400 border-black rounded-full overflow-hidden',
-				!xs &&
+				!xsm &&
 					'flex justify-center items-center bg-cyan-400 border border-slate-800 hover:bg-slate-800 hover:border-white',
-				!xs && isCurrent && 'bg-slate-800 border-white'
+				!xsm && isCurrent && 'bg-slate-800 border-white'
 			)}
 		>
-			{xs ? (
+			{xsm ? (
 				<>
 					<svg className='absolute size-full inset-0 z-0' viewBox='0 0 100% 100%'>
 						<g
@@ -68,7 +68,7 @@ export default function NavbarPage({ pageTitle, isCurrent }: NavbarPageProps) {
 								!llg && isCurrent && 'bg-slate-800 border-white'
 							)}
 						>
-							{xs && (
+							{xsm && (
 								<Text
 									as='h1'
 									className={cn(

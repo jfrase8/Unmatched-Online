@@ -48,7 +48,7 @@ function LobbyScreen() {
 	})
 
 	return (
-		<div className='relative flex flex-col w-full h-[calc(100dvh-var(--navbar-height))] bg-gray-900 justify-center items-center'>
+		<div className='flex flex-col w-full xl:justify-center items-center relative min-h-[calc(100dvh-var(--navbar-height))]'>
 			{lobby ? (
 				<>
 					<LobbyInfo lobbyName={lobby.name} players={players} />

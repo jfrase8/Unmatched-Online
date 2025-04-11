@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 
 const breakpoints = {
-	xs: '(min-width: 550px)',
+	xxs: '(min-width: 400px)',
+	xs: '(min-width: 500px)',
+	xsm: '(min-width: 550px)',
 	sm: '(min-width: 640px)',
 	md: '(min-width: 768px)',
 	lg: '(min-width: 1024px)',

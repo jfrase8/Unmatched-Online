@@ -6,7 +6,7 @@ export const Route = createRootRoute({
 	component: () => (
 		<>
 			<Navbar />
-			<div className='min-h-[calc(100dvh-var(--navbar-height))] bg-gray-900 flex-1 flex-col'>
+			<div className='min-h-[calc(100dvh-var(--navbar-height))] bg-gray-900 flex flex-col'>
 				<Outlet />
 			</div>
 			<TanStackRouterDevtools initialIsOpen={false} />
