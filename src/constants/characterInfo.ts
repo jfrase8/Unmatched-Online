@@ -23,6 +23,10 @@ export const characters = [
 		specialAbility: `At the start of your turn, you may deal 1 damage to an opposing fighter in Medusa's zone.`,
 		optionBg: '/assets/img/medusa.png',
 		characterSheet: '/assets/img/main-menu/medusa_character_sheet.jpg',
+		splitCharacterSheet: {
+			front: '/assets/img/main-menu/medusa_char_sheet_front.jpg',
+			back: '/assets/img/main-menu/medusa_char_sheet_back.jpg',
+		},
 		bgColor: CharacterColorEnum.MEDUSA,
 		stats: {
 			health: 16,

@@ -6,6 +6,7 @@ const breakpoints = {
 	xsm: '(min-width: 550px)',
 	sm: '(min-width: 640px)',
 	md: '(min-width: 768px)',
+	big: '(min-width: 900px)',
 	lg: '(min-width: 1024px)',
 	llg: '(min-width: 1100px)',
 	xl: '(min-width: 1280px)',

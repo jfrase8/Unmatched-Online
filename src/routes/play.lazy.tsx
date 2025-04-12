@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
-import CharacterSelection from '../components/CharacterSelection'
+import CharacterSelection from 'src/components/CharacterSelection'
 
 export const Route = createLazyFileRoute('/play')({
 	component: Play,

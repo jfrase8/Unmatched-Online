@@ -1,11 +1,17 @@
 import clsx from 'clsx'
+import { cn } from 'src/utils/cn'
 
 interface FlippableCardProps {
+	/** Src path for the front image of the card */
 	front: string
+	/** Src path for the front image of the card */
 	back?: string
+	/** Whether the card is flipped or not */
 	flip: boolean
+	/** Class name for the card images */
+	imageClassName?: string
 }
-export default function FlippableCard({ front, back, flip }: FlippableCardProps) {
+export default function FlippableCard({ front, back, flip, imageClassName }: FlippableCardProps) {
 	return (
 		<div className='group [perspective:1000px]'>
 			<div
@@ -16,10 +22,16 @@ export default function FlippableCard({ front, back, flip }: FlippableCardProps)
 				)}
 			>
 				<div className='col-start-1 row-start-1 rounded-md [backface-visibility:hidden]'>
-					<img src={front} className='aspect-[--card-aspect] h-[30vh] p-4 rounded-md object-cover' />
+					<img
+						src={front}
+						className={cn('aspect-[--card-aspect] h-[60vh] p-4 rounded-md object-cover', imageClassName)}
+					/>
 				</div>
 				<div className='col-start-1 row-start-1 rounded-md [transform:rotateY(180deg)] [backface-visibility:hidden]'>
-					<img src={back} className='aspect-[--card-aspect] h-[30vh] p-4 rounded-md object-cover' />
+					<img
+						src={back}
+						className={cn('aspect-[--card-aspect] h-[60vh] p-4 rounded-md object-cover', imageClassName)}
+					/>
 				</div>
 			</div>
 		</div>

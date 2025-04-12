@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 import { useCharacterData } from '../hooks/useCharacterInfo'
 import { decks } from '../constants/deckInfo'
@@ -6,6 +6,12 @@ import { SortTypeEnum } from '../enums/SortTypeEnum'
 import { sortDeck } from '../utils/sort'
 import { BlurredPopup } from './BlurredPopup'
 import { capitalizeFirstLetter } from 'src/utils/capitalizeFirstLetter'
+import { useBreakpoint } from 'src/hooks/useBreakpoint'
+import FlippableCard from './FlippableCard'
+import { characters } from 'src/constants/characterInfo'
+import clsx from 'clsx'
+import Text from './Text'
+import Arrow from 'src/assets/svg/down_arrow.svg?react'
 
 interface CharacterInfoPopupProps {
 	/** The name of the character to show the info for */
@@ -25,12 +31,35 @@ export default function CharacterInfoPopup({ character, setShowPopup, infoConten
 		[data?.title, infoContent]
 	)
 
+	const big = useBreakpoint('big')
+	const sm = useBreakpoint('sm')
+	const xs = useBreakpoint('xs')
+	const xxs = useBreakpoint('xxs')
+
+	const cardSize = useMemo(() => (sm ? 'h-[45rem]' : xs ? 'h-[35rem]' : xxs ? 'h-[28rem]' : 'h-[25rem]'), [sm, xs, xxs])
+	const topPadding = useMemo(() => (sm ? 'pt-4' : xs ? 'pt-16' : xxs ? 'pt-24' : 'pt-48'), [sm, xs, xxs])
+
+	const [flip, setFlip] = useState(false)
+
 	if (!data) return
 	// We want the images displayed here to be sorted by card type
 	const sortedImages = sortDeck(decks[character], SortTypeEnum.TYPE).map((card) => card.imagePath)
 
 	return (
-		<BlurredPopup headerText={headerText} borderColor={data.bgColor} setShowPopup={setShowPopup}>
+		<BlurredPopup
+			headerText={headerText}
+			borderColor={data.bgColor}
+			setShowPopup={setShowPopup}
+			textClassName={clsx(!xxs && 'text-[1.2rem]')}
+		>
+			{!big && (
+				<div className={clsx('flex gap-2 justify-center items-center', topPadding, !sm && 'flex-col')}>
+					<Text as='h1' className='text-[1.8rem]'>
+						Click to Flip
+					</Text>
+					<Arrow className='fill-white size-10' />
+				</div>
+			)}
 			{infoContent === 'deck' ? (
 				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 justify-items-center gap-4 overflow-y-auto w-full p-8'>
 					{sortedImages.map((img) => (
@@ -39,7 +68,18 @@ export default function CharacterInfoPopup({ character, setShowPopup, infoConten
 				</div>
 			) : (
 				<div className='flex size-full justify-center items-center'>
-					<img src={data.characterSheet} className='size-[85%] object-contain aspect-[1277/911]' />
+					{big ? (
+						<img src={data.characterSheet} className='size-[85%] object-contain aspect-[1277/911]' />
+					) : (
+						<button className='size-fit' onClick={() => setFlip((prev) => !prev)}>
+							<FlippableCard
+								front={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.front ?? ''}
+								back={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.back ?? ''}
+								flip={flip}
+								imageClassName={cardSize}
+							/>
+						</button>
+					)}
 				</div>
 			)}
 		</BlurredPopup>
