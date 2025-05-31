@@ -1,15 +1,17 @@
 import { useState } from "react";
+import MapConfig from "../../constants/MapConfig";
 
-interface MapLocationProps {
+export interface MapLocation {
     x: number
     y: number
     zones: string[]
+    connections: MapLocation[]
 }
 
-export default function MapLocation({x, y, zones} : MapLocationProps) {
+export default function LocationRenderer({x, y, zones} : Omit<MapLocation, 'connections'>) {
     const [hovered, setHovered] = useState(false);
     const patternId = `${x}.${y}.testPattern`;
-    const r = hovered ? 50 : 30;
+    const r = hovered ? MapConfig.LOCATION_R_HOVERED : MapConfig.LOCATION_R;
     const circumference = 2*Math.PI*r;
     return (
         <>
@@ -34,14 +36,14 @@ export default function MapLocation({x, y, zones} : MapLocationProps) {
             </defs>
             <circle
                 className="transition-[r]"
-                cx={`${x}%`}
-                cy={`${y}%`}
+                cx={`${x}`}
+                cy={`${y}`}
                 r={r}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 fill={`url(#${patternId})`}
-                stroke="white"
-                strokeWidth={4}
+                stroke={MapConfig.STROKE}
+                strokeWidth={MapConfig.STROKE_WIDTH}
             />
             
         </>

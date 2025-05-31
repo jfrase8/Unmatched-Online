@@ -17,3 +17,11 @@
 	/* Cards */
 	--card-aspect: calc(250px / 349px);
 }
+
+* {
+	user-select: none;
+}
+
+body {
+	touch-action: none;
+}
