@@ -1,6 +1,6 @@
-import { CardEffectTimingEnum } from '../enums/CardEffectTimingEnum'
-import { CardPlayableByEnum } from '../enums/CardPlayableByEnum'
-import { CardTypeEnum } from '../enums/CardTypeEnum'
+import { CardEffectTimingEnum } from '../../../common/enums/CardEffectTimingEnum'
+import { CardPlayableByEnum } from '../../../common/enums/CardPlayableByEnum'
+import { CardTypeEnum } from '../../../common/enums/CardTypeEnum'
 
 export const universalCards = {
 	/** Things that are different: Boost Value */

@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
+import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import { useCharacterData } from '../hooks/useCharacterInfo'
 import Text from './Text'
 import { decks } from '../constants/deckInfo'
-import { SortTypeEnum } from '../enums/SortTypeEnum'
+import { SortTypeEnum } from '../../../common/enums/SortTypeEnum'
 import { sortDeck } from '../utils/sort'
 
 interface DeckInfoPopupProps {

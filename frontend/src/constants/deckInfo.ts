@@ -1,7 +1,7 @@
-import { CardEffectTimingEnum } from '../enums/CardEffectTimingEnum'
-import { CardPlayableByEnum } from '../enums/CardPlayableByEnum'
-import { CardTypeEnum } from '../enums/CardTypeEnum'
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
+import { CardEffectTimingEnum } from '../../../common/enums/CardEffectTimingEnum'
+import { CardPlayableByEnum } from '../../../common/enums/CardPlayableByEnum'
+import { CardTypeEnum } from '../../../common/enums/CardTypeEnum'
+import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import { universalCards } from './universalCards'
 
 export type Card = {

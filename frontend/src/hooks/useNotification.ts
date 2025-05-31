@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Notification } from '../components/NotificationList'
-import { NotificationTypeEnum } from '../enums/NotificationTypeEnum'
+import { NotificationTypeEnum } from '../../../common/enums/NotificationTypeEnum'
 
 /** Hook for the Notification Component. You can set a custom time for how long
  * you want the notification to show before disappearing.

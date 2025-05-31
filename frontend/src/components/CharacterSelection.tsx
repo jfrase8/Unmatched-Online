@@ -3,7 +3,7 @@ import Text from '../components/Text'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CharacterDescription from '../components/CharacterDescription'
 import SlidingPanel from '../components/SlidingPanel'
-import { DirectionalEnum } from '../enums/DirectionalEnum'
+import { DirectionalEnum } from '../../../common/enums/DirectionalEnum'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { OptionObj, options } from '../constants/characterInfo'
 import useSlidingPanel from '../hooks/useSlidingPanel'
@@ -13,7 +13,7 @@ import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
 import { SocketEvents } from '../types/socketEvents'
 import { socket } from '../utils/socket'
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
+import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 
 export default function CharacterSelection() {
 	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
