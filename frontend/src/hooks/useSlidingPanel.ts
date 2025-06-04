@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { DirectionalEnum } from '../enums/DirectionalEnum'
+import { DirectionalEnum } from '../../../common/enums/DirectionalEnum'
 
 /** Hook for managing multiple SlidingPanel components */
 export default function useSlidingPanel() {

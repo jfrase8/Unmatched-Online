@@ -1,8 +1,8 @@
 /** Sort takes a character's deck and sorts it based on the specified method. */
 
 import { Deck } from '../constants/deckInfo'
-import { CardTypeEnum } from '../enums/CardTypeEnum'
-import { SortTypeEnum } from '../enums/SortTypeEnum'
+import { CardTypeEnum } from '../../../common/enums/CardTypeEnum'
+import { SortTypeEnum } from '../../../common/enums/SortTypeEnum'
 
 export function sortDeck(deck: Deck, sortMethod: SortTypeEnum) {
 	switch (sortMethod) {

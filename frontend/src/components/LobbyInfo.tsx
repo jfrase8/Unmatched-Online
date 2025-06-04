@@ -1,5 +1,5 @@
-import { CharacterColorEnum } from '../enums/CharacterColorEnum'
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
+import { CharacterColorEnum } from '../../../common/enums/CharacterColorEnum'
+import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import { Player } from '../types/socketEvents'
 import Text from './Text'
 

@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { ReactNode } from 'react'
-import { DirectionalEnum } from '../enums/DirectionalEnum'
+import { DirectionalEnum } from '../../../common/enums/DirectionalEnum'
 import { cn } from '../utils/cn'
 
 interface SlidingPanelProps {

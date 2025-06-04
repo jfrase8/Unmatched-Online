@@ -26,5 +26,5 @@
 			"src/*": ["src/*"] // Maps src/* to src/
 		}
 	},
-	"include": ["src"]
+	"include": ["src", "common/enums"]
 }

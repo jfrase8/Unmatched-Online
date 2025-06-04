@@ -1,5 +1,5 @@
 import { TakenCharacter } from '../components/CharacterSelection'
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
+import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 
 export interface SocketEvents {
 	lobbyCreated: Lobby
