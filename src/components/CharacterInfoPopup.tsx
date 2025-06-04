@@ -52,14 +52,6 @@ export default function CharacterInfoPopup({ character, setShowPopup, infoConten
 			setShowPopup={setShowPopup}
 			textClassName={clsx(!xxs && 'text-[1.2rem]')}
 		>
-			{!big && (
-				<div className={clsx('flex gap-2 justify-center items-center', topPadding, !sm && 'flex-col')}>
-					<Text as='h1' className='text-[1.8rem]'>
-						Click to Flip
-					</Text>
-					<Arrow className='fill-white size-10' />
-				</div>
-			)}
 			{infoContent === 'deck' ? (
 				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 justify-items-center gap-4 overflow-y-auto w-full p-8'>
 					{sortedImages.map((img) => (
@@ -67,20 +59,30 @@ export default function CharacterInfoPopup({ character, setShowPopup, infoConten
 					))}
 				</div>
 			) : (
-				<div className='flex size-full justify-center items-center'>
-					{big ? (
-						<img src={data.characterSheet} className='size-[85%] object-contain aspect-[1277/911]' />
-					) : (
-						<button className='size-fit' onClick={() => setFlip((prev) => !prev)}>
-							<FlippableCard
-								front={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.front ?? ''}
-								back={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.back ?? ''}
-								flip={flip}
-								imageClassName={cardSize}
-							/>
-						</button>
+				<>
+					{!big && (
+						<div className={clsx('flex gap-2 justify-center items-center', topPadding, !sm && 'flex-col')}>
+							<Text as='h1' className='text-[1.8rem]'>
+								Click to Flip
+							</Text>
+							<Arrow className='fill-white size-10' />
+						</div>
 					)}
-				</div>
+					<div className='flex size-full justify-center items-center'>
+						{big ? (
+							<img src={data.characterSheet} className='size-[85%] object-contain aspect-[1277/911]' />
+						) : (
+							<button className='size-fit' onClick={() => setFlip((prev) => !prev)}>
+								<FlippableCard
+									front={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.front ?? ''}
+									back={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.back ?? ''}
+									flip={flip}
+									imageClassName={cardSize}
+								/>
+							</button>
+						)}
+					</div>
+				</>
 			)}
 		</BlurredPopup>
 	)
