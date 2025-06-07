@@ -15,7 +15,7 @@ export default function MatchUI() {
 
 	return (
 		<>
-			<div className='h-[100%] w-full flex justify-center items-center border border-white'>
+			<div className='size-full flex justify-center items-center border border-white'>
 				<Text as='h1' className='text-3xl'>
 					Game Board
 				</Text>
