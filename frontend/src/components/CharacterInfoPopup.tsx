@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
+
 import { useCharacterData } from '../hooks/useCharacterInfo'
 import { decks } from '../constants/deckInfo'
-import { SortTypeEnum } from '../enums/SortTypeEnum'
+
 import { sortDeck } from '../utils/sort'
 import { BlurredPopup } from './BlurredPopup'
 import { capitalizeFirstLetter } from 'src/utils/capitalizeFirstLetter'
@@ -12,6 +12,8 @@ import { characters } from 'src/constants/characterInfo'
 import clsx from 'clsx'
 import Text from './Text'
 import Arrow from 'src/assets/svg/down_arrow.svg?react'
+import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
+import { SortTypeEnum } from '../../../common/enums/SortTypeEnum'
 
 interface CharacterInfoPopupProps {
 	/** The name of the character to show the info for */

@@ -12,6 +12,8 @@ import useSocket from '../hooks/useSocket'
 import { SocketEvents } from '../types/socketEvents'
 import { socket } from '../utils/socket'
 import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
+import CharacterInfoPopup from './CharacterInfoPopup'
+import { cn } from 'src/utils/cn'
 
 /** Component for selecting a character when in a lobby. */
 export default function CharacterSelection() {

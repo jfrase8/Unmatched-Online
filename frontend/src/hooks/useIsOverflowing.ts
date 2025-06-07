@@ -8,7 +8,7 @@ export function useIsOverflowing() {
 	useEffect(() => {
 		const checkOverflow = () => {
 			if (oveflowRef.current) {
-				const { scrollWidth, clientWidth, scrollHeight, clientHeight } = ref.current
+				const { scrollWidth, clientWidth, scrollHeight, clientHeight } = oveflowRef.current
 				const overflowsHorizontally = scrollWidth > clientWidth
 				const overflowsVertically = scrollHeight > clientHeight
 				setIsOverflowing(overflowsHorizontally || overflowsVertically)
