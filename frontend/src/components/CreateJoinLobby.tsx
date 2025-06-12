@@ -10,14 +10,18 @@ import { NotificationTypeEnum } from '../../../common/enums/NotificationTypeEnum
 import NotificationList from './NotificationList'
 import { useRouter } from '@tanstack/react-router'
 import { useBreakpoint } from '../hooks/useBreakpoint'
+import { useLobbyStore } from 'src/stores/useLobbyStore'
 
 export default function CreateJoinLobby() {
+	const { initializeLobby, players, name } = useLobbyStore()
 	const { getPanelState, open, close, changeDir } = useSlidingPanel()
 	const { notifList, setNotif } = useNotification()
 	const router = useRouter()
 	const sm = useBreakpoint('sm')
 
 	const [lobbyName, setLobbyName] = useState<string>('')
+
+	console.log(players, name)
 
 	const createPanelID = 'panel1'
 	const joinPanelID = 'panel2'
@@ -47,7 +51,6 @@ export default function CreateJoinLobby() {
 		changeDir(joinPanelID, openDir)
 	}, [changeDir, openDir])
 
-	// Listens to socket events with the name 'createLobbyError'
 	useSocket({
 		eventName: 'errorMessage',
 		callBack: (message: string) => {
@@ -58,24 +61,32 @@ export default function CreateJoinLobby() {
 	useSocket({
 		eventName: 'lobbyCreated',
 		callBack: (lobby) => {
+			// Initalize the lobby
+			initializeLobby(lobby)
+
+			// Navigate
 			router.navigate({ to: `/lobbies/${lobby.name}` })
 		},
 	})
 
 	useSocket({
 		eventName: 'lobbyJoined',
-		callBack: () => {
-			router.navigate({ to: `/lobbies/${lobbyName}` })
+		callBack: (lobby) => {
+			// Initalize the lobby
+			initializeLobby(lobby)
+
+			// Navigate
+			router.navigate({ to: `/lobbies/${lobby.name}` })
 		},
 	})
 
 	const createLobby = () => {
 		if (lobbyName === '') return setNotif('Must input lobby name.', NotificationTypeEnum.ERROR)
-		socket.emit('createLobby', lobbyName, socket.id)
+		socket.emit('createLobby', lobbyName, { id: socket.id, name: socket.id, host: true })
 	}
 
 	const joinLobby = () => {
-		socket.emit('joinLobby', lobbyName, socket.id)
+		socket.emit('joinLobby', lobbyName, { id: socket.id, name: socket.id })
 	}
 
 	const openPanel = (panelID: string) => {

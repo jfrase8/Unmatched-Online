@@ -1,14 +1,22 @@
+import { useLobbyStore } from 'src/stores/useLobbyStore'
 import { CharacterColorEnum } from '../../../common/enums/CharacterColorEnum'
 import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
-import { Player } from '../types/socketEvents'
 import Text from './Text'
+import useSocket from 'src/hooks/useSocket'
 
-interface LobbyInfoProps {
-	name: string
-	players: Player[]
-	maxPlayers: number
-}
-export default function LobbyInfo({ lobbyName, players, maxPlayers }: LobbyInfoProps) {
+export default function LobbyInfo() {
+	const { name, maxPlayers, players, addPlayer } = useLobbyStore()
+
+	useSocket({
+		eventName: 'lobbyJoined',
+		callBack: (lobby) => {
+			console.log('!! Someone new joined:', lobby)
+			const newPlayer = lobby.players[lobby.players.length - 1]
+			if (!newPlayer) throw new Error('Lobby only has 1 player when expecting a second')
+			addPlayer(newPlayer)
+		},
+	})
+
 	return (
 		<div className='absolute top-5 left-5 flex flex-col items-start'>
 			<Text as='h1' className='text-gray-400 pointer-events-none'>
@@ -21,7 +29,7 @@ export default function LobbyInfo({ lobbyName, players, maxPlayers }: LobbyInfoP
 				// Get the character's color based on its key in CharacterColorEnum
 				const playerColor = characterKey ? CharacterColorEnum[characterKey] : 'white'
 				return (
-					<Text as='h2' className='text-white' style={{ color: playerColor }}>
+					<Text as='h2' className='text-white' style={{ color: playerColor }} key={player.id}>
 						{player.name}
 					</Text>
 				)
