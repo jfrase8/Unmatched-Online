@@ -3,6 +3,8 @@ import { CharacterColorEnum } from '../../../common/enums/CharacterColorEnum'
 import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import Text from './Text'
 import useSocket from 'src/hooks/useSocket'
+import LockedIcon from 'src/assets/svg/locked.svg?react'
+import UnlockedIcon from 'src/assets/svg/unlocked.svg?react'
 
 export default function LobbyInfo() {
 	const { name, maxPlayers, players, addPlayer } = useLobbyStore()
@@ -17,11 +19,20 @@ export default function LobbyInfo() {
 		},
 	})
 
+	if (!maxPlayers) return
+
 	return (
 		<div className='absolute top-5 left-5 flex flex-col items-start'>
-			<Text as='h1' className='text-gray-400 pointer-events-none'>
-				{name} - {players.length} / {maxPlayers} players
-			</Text>
+			<div className='flex justify-start items-center gap-4'>
+				<Text as='h1' className='text-gray-400 pointer-events-none'>
+					{name} - {players.length} / {maxPlayers} players
+				</Text>
+				{players.length < maxPlayers ? (
+					<UnlockedIcon className='size-10 stroke-slate-400 pb-1' />
+				) : (
+					<LockedIcon className='size-10 stroke-slate-400 pb-1' />
+				)}
+			</div>
 			{players.map((player) => {
 				const characterKey = (Object.keys(CharacterNameEnum) as Array<keyof typeof CharacterNameEnum>).find(
 					(key) => CharacterNameEnum[key] === player.character

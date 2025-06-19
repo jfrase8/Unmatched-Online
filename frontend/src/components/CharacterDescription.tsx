@@ -4,6 +4,7 @@ import Text from './Text'
 import Toggle from './Toggle'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
 import { cn } from 'src/utils/cn'
+import Btn from './Btn'
 
 interface CharacterDescriptionProps {
 	selected: OptionObj | undefined
@@ -87,12 +88,7 @@ function HeroAbilityInfo({ specialAbility, onHeroClick }: HeroAbilityProps) {
 			<Text as='h2' className='text-white text-base'>
 				{specialAbility}
 			</Text>
-			<button
-				className='size-fit py-2 px-8 text-black bg-slate-400 rounded-2xl border-slate-700 hover:bg-slate-500 transition-colors'
-				onClick={onHeroClick}
-			>
-				More Info
-			</button>
+			<Btn onClick={onHeroClick}>More Info</Btn>
 		</div>
 	)
 }

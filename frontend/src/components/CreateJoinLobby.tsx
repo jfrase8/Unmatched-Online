@@ -11,6 +11,9 @@ import NotificationList from './NotificationList'
 import { useRouter } from '@tanstack/react-router'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
+import Text from './Text'
+import TextInput from './TextInput'
+import Btn from './Btn'
 
 export default function CreateJoinLobby() {
 	const { initializeLobby, players, name } = useLobbyStore()
@@ -19,7 +22,9 @@ export default function CreateJoinLobby() {
 	const router = useRouter()
 	const sm = useBreakpoint('sm')
 
-	const [lobbyName, setLobbyName] = useState<string>('')
+	const [typedLobbyName, setTypedLobbyName] = useState<string>('')
+	const [typedName, setTypedName] = useState<string>('')
+	const [showNamePanel, setShowNamePanel] = useState<'join' | 'create' | undefined>(undefined)
 
 	console.log(players, name)
 
@@ -81,12 +86,19 @@ export default function CreateJoinLobby() {
 	})
 
 	const createLobby = () => {
-		if (lobbyName === '') return setNotif('Must input lobby name.', NotificationTypeEnum.ERROR)
-		socket.emit('createLobby', lobbyName, { id: socket.id, name: socket.id, host: true })
+		if (typedLobbyName === '') return setNotif('Must input lobby name.', NotificationTypeEnum.ERROR)
+		setShowNamePanel('create')
+	}
+
+	const setName = (lobbyAction: 'join' | 'create') => {
+		if (lobbyAction === 'create')
+			socket.emit('createLobby', typedLobbyName, { id: socket.id, name: typedName, host: true })
+		else socket.emit('joinLobby', typedLobbyName, { id: socket.id, name: typedName })
 	}
 
 	const joinLobby = () => {
-		socket.emit('joinLobby', lobbyName, { id: socket.id, name: socket.id })
+		if (typedLobbyName === '') return setNotif('Must input lobby name.', NotificationTypeEnum.ERROR)
+		setShowNamePanel('join')
 	}
 
 	const openPanel = (panelID: string) => {
@@ -99,69 +111,83 @@ export default function CreateJoinLobby() {
 	}
 
 	return (
-		<div
-			className={cn(
-				'w-[17rem] h-[10rem] bg-slate-700 p-4 rounded-xl transition-all duration-700 relative',
-				wrapperClassName
-			)}
-		>
+		<>
 			<NotificationList notifList={notifList} className='top-40 left-[50%] -translate-x-[50%]' />
-			<div
-				className={cn(
-					'flex flex-col gap-4 size-full justify-start transition-all duration-500',
-					!sm && getPanelState(createPanelID).isOpen && 'gap-[4.5rem]'
-				)}
-			>
-				<SlidingPanel
-					panelContent={
-						<div className={cn('p-1 bg-slate-800 size-full', getInputStyles(createPanel))}>
-							<input
-								className={cn('size-full p-2', getInputStyles(createPanel))}
-								placeholder='Enter Lobby Name...'
-								value={lobbyName}
-								onChange={(e) => setLobbyName(e.target.value)}
-							/>
-						</div>
-					}
-					isOpen={createPanel.isOpen}
-					dir={createPanel.dir}
+			{showNamePanel ? (
+				<div className='w-[25rem] h-[50%] bg-slate-700 rounded-xl p-4 border-2 border-slate-800 shadow-lg flex flex-col gap-4 justify-center items-center'>
+					<Text as='h1' className='leading-none'>
+						Enter your name:
+					</Text>
+					<TextInput placeholder='Enter Name...' value={typedName} onChange={(e) => setTypedName(e.target.value)} />
+					<Btn onClick={() => setName(showNamePanel)} disabled={typedName === ''} className='w-full'>
+						Confirm
+					</Btn>
+				</div>
+			) : (
+				<div
+					className={cn(
+						'w-[17rem] h-[10rem] bg-slate-700 p-4 rounded-xl transition-all duration-700 relative',
+						wrapperClassName
+					)}
 				>
-					<button
+					<div
 						className={cn(
-							`hover:brightness-90 w-[15rem] p-4 font-navBarButtons text-white bg-slate-800 transition-transform duration-500`,
-							getButtonStyles(createPanel)
+							'flex flex-col gap-4 size-full justify-start transition-all duration-500',
+							!sm && getPanelState(createPanelID).isOpen && 'gap-[4.5rem]'
 						)}
-						onClick={() => (!createPanel.isOpen ? openPanel(createPanelID) : createLobby())}
 					>
-						{createButtonText}
-					</button>
-				</SlidingPanel>
+						<SlidingPanel
+							panelContent={
+								<div className={cn('p-1 bg-slate-800 size-full', getInputStyles(createPanel))}>
+									<input
+										className={cn('size-full p-2', getInputStyles(createPanel))}
+										placeholder='Enter Lobby Name...'
+										value={typedLobbyName}
+										onChange={(e) => setTypedLobbyName(e.target.value)}
+									/>
+								</div>
+							}
+							isOpen={createPanel.isOpen}
+							dir={createPanel.dir}
+						>
+							<button
+								className={cn(
+									`hover:brightness-90 w-[15rem] p-4 font-navBarButtons text-white bg-slate-800 transition-transform duration-500`,
+									getButtonStyles(createPanel)
+								)}
+								onClick={() => (!createPanel.isOpen ? openPanel(createPanelID) : createLobby())}
+							>
+								{createButtonText}
+							</button>
+						</SlidingPanel>
 
-				<SlidingPanel
-					panelContent={
-						<div className={cn('p-1 bg-slate-800 size-full', getInputStyles(joinPanel))}>
-							<input
-								className={cn('size-full p-2', getInputStyles(joinPanel))}
-								placeholder='Enter Lobby Name...'
-								value={lobbyName}
-								onChange={(e) => setLobbyName(e.target.value)}
-							/>
-						</div>
-					}
-					isOpen={joinPanel.isOpen}
-					dir={joinPanel.dir}
-				>
-					<button
-						className={cn(
-							`hover:brightness-90 w-[15rem] p-4 font-navBarButtons text-white bg-slate-800 transition-transform duration-500`,
-							getButtonStyles(joinPanel)
-						)}
-						onClick={() => (!joinPanel.isOpen ? openPanel(joinPanelID) : joinLobby())}
-					>
-						{joinButtonText}
-					</button>
-				</SlidingPanel>
-			</div>
-		</div>
+						<SlidingPanel
+							panelContent={
+								<div className={cn('p-1 bg-slate-800 size-full', getInputStyles(joinPanel))}>
+									<input
+										className={cn('size-full p-2', getInputStyles(joinPanel))}
+										placeholder='Enter Lobby Name...'
+										value={typedLobbyName}
+										onChange={(e) => setTypedLobbyName(e.target.value)}
+									/>
+								</div>
+							}
+							isOpen={joinPanel.isOpen}
+							dir={joinPanel.dir}
+						>
+							<button
+								className={cn(
+									`hover:brightness-90 w-[15rem] p-4 font-navBarButtons text-white bg-slate-800 transition-transform duration-500`,
+									getButtonStyles(joinPanel)
+								)}
+								onClick={() => (!joinPanel.isOpen ? openPanel(joinPanelID) : joinLobby())}
+							>
+								{joinButtonText}
+							</button>
+						</SlidingPanel>
+					</div>
+				</div>
+			)}
+		</>
 	)
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Text from './Text'
 import { cn } from '../utils/cn'
 import { NotificationTypeEnum } from '../../../common/enums/NotificationTypeEnum'
+import ErrorIcon from 'src/assets/svg/error.svg?react'
 
 interface NotificationListProps {
 	notifList: Notification[]
@@ -47,7 +48,7 @@ function Notification({ message, fade, className, type }: NotificationProps) {
 				className
 			)}
 		>
-			{type === NotificationTypeEnum.ERROR && <img src='frontend/assets/svg/error.svg' className='size-8'></img>}
+			{type === NotificationTypeEnum.ERROR && <ErrorIcon className='size-8 stroke-black stroke-2' />}
 			<Text as='h2'>{message}</Text>
 		</div>
 	)

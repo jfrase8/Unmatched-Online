@@ -12,7 +12,7 @@ interface LobbyState {
 }
 
 export const useLobbyStore = create<LobbyState>()((set, get) => ({
-	name: undefined,
+	name: '',
 	players: [],
 	maxPlayers: undefined,
 	initializeLobby: (lobby) => {
