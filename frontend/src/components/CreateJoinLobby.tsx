@@ -14,9 +14,10 @@ import { useLobbyStore } from 'src/stores/useLobbyStore'
 import Text from './Text'
 import TextInput from './TextInput'
 import Btn from './Btn'
+import BackArrow from 'src/assets/svg/back_arrow_filled.svg?react'
 
 export default function CreateJoinLobby() {
-	const { initializeLobby, players, name } = useLobbyStore()
+	const { initializeLobby } = useLobbyStore()
 	const { getPanelState, open, close, changeDir } = useSlidingPanel()
 	const { notifList, setNotif } = useNotification()
 	const router = useRouter()
@@ -25,8 +26,7 @@ export default function CreateJoinLobby() {
 	const [typedLobbyName, setTypedLobbyName] = useState<string>('')
 	const [typedName, setTypedName] = useState<string>('')
 	const [showNamePanel, setShowNamePanel] = useState<'join' | 'create' | undefined>(undefined)
-
-	console.log(players, name)
+	const [wentBack, setWentBack] = useState(false)
 
 	const createPanelID = 'panel1'
 	const joinPanelID = 'panel2'
@@ -47,8 +47,13 @@ export default function CreateJoinLobby() {
 	}
 
 	const getInputStyles = (panel: PanelState) => {
+		if (!panel.isOpen) return 'rounded-lg'
+		return sm ? 'transition-all duration-500 rounded-none rounded-r-lg' : 'transition-all duration-500 rounded-b-lg'
+	}
+
+	const getWrapperInputStyles = (panel: PanelState) => {
 		if (!panel.isOpen) return 'rounded-xl'
-		return sm ? 'transition-all duration-500 rounded-r-xl' : 'transition-all duration-500 rounded-b-xl'
+		return sm ? ' transition-all duration-500 rounded-none rounded-r-xl' : 'transition-all duration-500 rounded-b-xl'
 	}
 
 	useEffect(() => {
@@ -114,19 +119,33 @@ export default function CreateJoinLobby() {
 		<>
 			<NotificationList notifList={notifList} className='top-40 left-[50%] -translate-x-[50%]' />
 			{showNamePanel ? (
-				<div className='w-[25rem] h-[50%] bg-slate-700 rounded-xl p-4 border-2 border-slate-800 shadow-lg flex flex-col gap-4 justify-center items-center'>
-					<Text as='h1' className='leading-none'>
+				<div className='relative w-[25rem] h-[50%] bg-slate-700 rounded-xl p-4 pt-8 border-2 border-slate-800 shadow-lg flex flex-col gap-4 justify-center items-center'>
+					<button
+						onClick={() => {
+							setWentBack(true)
+							setShowNamePanel(undefined)
+						}}
+						className='size-fit transition-colors duration-500 fill-slate-300 hover:fill-slate-800 absolute top-1 left-2'
+					>
+						<BackArrow className='size-8' />
+					</button>
+					<Text as='h1' className='pl-4 leading-none'>
 						Enter your name:
 					</Text>
 					<TextInput placeholder='Enter Name...' value={typedName} onChange={(e) => setTypedName(e.target.value)} />
-					<Btn onClick={() => setName(showNamePanel)} disabled={typedName === ''} className='w-full'>
+					<Btn
+						onClick={() => setName(showNamePanel)}
+						disabled={typedName === ''}
+						className={cn('w-full font-navBarButtons text-white', typedName === '' && 'text-slate-500')}
+					>
 						Confirm
 					</Btn>
 				</div>
 			) : (
 				<div
 					className={cn(
-						'w-[17rem] h-[10rem] bg-slate-700 p-4 rounded-xl transition-all duration-700 relative',
+						'w-[17rem] h-[10rem] bg-slate-700 p-4 rounded-xl relative',
+						!wentBack && 'transition-all duration-700',
 						wrapperClassName
 					)}
 				>
@@ -138,14 +157,15 @@ export default function CreateJoinLobby() {
 					>
 						<SlidingPanel
 							panelContent={
-								<div className={cn('p-1 bg-slate-800 size-full', getInputStyles(createPanel))}>
-									<input
-										className={cn('size-full p-2', getInputStyles(createPanel))}
+								<>
+									<TextInput
 										placeholder='Enter Lobby Name...'
 										value={typedLobbyName}
 										onChange={(e) => setTypedLobbyName(e.target.value)}
+										className={getInputStyles(createPanel)}
+										wrapperClassName={getWrapperInputStyles(createPanel)}
 									/>
-								</div>
+								</>
 							}
 							isOpen={createPanel.isOpen}
 							dir={createPanel.dir}
@@ -163,14 +183,15 @@ export default function CreateJoinLobby() {
 
 						<SlidingPanel
 							panelContent={
-								<div className={cn('p-1 bg-slate-800 size-full', getInputStyles(joinPanel))}>
-									<input
-										className={cn('size-full p-2', getInputStyles(joinPanel))}
+								<>
+									<TextInput
 										placeholder='Enter Lobby Name...'
 										value={typedLobbyName}
 										onChange={(e) => setTypedLobbyName(e.target.value)}
+										className={getInputStyles(joinPanel)}
+										wrapperClassName={getWrapperInputStyles(joinPanel)}
 									/>
-								</div>
+								</>
 							}
 							isOpen={joinPanel.isOpen}
 							dir={joinPanel.dir}

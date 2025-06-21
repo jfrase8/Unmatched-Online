@@ -41,11 +41,12 @@ io.on('connection', (socket) => {
 	// Joins the lobby with specified lobby name
 	socket.on('joinLobby', (lobbyName: string, player: PlayerType) => {
 		const lobby = lobbySystem.getLobbyWithName(lobbyName)
-		console.log(lobby)
 		// Check if the lobby exists
 		if (!lobby) emitError(socket, 'A lobby with this name does not exist')
 		// Check if the lobby is already full
-		else if (lobby.players.length === lobby.maxPlayers) emitError(socket, 'A lobby with this name already exists')
+		else if (lobby.players.length === lobby.maxPlayers) emitError(socket, 'Lobby full')
+		// Check if game has already started
+		else if (lobby.locked) emitError(socket, 'This game has already started')
 		// Add this player to the lobby
 		else {
 			lobby.join(player)
@@ -69,14 +70,25 @@ io.on('connection', (socket) => {
 	})
 
 	// Set the player's chosen character
-	socket.on('chooseCharacter', (characterName: CharacterNameEnum, playerID: string) => {
+	socket.on('chooseCharacter', (playerID: string, characterName?: CharacterNameEnum) => {
 		const lobby = lobbySystem.getLobbyWithID(playerID)
 		const player = lobby?.getPlayer(playerID)
-		console.log(lobby, player)
+
+		console.log(characterName, player)
+
 		if (!lobby || !player) throw new Error('Player not found in a lobby')
 
 		player.set({ character: characterName })
+
 		io.to(lobby.name).emit('characterChosen', player.toJSON())
+	})
+
+	socket.on('startMatch', (playerID: string) => {
+		console.log(playerID)
+		const lobby = lobbySystem.getLobbyWithID(playerID)
+		if (!lobby) return emitError(socket, 'Player not found in a lobby')
+		lobby.set({ locked: true })
+		io.to(lobby.name).emit('matchStarted')
 	})
 })
 

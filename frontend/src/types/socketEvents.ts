@@ -8,6 +8,7 @@ export interface SocketEvents {
 	lobbyReturned: LobbyType
 	characterChosen: PlayerType
 	sendPlayerInfo: PlayerType
+	matchStarted: void
 }
 
 export type SocketCallback<T extends keyof SocketEvents> = (data: SocketEvents[T]) => void

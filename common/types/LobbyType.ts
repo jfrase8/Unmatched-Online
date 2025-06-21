@@ -4,4 +4,5 @@ export type LobbyType = {
 	name: string
 	players: PlayerType[]
 	maxPlayers: number
+	locked: boolean
 }

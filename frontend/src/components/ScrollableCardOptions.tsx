@@ -31,7 +31,7 @@ const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsPr
 			>
 				{options.map((option, i) => {
 					const selectedByYou = selected?.title === option.title
-					const chosenByOther = takenCharacters.some((char) => char.characterName === option.title)
+					const chosenByOther = takenCharacters.some((char) => char.character === option.title)
 					const chosenBaseStyle = (lockOption || chosenByOther) && 'pointer-events-none'
 					const brightnessStyle = chosenByOther
 						? 'brightness-[.4]'
@@ -46,7 +46,7 @@ const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsPr
 								onClick={onSelect}
 								isSelected={selectedByYou}
 								className={clsx(chosenBaseStyle, brightnessStyle)}
-								playerWhoSelected={takenCharacters.find((char) => char.characterName === option.title)?.playerName}
+								playerWhoSelected={takenCharacters.find((char) => char.character === option.title)?.playerName}
 							/>
 						</div>
 					)

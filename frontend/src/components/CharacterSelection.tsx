@@ -9,11 +9,12 @@ import { OptionObj, options } from '../constants/characterInfo'
 import useSlidingPanel from '../hooks/useSlidingPanel'
 import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
-import { SocketEvents } from '../types/socketEvents'
 import { socket } from '../utils/socket'
 import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import CharacterInfoPopup from './CharacterInfoPopup'
 import { cn } from 'src/utils/cn'
+import { useLobbyStore } from 'src/stores/useLobbyStore'
+import { useRouter } from '@tanstack/react-router'
 
 /** Component for selecting a character when in a lobby. */
 export default function CharacterSelection() {
@@ -24,6 +25,8 @@ export default function CharacterSelection() {
 	const [ready, setReady] = useState(false) // Whether the player has clicked ready yet
 	const [showOverlay, setShowOverlay] = useState<string | undefined>(undefined) // Whether a characters deck/hero overlay should show
 
+	const { maxPlayers, host, lockLobby } = useLobbyStore()
+	const router = useRouter()
 	const { getPanelState, changeDir, open, close } = useSlidingPanel()
 
 	const panelID = 'panel1'
@@ -79,15 +82,31 @@ export default function CharacterSelection() {
 	// Socket events
 	useSocket({
 		eventName: 'characterChosen',
-		callBack: (eventData: SocketEvents['characterChosen']) => {
+		callBack: (player) => {
+			console.log('!!', player)
+			const { character, name } = player
 			// Check if you chose the character
-			if (eventData.playerID === socket.id) {
+			if (player.id === socket.id) {
 				setReady((prev) => !prev)
 			} else {
-				setTakenCharacters((prev) => [...prev, eventData])
+				if (!character) setTakenCharacters((prev) => [...prev.filter((char) => char.playerName !== name)])
+				else setTakenCharacters((prev) => [...prev, { playerName: name, character }])
 			}
 		},
 	})
+
+	useSocket({
+		eventName: 'matchStarted',
+		callBack: () => {
+			console.log('!! Match started')
+			lockLobby()
+
+			// Navigate
+			router.navigate({ to: `/match` })
+		},
+	})
+
+	console.log(takenCharacters)
 
 	const optionsClassName = useMemo(
 		() => (selectedCharacter && xl ? 'transition-transform duration-700 translate-x-[50%]' : ''),
@@ -95,6 +114,9 @@ export default function CharacterSelection() {
 	)
 
 	const buttonText = useMemo(() => (ready ? 'Cancel' : 'Ready'), [ready])
+
+	const isHost = socket.id === host
+	const allPlayersChosen = takenCharacters.length + 1 === maxPlayers && ready
 
 	return (
 		<>
@@ -154,16 +176,16 @@ export default function CharacterSelection() {
 							backgroundColor: selectedCharacter ? (!ready ? selectedCharacter.bgColor : colors.slate['300']) : 'gray',
 						}}
 						onClick={() => {
-							socket.emit('chooseCharacter', selectedCharacter?.title, socket.id)
+							socket.emit('chooseCharacter', socket.id, ready ? undefined : selectedCharacter?.title)
 						}}
 						disabled={!selectedCharacter}
 					>
 						{buttonText}
 					</button>
-					{ready && takenCharacters.length >= 1 && (
+					{allPlayersChosen && isHost && (
 						<button
 							className={cn(
-								'pt-[10rem] xl:py-4 rounded-lg animate-pulse bg-slate-300 w-[235px] hover:animate-none hover:bg-slate-200'
+								'pt-[10rem] xl:py-4 rounded-lg animate-pulse bg-cyan-400 w-[235px] hover:animate-none hover:bg-cyan-400'
 							)}
 							onClick={() => {
 								socket.emit('startMatch', socket.id)
@@ -179,7 +201,6 @@ export default function CharacterSelection() {
 }
 
 export type TakenCharacter = {
-	characterName: CharacterNameEnum
+	character: CharacterNameEnum
 	playerName: string
-	playerID: string
 }

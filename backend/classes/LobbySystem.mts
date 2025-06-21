@@ -30,17 +30,20 @@ class Lobby implements LobbyType {
 	name: string
 	players: Player[]
 	maxPlayers: number
+	locked: boolean
 
 	constructor(name: string, players: Player[], maxPlayers = 2) {
 		this.name = name
 		this.players = players
 		this.maxPlayers = maxPlayers
+		this.locked = false
 	}
 	toJSON() {
 		return {
 			name: this.name,
 			players: this.players,
 			maxPlayers: this.maxPlayers,
+			locked: this.locked,
 		}
 	}
 
@@ -57,6 +60,7 @@ class Lobby implements LobbyType {
 			name: this.name,
 			players: this.players,
 			maxPlayers: this.maxPlayers,
+			locked: this.locked,
 		}
 	}
 	set(update: Partial<Lobby>) {
@@ -79,6 +83,7 @@ class Player implements PlayerType {
 		return {
 			id: this.id,
 			name: this.name,
+			character: this.character,
 			host: this.host,
 		}
 	}
