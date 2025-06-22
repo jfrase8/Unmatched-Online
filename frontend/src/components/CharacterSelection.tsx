@@ -20,14 +20,24 @@ import { useRouter } from '@tanstack/react-router'
 export default function CharacterSelection() {
 	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
 	const [displayCharacter, setDisplayCharacter] = useState<OptionObj | undefined>(undefined) // The character that should be displayed on the panel
-	const [takenCharacters, setTakenCharacters] = useState<TakenCharacter[]>([]) // Characters that have been chosen by other players
 	const [isClosing, setIsClosing] = useState(false) // Track if the panel is currently closing
-	const [ready, setReady] = useState(false) // Whether the player has clicked ready yet
 	const [showOverlay, setShowOverlay] = useState<string | undefined>(undefined) // Whether a characters deck/hero overlay should show
 
-	const { maxPlayers, host, lockLobby } = useLobbyStore()
+	const {
+		maxPlayers,
+		host,
+		lockLobby,
+		takenCharacters,
+		addTakenCharacter,
+		removeTakenCharacter,
+		myPlayerName,
+	} = useLobbyStore()
 	const router = useRouter()
 	const { getPanelState, changeDir, open, close } = useSlidingPanel()
+
+	const hasChosen = takenCharacters.some((char) => char.playerName === myPlayerName)
+
+	console.log('!!', hasChosen, myPlayerName)
 
 	const panelID = 'panel1'
 	const panel = getPanelState('panel1')
@@ -87,10 +97,11 @@ export default function CharacterSelection() {
 			const { character, name } = player
 			// Check if you chose the character
 			if (player.id === socket.id) {
-				setReady((prev) => !prev)
+				if (!character) removeTakenCharacter(name)
+				else addTakenCharacter({ playerName: name, character })
 			} else {
-				if (!character) setTakenCharacters((prev) => [...prev.filter((char) => char.playerName !== name)])
-				else setTakenCharacters((prev) => [...prev, { playerName: name, character }])
+				if (!character) removeTakenCharacter(name)
+				else addTakenCharacter({ playerName: name, character })
 			}
 		},
 	})
@@ -113,10 +124,10 @@ export default function CharacterSelection() {
 		[selectedCharacter, xl]
 	)
 
-	const buttonText = useMemo(() => (ready ? 'Cancel' : 'Ready'), [ready])
+	const buttonText = useMemo(() => (hasChosen ? 'Cancel' : 'Ready'), [hasChosen])
 
 	const isHost = socket.id === host
-	const allPlayersChosen = takenCharacters.length + 1 === maxPlayers && ready
+	const allPlayersChosen = takenCharacters.length === maxPlayers && hasChosen
 
 	return (
 		<>
@@ -161,7 +172,7 @@ export default function CharacterSelection() {
 								options={options}
 								onSelect={setSelectedCharacter}
 								selected={selectedCharacter}
-								lockOption={ready}
+								lockOption={hasChosen}
 								takenCharacters={takenCharacters}
 							/>
 						</SlidingPanel>
@@ -173,10 +184,18 @@ export default function CharacterSelection() {
 							isClosing && 'm-0'
 						)}
 						style={{
-							backgroundColor: selectedCharacter ? (!ready ? selectedCharacter.bgColor : colors.slate['300']) : 'gray',
+							backgroundColor: selectedCharacter
+								? !hasChosen
+									? selectedCharacter.bgColor
+									: colors.slate['300']
+								: 'gray',
 						}}
 						onClick={() => {
-							socket.emit('chooseCharacter', socket.id, ready ? undefined : selectedCharacter?.title)
+							socket.emit(
+								'chooseCharacter',
+								socket.id,
+								hasChosen ? undefined : selectedCharacter?.title
+							)
 						}}
 						disabled={!selectedCharacter}
 					>
@@ -185,7 +204,7 @@ export default function CharacterSelection() {
 					{allPlayersChosen && isHost && (
 						<button
 							className={cn(
-								'pt-[10rem] xl:py-4 rounded-lg animate-pulse bg-cyan-400 w-[235px] hover:animate-none hover:bg-cyan-400'
+								'py-4 rounded-lg animate-pulse bg-cyan-400 w-[235px] hover:animate-none hover:bg-cyan-400'
 							)}
 							onClick={() => {
 								socket.emit('startMatch', socket.id)

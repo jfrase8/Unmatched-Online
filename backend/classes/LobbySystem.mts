@@ -51,8 +51,12 @@ class Lobby implements LobbyType {
 		this.players.push(new Player(player.id, player.name))
 	}
 
-	getPlayer(playerID: string) {
+	getPlayerWithID(playerID: string) {
 		return this.players.find((player) => player.id === playerID)
+	}
+
+	getPlayerWithName(playerName: string) {
+		return this.players.find((player) => player.name === playerName)
 	}
 
 	get() {

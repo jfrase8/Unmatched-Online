@@ -48,12 +48,16 @@ export default function CreateJoinLobby() {
 
 	const getInputStyles = (panel: PanelState) => {
 		if (!panel.isOpen) return 'rounded-lg'
-		return sm ? 'transition-all duration-500 rounded-none rounded-r-lg' : 'transition-all duration-500 rounded-b-lg'
+		return sm
+			? 'transition-all duration-500 rounded-none rounded-r-lg'
+			: 'transition-all duration-500 rounded-none rounded-b-lg'
 	}
 
 	const getWrapperInputStyles = (panel: PanelState) => {
 		if (!panel.isOpen) return 'rounded-xl'
-		return sm ? ' transition-all duration-500 rounded-none rounded-r-xl' : 'transition-all duration-500 rounded-b-xl'
+		return sm
+			? ' transition-all duration-500 rounded-none rounded-r-xl'
+			: 'transition-all duration-500 rounded-none rounded-b-xl'
 	}
 
 	useEffect(() => {

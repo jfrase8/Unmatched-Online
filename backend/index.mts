@@ -29,7 +29,8 @@ io.on('connection', (socket) => {
 	// Creates a new lobby with this player as host
 	socket.on('createLobby', (lobbyName: string, host: PlayerType) => {
 		// Check if a lobby with this name already exists
-		if (lobbySystem.getLobbyWithName(lobbyName)) emitError(socket, 'A lobby with this name already exists')
+		if (lobbySystem.getLobbyWithName(lobbyName))
+			emitError(socket, 'A lobby with this name already exists')
 		// Create a new lobby object
 		else {
 			const lobby = lobbySystem.createLobby(lobbyName, host)
@@ -62,17 +63,19 @@ io.on('connection', (socket) => {
 		socket.emit('lobbyReturned', lobby.toJSON())
 	})
 
-	// Get the player info from specified id
-	socket.on('getPlayerInfo', (playerID: string) => {
-		const player = lobbySystem.getLobbyWithID(playerID)?.getPlayer(playerID)
+	//
+	socket.on('setPlayerID', (lobbyName: string, playerID: string, playerName: string) => {
+		const lobby = lobbySystem.getLobbyWithName(lobbyName)
+		if (!lobby) return emitError(socket, 'A lobby with this name does not exist')
+		const player = lobby.getPlayerWithName(playerName)
 		if (!player) return emitError(socket, 'Player not found in a lobby')
-		io.to(playerID).emit('sendPlayerInfo', player.toJSON())
+		player.set({ id: playerID })
 	})
 
 	// Set the player's chosen character
 	socket.on('chooseCharacter', (playerID: string, characterName?: CharacterNameEnum) => {
 		const lobby = lobbySystem.getLobbyWithID(playerID)
-		const player = lobby?.getPlayer(playerID)
+		const player = lobby?.getPlayerWithID(playerID)
 
 		console.log(characterName, player)
 
