@@ -15,9 +15,10 @@ import Text from './Text'
 import TextInput from './TextInput'
 import Btn from './Btn'
 import BackArrow from 'src/assets/svg/back_arrow_filled.svg?react'
+import { localReset } from 'src/utils/localStorage'
 
 export default function CreateJoinLobby() {
-	const { initializeLobby } = useLobbyStore()
+	const { setMyName } = useLobbyStore()
 	const { getPanelState, open, close, changeDir } = useSlidingPanel()
 	const { notifList, setNotif } = useNotification()
 	const router = useRouter()
@@ -34,8 +35,14 @@ export default function CreateJoinLobby() {
 	const joinPanel = getPanelState(joinPanelID)
 	const openDir = useMemo(() => (sm ? DirectionalEnum.RIGHT : DirectionalEnum.DOWN), [sm])
 
-	const createButtonText = useMemo(() => (createPanel.isOpen ? 'Confirm' : 'Create Lobby'), [createPanel.isOpen])
-	const joinButtonText = useMemo(() => (joinPanel.isOpen ? 'Confirm' : 'Join Lobby'), [joinPanel.isOpen])
+	const createButtonText = useMemo(
+		() => (createPanel.isOpen ? 'Confirm' : 'Create Lobby'),
+		[createPanel.isOpen]
+	)
+	const joinButtonText = useMemo(
+		() => (joinPanel.isOpen ? 'Confirm' : 'Join Lobby'),
+		[joinPanel.isOpen]
+	)
 	const wrapperClassName = useMemo(() => {
 		if (!createPanel.isOpen && !joinPanel.isOpen) return ''
 		return sm ? 'w-[32rem]' : 'h-[13.5rem]'
@@ -73,21 +80,13 @@ export default function CreateJoinLobby() {
 	})
 
 	useSocket({
-		eventName: 'lobbyCreated',
-		callBack: (lobby) => {
-			// Initalize the lobby
-			initializeLobby(lobby)
-
-			// Navigate
-			router.navigate({ to: `/lobbies/${lobby.name}` })
-		},
-	})
-
-	useSocket({
 		eventName: 'lobbyJoined',
 		callBack: (lobby) => {
-			// Initalize the lobby
-			initializeLobby(lobby)
+			// Reset lobby local storage
+			localReset('clientOnly')
+
+			// Set player name
+			setMyName(typedName)
 
 			// Navigate
 			router.navigate({ to: `/lobbies/${lobby.name}` })
@@ -136,11 +135,18 @@ export default function CreateJoinLobby() {
 					<Text as='h1' className='pl-4 leading-none'>
 						Enter your name:
 					</Text>
-					<TextInput placeholder='Enter Name...' value={typedName} onChange={(e) => setTypedName(e.target.value)} />
+					<TextInput
+						placeholder='Enter Name...'
+						value={typedName}
+						onChange={(e) => setTypedName(e.target.value)}
+					/>
 					<Btn
 						onClick={() => setName(showNamePanel)}
 						disabled={typedName === ''}
-						className={cn('w-full font-navBarButtons text-white', typedName === '' && 'text-slate-500')}
+						className={cn(
+							'w-full font-navBarButtons text-white',
+							typedName === '' && 'text-slate-500'
+						)}
 					>
 						Confirm
 					</Btn>

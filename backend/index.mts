@@ -34,8 +34,8 @@ io.on('connection', (socket) => {
 		// Create a new lobby object
 		else {
 			const lobby = lobbySystem.createLobby(lobbyName, host)
-			socket.join(lobbyName)
-			socket.emit('lobbyCreated', lobby.toJSON())
+			socket.emit('lobbyJoined', lobby.toJSON())
+			console.log('Player joined lobby:', lobby)
 		}
 	})
 
@@ -51,8 +51,7 @@ io.on('connection', (socket) => {
 		// Add this player to the lobby
 		else {
 			lobby.join(player)
-			socket.join(lobbyName)
-			io.to(lobbyName).emit('lobbyJoined', lobby.toJSON())
+			lobby.emitEvent('lobbyJoined', io, lobby.toJSON())
 		}
 	})
 
@@ -64,12 +63,21 @@ io.on('connection', (socket) => {
 	})
 
 	//
-	socket.on('setPlayerID', (lobbyName: string, playerID: string, playerName: string) => {
+	socket.on('updatePlayerID', (lobbyName: string, playerID: string, playerName: string) => {
 		const lobby = lobbySystem.getLobbyWithName(lobbyName)
-		if (!lobby) return emitError(socket, 'A lobby with this name does not exist')
+		if (!lobby) throw new Error('Lobby not found')
 		const player = lobby.getPlayerWithName(playerName)
-		if (!player) return emitError(socket, 'Player not found in a lobby')
+		if (!player) throw new Error('Player not found in a lobby')
+
+		// Update the player's ID
 		player.set({ id: playerID })
+
+		// Emit the updated player to all other players
+		lobby.emitEvent('playerUpdated', io, player.toJSON(), [socket.id])
+
+		// UpdatePlayerID event is only sent when a player refreshes/closes the tab, so we need to emit the up to date lobby info
+		io.to(socket.id).emit('setLobby', lobby.toJSON())
+		console.log('Updated player ID')
 	})
 
 	// Set the player's chosen character
@@ -83,7 +91,7 @@ io.on('connection', (socket) => {
 
 		player.set({ character: characterName })
 
-		io.to(lobby.name).emit('characterChosen', player.toJSON())
+		lobby.emitEvent('characterChosen', io, player.toJSON())
 	})
 
 	socket.on('startMatch', (playerID: string) => {
@@ -91,7 +99,7 @@ io.on('connection', (socket) => {
 		const lobby = lobbySystem.getLobbyWithID(playerID)
 		if (!lobby) return emitError(socket, 'Player not found in a lobby')
 		lobby.set({ locked: true })
-		io.to(lobby.name).emit('matchStarted')
+		lobby.emitEvent('matchStarted', io)
 	})
 })
 

@@ -10,7 +10,6 @@ import useSlidingPanel from '../hooks/useSlidingPanel'
 import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
 import { socket } from '../utils/socket'
-import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import CharacterInfoPopup from './CharacterInfoPopup'
 import { cn } from 'src/utils/cn'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
@@ -24,20 +23,19 @@ export default function CharacterSelection() {
 	const [showOverlay, setShowOverlay] = useState<string | undefined>(undefined) // Whether a characters deck/hero overlay should show
 
 	const {
-		maxPlayers,
 		host,
 		lockLobby,
-		takenCharacters,
-		addTakenCharacter,
-		removeTakenCharacter,
-		myPlayerName,
+		updatePlayer,
+		clientOnly: { myPlayerName },
+		players,
+		maxPlayers,
 	} = useLobbyStore()
 	const router = useRouter()
 	const { getPanelState, changeDir, open, close } = useSlidingPanel()
 
-	const hasChosen = takenCharacters.some((char) => char.playerName === myPlayerName)
+	const hasChosen = players.some((p) => p.name === myPlayerName && p.character)
 
-	console.log('!!', hasChosen, myPlayerName)
+	console.log('!!', hasChosen, myPlayerName, selectedCharacter)
 
 	const panelID = 'panel1'
 	const panel = getPanelState('panel1')
@@ -89,20 +87,19 @@ export default function CharacterSelection() {
 		else changeDir(panelID, DirectionalEnum.DOWN)
 	}, [changeDir, xl])
 
+	// Set selected character after a refresh
+	useEffect(() => {
+		if (hasChosen && !panel.isOpen)
+			setSelectedCharacter(
+				options.find((c) => c.title === players.find((p) => p.name === myPlayerName)?.character)
+			)
+	}, [hasChosen, myPlayerName, panel.isOpen, players])
+
 	// Socket events
 	useSocket({
 		eventName: 'characterChosen',
 		callBack: (player) => {
-			console.log('!!', player)
-			const { character, name } = player
-			// Check if you chose the character
-			if (player.id === socket.id) {
-				if (!character) removeTakenCharacter(name)
-				else addTakenCharacter({ playerName: name, character })
-			} else {
-				if (!character) removeTakenCharacter(name)
-				else addTakenCharacter({ playerName: name, character })
-			}
+			updatePlayer(player)
 		},
 	})
 
@@ -117,8 +114,6 @@ export default function CharacterSelection() {
 		},
 	})
 
-	console.log(takenCharacters)
-
 	const optionsClassName = useMemo(
 		() => (selectedCharacter && xl ? 'transition-transform duration-700 translate-x-[50%]' : ''),
 		[selectedCharacter, xl]
@@ -126,8 +121,15 @@ export default function CharacterSelection() {
 
 	const buttonText = useMemo(() => (hasChosen ? 'Cancel' : 'Ready'), [hasChosen])
 
-	const isHost = socket.id === host
-	const allPlayersChosen = takenCharacters.length === maxPlayers && hasChosen
+	const isHost = myPlayerName === host
+	const allPlayersChosen = players.every((p) => p.character) && players.length === maxPlayers
+
+	const disabled = useMemo(
+		() =>
+			!selectedCharacter ||
+			players.some((p) => p.name !== myPlayerName && p.character === selectedCharacter.title),
+		[myPlayerName, players, selectedCharacter]
+	)
 
 	return (
 		<>
@@ -173,7 +175,6 @@ export default function CharacterSelection() {
 								onSelect={setSelectedCharacter}
 								selected={selectedCharacter}
 								lockOption={hasChosen}
-								takenCharacters={takenCharacters}
 							/>
 						</SlidingPanel>
 					</div>
@@ -184,9 +185,9 @@ export default function CharacterSelection() {
 							isClosing && 'm-0'
 						)}
 						style={{
-							backgroundColor: selectedCharacter
+							backgroundColor: !disabled
 								? !hasChosen
-									? selectedCharacter.bgColor
+									? selectedCharacter!.bgColor
 									: colors.slate['300']
 								: 'gray',
 						}}
@@ -197,7 +198,7 @@ export default function CharacterSelection() {
 								hasChosen ? undefined : selectedCharacter?.title
 							)
 						}}
-						disabled={!selectedCharacter}
+						disabled={disabled}
 					>
 						{buttonText}
 					</button>
@@ -217,9 +218,4 @@ export default function CharacterSelection() {
 			</div>
 		</>
 	)
-}
-
-export type TakenCharacter = {
-	character: CharacterNameEnum
-	playerName: string
 }

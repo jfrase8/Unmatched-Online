@@ -4,25 +4,54 @@ import LobbyInfo from '../../components/LobbyInfo'
 import { useEffect } from 'react'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
 import { socket } from 'src/utils/socket'
+import useSocket from 'src/hooks/useSocket'
+import { localLoad } from 'src/utils/localStorage'
 
 export const Route = createLazyFileRoute('/lobbies/$lobbyName')({
 	component: LobbyScreen,
 })
 
 function LobbyScreen() {
-	const { name, initializeLobby, myPlayerName, updatePlayer } = useLobbyStore()
+	const {
+		name,
+		host,
+		initializeLobby,
+		clientOnly: { myPlayerName },
+		updatePlayer,
+	} = useLobbyStore()
+
+	const lobbyNameFromParams = Route.useParams().lobbyName
 
 	useEffect(() => {
-		// Initialize data after a reload
-		if (name === '') {
-			// Reinitialize the lobby
-			initializeLobby()
+		console.log('host:', host)
+		// Initialize data after a reload or when first joining a new lobby
+		if (host === '') {
+			console.log('My player name:', myPlayerName)
 
-			// Set our id to new socket id
-			socket.emit('setPlayerID', name, socket.id, myPlayerName)
-			updatePlayer({ name: myPlayerName, opts: { id: socket.id } })
+			// If this is our first time loading the page, use the player name we set before navigating
+			// Else use the name saved to local storage because this is a refresh
+			const nameForEvent =
+				myPlayerName === '' ? (localLoad('clientOnly').myPlayerName as string) : myPlayerName
+			// Set our id to new socket id if it has changed
+			socket.emit('updatePlayerID', lobbyNameFromParams, socket.id, nameForEvent)
 		}
-	}, [initializeLobby, myPlayerName, name, updatePlayer])
+	}, [host, lobbyNameFromParams, myPlayerName, name])
+
+	useSocket({
+		eventName: 'playerUpdated',
+		callBack: (player) => {
+			console.log('Player updated:', player)
+			updatePlayer(player)
+		},
+	})
+
+	// This socket event is emitted by server after updating our playerID
+	useSocket({
+		eventName: 'setLobby',
+		callBack: (lobby) => {
+			initializeLobby(lobby)
+		},
+	})
 
 	return (
 		<div className='flex flex-col w-full xl:justify-center items-center relative min-h-[calc(100dvh-var(--navbar-height))]'>

@@ -1,6 +1,7 @@
 import { CharacterNameEnum } from '../../common/enums/CharacterNameEnum'
 import { PlayerType } from '../../common/types/PlayerType'
 import { LobbyType } from '../../common/types/LobbyType'
+import { Server } from 'socket.io'
 
 export default class LobbySystem {
 	lobbies: Lobby[]
@@ -10,7 +11,7 @@ export default class LobbySystem {
 	}
 
 	createLobby(name: string, host: PlayerType) {
-		const lobby = new Lobby(name, [new Player(host.id, host.name, true)])
+		const lobby = new Lobby(name, [new Player(host.id, host.name)], 2, host.name)
 		this.lobbies.push(lobby)
 		return lobby
 	}
@@ -31,12 +32,14 @@ class Lobby implements LobbyType {
 	players: Player[]
 	maxPlayers: number
 	locked: boolean
+	host: string
 
-	constructor(name: string, players: Player[], maxPlayers = 2) {
+	constructor(name: string, players: Player[], maxPlayers = 2, host: string) {
 		this.name = name
 		this.players = players
 		this.maxPlayers = maxPlayers
 		this.locked = false
+		this.host = host
 	}
 	toJSON() {
 		return {
@@ -44,6 +47,14 @@ class Lobby implements LobbyType {
 			players: this.players,
 			maxPlayers: this.maxPlayers,
 			locked: this.locked,
+			host: this.host,
+		}
+	}
+
+	emitEvent(event: string, io: Server, data?: unknown, excludePlayerIDs?: string[]) {
+		for (const player of this.players) {
+			// Send the event to all players not excluded
+			if (!excludePlayerIDs?.some((id) => id === player.id)) io.to(player.id).emit(event, data)
 		}
 	}
 
@@ -65,6 +76,7 @@ class Lobby implements LobbyType {
 			players: this.players,
 			maxPlayers: this.maxPlayers,
 			locked: this.locked,
+			host: this.host,
 		}
 	}
 	set(update: Partial<Lobby>) {
@@ -76,19 +88,16 @@ class Player implements PlayerType {
 	id: string
 	name: string
 	character?: CharacterNameEnum
-	host?: boolean
 
 	constructor(id: string, name: string, host?: boolean) {
 		this.id = id
 		this.name = name
-		this.host = host
 	}
 	toJSON() {
 		return {
 			id: this.id,
 			name: this.name,
 			character: this.character,
-			host: this.host,
 		}
 	}
 
@@ -97,7 +106,6 @@ class Player implements PlayerType {
 			id: this.id,
 			name: this.name,
 			character: this.character,
-			host: this.host,
 		}
 	}
 

@@ -9,7 +9,7 @@ import { cn } from 'src/utils/cn'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
 
 export default function LobbyInfo() {
-	const { name, maxPlayers, players, updatePlayer, addPlayer } = useLobbyStore()
+	const { name, maxPlayers, players, updatePlayer, addPlayer, host } = useLobbyStore()
 
 	const xl = useBreakpoint('xl')
 
@@ -50,9 +50,9 @@ export default function LobbyInfo() {
 			</div>
 			<div className='flex gap-4 xl:gap-0 xl:flex-col'>
 				{players.map((player) => {
-					const characterKey = (Object.keys(CharacterNameEnum) as Array<keyof typeof CharacterNameEnum>).find(
-						(key) => CharacterNameEnum[key] === player.character
-					)
+					const characterKey = (
+						Object.keys(CharacterNameEnum) as Array<keyof typeof CharacterNameEnum>
+					).find((key) => CharacterNameEnum[key] === player.character)
 					// Get the character's color based on its key in CharacterColorEnum
 					const playerColor = characterKey ? CharacterColorEnum[characterKey] : 'white'
 					return (
@@ -61,7 +61,7 @@ export default function LobbyInfo() {
 								{player.name}
 							</Text>
 							<Text as='h2' className='text-slate-400 text-sm pt-1'>
-								{player.host ? ' (host)' : ''}
+								{player.name === host ? '(host)' : ''}
 							</Text>
 						</div>
 					)

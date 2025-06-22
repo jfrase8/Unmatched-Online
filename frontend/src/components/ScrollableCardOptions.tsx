@@ -3,7 +3,7 @@ import { forwardRef } from 'react'
 import { OptionObj } from '../constants/characterInfo'
 import { cn } from '../utils/cn'
 import OptionCard from './OptionCard'
-import { TakenCharacter } from './CharacterSelection'
+import { useLobbyStore } from 'src/stores/useLobbyStore'
 
 interface ScrollableCardOptionsProps {
 	/** The set of options to choose from */
@@ -14,13 +14,13 @@ interface ScrollableCardOptionsProps {
 	selected: OptionObj | undefined
 	/** If you should lock in the selected option */
 	lockOption?: boolean
-	/** A list of the names of characters already chosen by other players */
-	takenCharacters: TakenCharacter[]
 	className?: string
 }
 
 const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsProps>(
-	({ options, onSelect, selected, className, lockOption, takenCharacters }, ref) => {
+	({ options, onSelect, selected, className, lockOption }, ref) => {
+		const { players } = useLobbyStore()
+
 		return (
 			<div
 				ref={ref}
@@ -31,7 +31,7 @@ const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsPr
 			>
 				{options.map((option, i) => {
 					const selectedByYou = selected?.title === option.title
-					const chosenByOther = takenCharacters.some((char) => char.character === option.title)
+					const chosenByOther = players.find((p) => p.character === option.title)
 					const chosenBaseStyle = (lockOption || chosenByOther) && 'pointer-events-none'
 					const brightnessStyle = chosenByOther
 						? 'brightness-[.4]'
@@ -46,7 +46,7 @@ const ScrollableCardOptions = forwardRef<HTMLDivElement, ScrollableCardOptionsPr
 								onClick={onSelect}
 								isSelected={selectedByYou}
 								className={clsx(chosenBaseStyle, brightnessStyle)}
-								playerWhoSelected={takenCharacters.find((char) => char.character === option.title)?.playerName}
+								playerWhoSelected={chosenByOther?.name}
 							/>
 						</div>
 					)
