@@ -1,17 +1,27 @@
-import { useMemo } from 'react'
+import { useCallback, useEffect } from 'react'
 import { decks } from '../constants/deckInfo'
-import { useDeck } from '../hooks/useDeck'
 import DeckDisplay from './Deck'
 import HandDisplay from './HandDisplay'
 import Text from './Text'
+import { useDeckStore } from 'src/stores/useDeckStore'
 
 export default function MatchUI() {
-	const { addCardToHand, cardsInDeck, cardsInHand, drawCard, drawnCard } = useDeck(decks.Sinbad.cards)
+	const { drawnCard, addToHand, setDrawnCard, drawPile, removeFromDeck, hand, initializeDeck } =
+		useDeckStore()
 
-	const clickEffect = useMemo(
-		() => (!drawnCard ? drawCard : () => addCardToHand(drawnCard)),
-		[addCardToHand, drawCard, drawnCard]
-	)
+	useEffect(() => {
+		initializeDeck(decks.Sinbad)
+	}, [initializeDeck])
+
+	const clickEffect = useCallback(() => {
+		if (drawnCard) {
+			addToHand(drawnCard)
+			removeFromDeck(drawnCard)
+			setDrawnCard(undefined)
+		} else {
+			setDrawnCard(drawPile[0])
+		}
+	}, [addToHand, drawPile, drawnCard, removeFromDeck, setDrawnCard])
 
 	return (
 		<>
@@ -21,9 +31,14 @@ export default function MatchUI() {
 				</Text>
 			</div>
 			{/* Hand Area */}
-			<div className='flex w-full h-[50%] justify-center items-end'>
-				<HandDisplay cards={cardsInHand} />
-				<DeckDisplay drawnCard={drawnCard} cards={cardsInDeck} onClick={clickEffect} cardBack={decks.Sinbad.cardBack} />
+			<div className='flex w-full h-[50%] justify-center items-center border border-white gap-4'>
+				<HandDisplay cards={hand} />
+				<DeckDisplay
+					drawnCard={drawnCard}
+					cards={drawPile}
+					onClick={clickEffect}
+					cardBack={decks.Sinbad.cardBack}
+				/>
 			</div>
 		</>
 	)

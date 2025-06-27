@@ -15,6 +15,8 @@ export type Card = {
 	imagePath: string
 }
 
+export type PlayableCard = Card & { id: string }
+
 export type Deck = {
 	cardBack: string
 	cards: Card[]

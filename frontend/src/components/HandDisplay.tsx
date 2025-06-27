@@ -12,7 +12,7 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 
 	return (
 		<>
-			<div className='w-[40%] [background-image:url(/assets/img/match-screen/wood.jpg)] h-[30vh]'>
+			<div className='w-[40%] bg-slate-700 h-[30vh]'>
 				<div className='flex items-center max-w-full z-[1] h-full border border-black overflow-x-auto overflow-y-hidden transition-all duration-500'>
 					<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
 						{cards.map((card, i) => {

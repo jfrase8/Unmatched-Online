@@ -10,18 +10,13 @@ export default function Navbar() {
 	const pathname = router.location.pathname
 
 	return (
-		<div className="flex flex-row gap-4 items-center justify-center p-2 bg-gray-600 h-[--navbar-height]">
+		<div className='flex flex-row gap-4 items-center justify-center p-2 bg-gray-600 h-[--navbar-height]'>
 			<GradientBar>
 				<MainMenuButton isCurrent={pathname.endsWith('/')} />
-				<NavbarPage pageTitle="Play" isCurrent={pathname.includes('/play')} />
-				<NavbarPage
-					pageTitle="Tutorial"
-					isCurrent={pathname.includes('/tutorial')}
-				/>
-				<NavbarPage
-					pageTitle="Settings"
-					isCurrent={pathname.includes('/settings')}
-				/>
+				<NavbarPage pageTitle='Play' isCurrent={pathname.includes('/play')} />
+				<NavbarPage pageTitle='Tutorial' isCurrent={pathname.includes('/tutorial')} />
+				<NavbarPage pageTitle='Settings' isCurrent={pathname.includes('/settings')} />
+				<NavbarPage pageTitle='Test Play' isCurrent={pathname.includes('/testPlay')} />
 			</GradientBar>
 		</div>
 	)

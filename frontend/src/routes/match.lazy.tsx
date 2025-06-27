@@ -6,7 +6,9 @@ export const Route = createRoute({
 	getParentRoute: () => RootRoute,
 	path: '/match',
 	loader: async () => {
-		const isReload = (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload'
+		const isReload =
+			(performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type ===
+			'reload'
 		if (isReload) {
 			throw redirect({ to: '/' })
 		}
@@ -17,7 +19,7 @@ export const Route = createRoute({
 
 function Match() {
 	return (
-		<div className='flex flex-col w-full xl:justify-center gap-20 items-center relative min-h-[calc(100dvh-var(--navbar-height))]'>
+		<div className='size-full flex flex-col gap-20 items-center relative'>
 			<MatchUI />
 		</div>
 	)

@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import { cn } from '../utils/cn'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { navBarIcons } from 'src/constants/navBarIcons'
+import { toCamelCase } from 'src/utils/toCamelCase'
 
 interface NavbarPageProps {
 	pageTitle: string
@@ -17,7 +18,7 @@ export default function NavbarPage({ pageTitle, isCurrent }: NavbarPageProps) {
 
 	return (
 		<button
-			onClick={() => navigate({ to: `/${pageTitle.toLowerCase()}` })}
+			onClick={() => navigate({ to: `/${toCamelCase(pageTitle)}` })}
 			className={cn(
 				`relative h-[--nav-button-h] w-[--nav-button-w] p-2 text-black group shadow-white shadow-[0_4px_8px_0_rgba(0,0,0,0.25)]
 				transition-all duration-500 border-2 border-cyan-400 rounded-md min-w-[20%]
@@ -85,7 +86,10 @@ export default function NavbarPage({ pageTitle, isCurrent }: NavbarPageProps) {
 			) : (
 				navBarIcons(
 					pageTitle.toLowerCase(),
-					cn('fill-slate-800 size-10 group-hover:fill-white transition-all duration-500', isCurrent && 'fill-white')
+					cn(
+						'fill-slate-800 size-10 group-hover:fill-white transition-all duration-500',
+						isCurrent && 'fill-white'
+					)
 				)
 			)}
 		</button>

@@ -13,25 +13,22 @@ interface FlippableCardProps {
 }
 export default function FlippableCard({ front, back, flip, imageClassName }: FlippableCardProps) {
 	return (
-		<div className='group [perspective:1000px]'>
+		<div className='group [perspective:1000px] aspect-[250/349]'>
+			{/* Add aspect ratio */}
 			<div
 				className={clsx(
-					`grid justify-center items-center h-full rounded-md transition-all
-                    duration-500 [transform-style:preserve-3d] `,
+					`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d]`,
 					flip && '[transform:rotateY(180deg)]'
 				)}
 			>
-				<div className='col-start-1 row-start-1 rounded-md [backface-visibility:hidden]'>
+				<div className='absolute inset-0 [backface-visibility:hidden]'>
 					<img
 						src={front}
-						className={cn('aspect-[--card-aspect] h-[60vh] p-4 rounded-md object-cover', imageClassName)}
+						className={cn('w-full h-full rounded-md object-cover', imageClassName)}
 					/>
 				</div>
-				<div className='col-start-1 row-start-1 rounded-md [transform:rotateY(180deg)] [backface-visibility:hidden]'>
-					<img
-						src={back}
-						className={cn('aspect-[--card-aspect] h-[60vh] p-4 rounded-md object-cover', imageClassName)}
-					/>
+				<div className='absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]'>
+					<img src={back} className={cn('w-full h-full rounded-md object-cover', imageClassName)} />
 				</div>
 			</div>
 		</div>
