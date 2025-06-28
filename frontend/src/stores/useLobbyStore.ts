@@ -41,7 +41,7 @@ export const useLobbyStore = create<LobbyState>()((set, get) => {
 
 		saveClientOnlyValues: () => {
 			const { clientOnly } = get()
-			localSave('clientOnly', clientOnly)
+			localSave('clientOnly-lobby', clientOnly)
 		},
 		initializeLobby: (lobby) => {
 			const { saveClientOnlyValues } = get()
@@ -51,7 +51,7 @@ export const useLobbyStore = create<LobbyState>()((set, get) => {
 
 			console.log('Initializing lobby:', lobby, myPlayerName)
 
-			const localSave = localLoad('clientOnly') as ClientOnlyType
+			const localSave = localLoad('clientOnly-lobby') as ClientOnlyType
 
 			console.log('Loaded save:', localSave)
 

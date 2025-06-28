@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { decks } from '../constants/deckInfo'
-import DeckDisplay from './Deck'
+import DeckDisplay from './DeckDisplay'
 import HandDisplay from './HandDisplay'
 import Text from './Text'
 import { useDeckStore } from 'src/stores/useDeckStore'

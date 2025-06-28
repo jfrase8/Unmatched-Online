@@ -12,8 +12,8 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 
 	return (
 		<>
-			<div className='w-[40%] bg-slate-700 h-[30vh]'>
-				<div className='flex items-center max-w-full z-[1] h-full border border-black overflow-x-auto overflow-y-hidden transition-all duration-500'>
+			<div className='w-[40%] bg-slate-700 h-[30vh] rounded-lg shadow-lg'>
+				<div className='flex items-center max-w-full z-[1] h-full overflow-x-auto overflow-y-hidden transition-all duration-500'>
 					<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
 						{cards.map((card, i) => {
 							return (
@@ -81,19 +81,27 @@ export function CardDisplay({
 	const lowestIndex = !hoveredElements.some((e) => Number(e.getAttribute('data-index')) > index)
 
 	return (
-		<button
-			className={cn(
-				'shadow-lg rounded-md transition-all duration-500 border border-black h-full card',
-				index !== 0 && getMargin(),
-				hovering && lowestIndex && 'z-[100] scale-[110%]',
-				selected === index && 'z-[100] scale-[110%] brightness-125'
+		<>
+			<button
+				className={cn(
+					'shadow-lg rounded-md transition-all duration-500 border border-black h-full card',
+					index !== 0 && getMargin(),
+					hovering && lowestIndex && 'z-[100] scale-[110%]',
+					selected === index && 'z-[100] scale-[110%] brightness-125'
+				)}
+				onMouseMove={handleHover}
+				onMouseLeave={handleMouseLeave}
+				data-index={index}
+				onClick={() => (selected === index ? setSelected(-1) : setSelected(index))}
+			>
+				<img src={imagePath} className={'aspect-[--card-aspect] size-full rounded-md'} />
+			</button>
+			{selected === index && (
+				<img
+					src={imagePath}
+					className='fixed top-0 right-0 h-[30rem] aspect-[--card-aspect] z-[10]'
+				/>
 			)}
-			onMouseMove={handleHover}
-			onMouseLeave={handleMouseLeave}
-			data-index={index}
-			onClick={() => (selected === index ? setSelected(-1) : setSelected(index))}
-		>
-			<img src={imagePath} className={'aspect-[--card-aspect] size-full rounded-md'} />
-		</button>
+		</>
 	)
 }

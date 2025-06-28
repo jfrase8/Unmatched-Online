@@ -17,8 +17,8 @@ export default function FlippableCard({ front, back, flip, imageClassName }: Fli
 			{/* Add aspect ratio */}
 			<div
 				className={clsx(
-					`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d]`,
-					flip && '[transform:rotateY(180deg)]'
+					`relative w-full h-full transition-transform [transform-style:preserve-3d]`,
+					flip ? '[transform:rotateY(180deg)] duration-500' : 'duration-0'
 				)}
 			>
 				<div className='absolute inset-0 [backface-visibility:hidden]'>
