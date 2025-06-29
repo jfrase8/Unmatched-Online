@@ -6,6 +6,7 @@ import { useLobbyStore } from 'src/stores/useLobbyStore'
 import { socket } from 'src/utils/socket'
 import useSocket from 'src/hooks/useSocket'
 import { localLoad } from 'src/utils/localStorage'
+import { useFlagStore } from 'src/stores/useFlagStore'
 
 export const Route = createLazyFileRoute('/lobbies/$lobbyName')({
 	component: LobbyScreen,
@@ -13,34 +14,35 @@ export const Route = createLazyFileRoute('/lobbies/$lobbyName')({
 
 function LobbyScreen() {
 	const {
-		name,
 		host,
 		initializeLobby,
-		clientOnly: { myPlayerName },
+		unchangingValues: { myPlayerName },
 		updatePlayer,
 	} = useLobbyStore()
+
+	const { initializedPage, setInitializedPage } = useFlagStore()
 
 	const lobbyNameFromParams = Route.useParams().lobbyName
 
 	useEffect(() => {
-		console.log('host:', host)
+		console.log(initializedPage)
 		// Initialize data after a reload or when first joining a new lobby
-		if (host === '') {
-			console.log('My player name:', myPlayerName)
-
+		if (!initializedPage) {
 			// If this is our first time loading the page, use the player name we set before navigating
 			// Else use the name saved to local storage because this is a refresh
 			const nameForEvent =
-				myPlayerName === '' ? (localLoad('clientOnly').myPlayerName as string) : myPlayerName
+				myPlayerName === ''
+					? (localLoad('unchangingValues-lobby').myPlayerName as string)
+					: myPlayerName
 			// Set our id to new socket id if it has changed
 			socket.emit('updatePlayerID', lobbyNameFromParams, socket.id, nameForEvent)
+			setInitializedPage(true)
 		}
-	}, [host, lobbyNameFromParams, myPlayerName, name])
+	}, [host, initializedPage, lobbyNameFromParams, myPlayerName, setInitializedPage])
 
 	useSocket({
 		eventName: 'playerUpdated',
 		callBack: (player) => {
-			console.log('Player updated:', player)
 			updatePlayer(player)
 		},
 	})

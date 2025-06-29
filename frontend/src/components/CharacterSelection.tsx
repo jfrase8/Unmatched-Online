@@ -26,7 +26,7 @@ export default function CharacterSelection() {
 		host,
 		lockLobby,
 		updatePlayer,
-		clientOnly: { myPlayerName },
+		unchangingValues: { myPlayerName },
 		players,
 		maxPlayers,
 	} = useLobbyStore()
@@ -35,7 +35,7 @@ export default function CharacterSelection() {
 
 	const hasChosen = players.some((p) => p.name === myPlayerName && p.character)
 
-	console.log('!!', hasChosen, myPlayerName, selectedCharacter)
+	console.log('!!', players, hasChosen, myPlayerName, selectedCharacter)
 
 	const panelID = 'panel1'
 	const panel = getPanelState('panel1')

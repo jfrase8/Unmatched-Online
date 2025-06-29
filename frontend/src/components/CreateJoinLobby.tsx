@@ -83,7 +83,7 @@ export default function CreateJoinLobby() {
 		eventName: 'lobbyJoined',
 		callBack: (lobby) => {
 			// Reset lobby local storage
-			localReset('clientOnly')
+			localReset('unchangingValues-lobby')
 
 			// Set player name
 			setMyName(typedName)

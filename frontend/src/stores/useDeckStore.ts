@@ -1,14 +1,16 @@
 import { create } from 'zustand'
 import { Deck, PlayableCard } from 'src/constants/deckInfo'
+import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 
 interface DeckState {
-	// Server and client
+	characterName?: CharacterNameEnum
 	drawPile: PlayableCard[]
 	hand: PlayableCard[]
 	discardPile: PlayableCard[]
 	drawnCard: PlayableCard | undefined
 
 	// Functions
+	setCharacterName: (characterName: CharacterNameEnum) => void
 	initializeDeck: (deck: Deck) => void
 	shuffleDeck: (deck?: PlayableCard[]) => PlayableCard[]
 	setDrawnCard: (card?: PlayableCard) => void
@@ -22,11 +24,13 @@ interface DeckState {
 
 export const useDeckStore = create<DeckState>()((set, get) => {
 	return {
+		characterName: undefined,
 		drawPile: [],
 		hand: [],
 		discardPile: [],
 		drawnCard: undefined,
 
+		setCharacterName: (characterName) => set({ characterName }),
 		initializeDeck: (deck) => {
 			const { shuffleDeck } = get()
 

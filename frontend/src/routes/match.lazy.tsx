@@ -19,7 +19,7 @@ export const Route = createRoute({
 
 function Match() {
 	return (
-		<div className='size-full flex flex-col gap-20 items-center relative'>
+		<div className='flex flex-col size-full items-center relative'>
 			<MatchUI />
 		</div>
 	)

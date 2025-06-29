@@ -4,22 +4,20 @@ import { LobbyType } from '../../../common/types/LobbyType'
 import { socket } from 'src/utils/socket'
 import { localLoad, localSave } from 'src/utils/localStorage'
 
-type ClientOnlyType = {
+type UnchangingValuesType = {
 	myPlayerName: string
+	lobbyName: string
 }
 
 interface LobbyState {
-	// Server and client
-	name: string
 	players: PlayerType[]
 	maxPlayers: number | undefined
 	host: string
 	locked: boolean
 
-	// Client-only
-	clientOnly: ClientOnlyType
+	unchangingValues: UnchangingValuesType
 
-	saveClientOnlyValues: () => void
+	saveUnchangingValues: () => void
 	initializeLobby: (lobby: LobbyType) => void
 	setMyName: (name: string) => void
 	setLobbyName: (host: string) => void
@@ -37,40 +35,45 @@ export const useLobbyStore = create<LobbyState>()((set, get) => {
 		host: '',
 		locked: false,
 
-		clientOnly: { myPlayerName: '' },
+		unchangingValues: { myPlayerName: '', lobbyName: '' },
 
-		saveClientOnlyValues: () => {
-			const { clientOnly } = get()
-			localSave('clientOnly-lobby', clientOnly)
+		saveUnchangingValues: () => {
+			const { unchangingValues } = get()
+			console.log('Saving unchanging values:', unchangingValues)
+			localSave('unchangingValues-lobby', unchangingValues)
 		},
 		initializeLobby: (lobby) => {
-			const { saveClientOnlyValues } = get()
+			const { saveUnchangingValues } = get()
 			const myPlayerName = lobby.players.find((p) => p.id === socket.id)?.name
 
 			if (!myPlayerName) throw new Error('Your player name was not found')
 
 			console.log('Initializing lobby:', lobby, myPlayerName)
 
-			const localSave = localLoad('clientOnly-lobby') as ClientOnlyType
+			const localSave = localLoad('unchangingValues-lobby') as UnchangingValuesType
 
 			console.log('Loaded save:', localSave)
 
 			set({
 				...lobby,
-				clientOnly: localSave || { myPlayerName, takenCharacters: [] },
+				unchangingValues: localSave || { myPlayerName, lobbyName: lobby.name },
 			})
-			if (!localSave) saveClientOnlyValues()
+			if (!localSave) saveUnchangingValues()
 		},
 		setMyName: (name: string) => {
-			const { clientOnly } = get()
-			set({ clientOnly: { ...clientOnly, myPlayerName: name } })
+			const { unchangingValues } = get()
+			set({ unchangingValues: { ...unchangingValues, myPlayerName: name } })
 		},
-		setLobbyName: (name: string) => set({ name }),
+		setLobbyName: (lobbyName: string) => {
+			const { unchangingValues } = get()
+			set({ unchangingValues: { ...unchangingValues, lobbyName } })
+		},
 		lockLobby: () => {
 			set({ locked: true })
 		},
 		updatePlayer: (player) => {
 			const { players } = get()
+			console.log('Updating player:', player)
 			set({
 				players: players.map((p) =>
 					p.name === player.name ? ('opts' in player ? { ...p, ...player.opts } : player) : p

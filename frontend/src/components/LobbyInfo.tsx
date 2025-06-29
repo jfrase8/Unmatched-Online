@@ -9,7 +9,13 @@ import { cn } from 'src/utils/cn'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
 
 export default function LobbyInfo() {
-	const { name, maxPlayers, players, updatePlayer, addPlayer, host } = useLobbyStore()
+	const {
+		maxPlayers,
+		players,
+		addPlayer,
+		host,
+		unchangingValues: { lobbyName },
+	} = useLobbyStore()
 
 	const xl = useBreakpoint('xl')
 
@@ -23,13 +29,6 @@ export default function LobbyInfo() {
 		},
 	})
 
-	useSocket({
-		eventName: 'characterChosen',
-		callBack: (player) => {
-			updatePlayer(player)
-		},
-	})
-
 	if (!maxPlayers) return
 
 	return (
@@ -40,7 +39,7 @@ export default function LobbyInfo() {
 		>
 			<div className='flex justify-start items-center gap-4'>
 				<Text as='h1' className='text-gray-400 pointer-events-none'>
-					{name} - {players.length} / {maxPlayers} {xl && 'players'}
+					{lobbyName} - {players.length} / {maxPlayers} {xl && 'players'}
 				</Text>
 				{players.length < maxPlayers ? (
 					<UnlockedIcon className='size-10 stroke-slate-400 pb-1' />

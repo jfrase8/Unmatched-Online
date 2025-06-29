@@ -4,14 +4,14 @@ import { cn } from 'src/utils/cn'
 
 function RootLayout() {
 	const { location } = useRouterState()
-	const isTestPlay = location.pathname.includes('/testPlay')
+	const isMatch = location.pathname.includes('/testPlay') || location.pathname.includes('/match')
 	return (
 		<>
-			{!isTestPlay && <Navbar />}
+			{!isMatch && <Navbar />}
 			<div
 				className={cn(
 					'min-h-[calc(100dvh-var(--navbar-height))] bg-gray-900 flex flex-col',
-					isTestPlay && 'h-screen'
+					isMatch && 'h-screen'
 				)}
 			>
 				<Outlet />
