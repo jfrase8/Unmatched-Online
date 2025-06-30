@@ -6,6 +6,8 @@ import LobbySystem from './classes/LobbySystem.mts'
 import { CharacterNameEnum } from '../common/enums/CharacterNameEnum'
 import { PlayerType } from '../common/types/PlayerType'
 import emitError from './utils/emitError.mts'
+import { MatchPlayerType } from '../common/types/MatchPlayerType'
+import { DeckObj } from '../common/types/DeckObj'
 
 const lobbySystem = new LobbySystem()
 
@@ -34,7 +36,7 @@ io.on('connection', (socket) => {
 		// Create a new lobby object
 		else {
 			const lobby = lobbySystem.createLobby(lobbyName, host)
-			socket.emit('lobbyJoined', lobby.toJSON())
+			socket.emit('lobbyJoined', lobby.get())
 			console.log('Player joined lobby:', lobby)
 		}
 	})
@@ -51,7 +53,7 @@ io.on('connection', (socket) => {
 		// Add this player to the lobby
 		else {
 			lobby.join(player)
-			lobby.emitEvent('lobbyJoined', io, lobby.toJSON())
+			lobby.emitEvent('lobbyJoined', io, lobby.get())
 		}
 	})
 
@@ -59,7 +61,7 @@ io.on('connection', (socket) => {
 	socket.on('getLobby', (lobbyName: string) => {
 		const lobby = lobbySystem.getLobbyWithName(lobbyName)
 		if (!lobby) return emitError(socket, 'A lobby with this name does not exist')
-		socket.emit('lobbyReturned', lobby.toJSON())
+		socket.emit('lobbyReturned', lobby.get())
 	})
 
 	//
@@ -73,10 +75,9 @@ io.on('connection', (socket) => {
 		player.set({ id: playerID })
 
 		// Emit the updated player to all other players
-		lobby.emitEvent('playerUpdated', io, player.toJSON(), [socket.id])
+		lobby.emitEvent('playerUpdated', io, player.get(), [socket.id])
 
-		// UpdatePlayerID event is only sent when a player refreshes/closes the tab, so we need to emit the up to date lobby info
-		io.to(socket.id).emit('setLobby', lobby.toJSON())
+		io.to(socket.id).emit('setLobby', lobby.get())
 		console.log('Updated player ID')
 	})
 
@@ -91,7 +92,7 @@ io.on('connection', (socket) => {
 
 		player.set({ character: characterName })
 
-		lobby.emitEvent('characterChosen', io, player.toJSON())
+		lobby.emitEvent('characterChosen', io, player.get())
 	})
 
 	socket.on('startMatch', (playerID: string) => {
@@ -100,6 +101,22 @@ io.on('connection', (socket) => {
 		if (!lobby) return emitError(socket, 'Player not found in a lobby')
 		lobby.set({ locked: true })
 		lobby.emitEvent('matchStarted', io)
+	})
+
+	socket.on('saveMatchPlayer', (matchPlayer: MatchPlayerType) => {
+		const lobby = lobbySystem.getLobbyWithPlayerName(matchPlayer.playerName)
+		console.log('Match Player:', matchPlayer, lobbySystem.lobbies[0])
+		if (!lobby) throw new Error('Player not found in a lobby')
+		lobby.match.addPlayer(matchPlayer)
+		console.log('Match player saved:', lobby.match.players)
+	})
+
+	socket.on('updatePlayerDeck', (playerName: string, playerDeck: Partial<DeckObj>) => {
+		const lobby = lobbySystem.getLobbyWithID(socket.id)
+		if (!lobby) throw new Error('Socket id not found in a lobby')
+		const player = lobby.match.findPlayer(playerName)
+		if (!player) throw new Error('Player not found in a this lobby')
+		player.set({ ...playerDeck })
 	})
 })
 

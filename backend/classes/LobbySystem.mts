@@ -2,6 +2,7 @@ import { CharacterNameEnum } from '../../common/enums/CharacterNameEnum'
 import { PlayerType } from '../../common/types/PlayerType'
 import { LobbyType } from '../../common/types/LobbyType'
 import { Server } from 'socket.io'
+import Match from './Match.mts'
 
 export default class LobbySystem {
 	lobbies: Lobby[]
@@ -25,6 +26,10 @@ export default class LobbySystem {
 	getLobbyWithID(playerID: string) {
 		return this.lobbies.find((lobby) => lobby.players.find((player) => player.id === playerID))
 	}
+
+	getLobbyWithPlayerName(playerName: string) {
+		return this.lobbies.find((lobby) => lobby.players.find((player) => player.name === playerName))
+	}
 }
 
 class Lobby implements LobbyType {
@@ -33,6 +38,7 @@ class Lobby implements LobbyType {
 	maxPlayers: number
 	locked: boolean
 	host: string
+	match: Match
 
 	constructor(name: string, players: Player[], maxPlayers = 2, host: string) {
 		this.name = name
@@ -40,15 +46,7 @@ class Lobby implements LobbyType {
 		this.maxPlayers = maxPlayers
 		this.locked = false
 		this.host = host
-	}
-	toJSON() {
-		return {
-			name: this.name,
-			players: this.players,
-			maxPlayers: this.maxPlayers,
-			locked: this.locked,
-			host: this.host,
-		}
+		this.match = new Match([])
 	}
 
 	emitEvent(event: string, io: Server, data?: unknown, excludePlayerIDs?: string[]) {
@@ -77,6 +75,7 @@ class Lobby implements LobbyType {
 			maxPlayers: this.maxPlayers,
 			locked: this.locked,
 			host: this.host,
+			match: this.match,
 		}
 	}
 	set(update: Partial<Lobby>) {
@@ -89,16 +88,9 @@ class Player implements PlayerType {
 	name: string
 	character?: CharacterNameEnum
 
-	constructor(id: string, name: string, host?: boolean) {
+	constructor(id: string, name: string) {
 		this.id = id
 		this.name = name
-	}
-	toJSON() {
-		return {
-			id: this.id,
-			name: this.name,
-			character: this.character,
-		}
 	}
 
 	get() {
@@ -108,7 +100,6 @@ class Player implements PlayerType {
 			character: this.character,
 		}
 	}
-
 	set(update: Partial<Player>) {
 		Object.assign(this, update)
 	}

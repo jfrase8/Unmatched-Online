@@ -1,4 +1,5 @@
 import { PlayerType } from './PlayerType'
+import { MatchType } from './MatchType'
 
 export type LobbyType = {
 	name: string
@@ -6,4 +7,5 @@ export type LobbyType = {
 	maxPlayers: number
 	locked: boolean
 	host: string
+	match: MatchType
 }

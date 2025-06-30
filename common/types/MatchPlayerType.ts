@@ -1,8 +1,9 @@
-import { PlayerType } from './PlayerType'
 import { PlayableCard } from '../../frontend/src/constants/deckInfo'
+import { CharacterNameEnum } from '../enums/CharacterNameEnum'
 
 export type MatchPlayerType = {
-	playerInfo: PlayerType
+	playerName: string
+	characterName: CharacterNameEnum
 	hand: PlayableCard[]
 	drawPile: PlayableCard[]
 	discardPile: PlayableCard[]

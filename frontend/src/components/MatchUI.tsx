@@ -3,12 +3,13 @@ import { decks } from '../constants/deckInfo'
 import DeckDisplay from './DeckDisplay'
 import HandDisplay from './HandDisplay'
 import Text from './Text'
-import { useDeckStore } from 'src/stores/useDeckStore'
+import { useMatchStore } from 'src/stores/useMatchStore'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
 import { localLoad } from 'src/utils/localStorage'
 import { socket } from 'src/utils/socket'
 import { useFlagStore } from 'src/stores/useFlagStore'
 import useSocket from 'src/hooks/useSocket'
+import OpponentDisplay from './OpponentDisplay'
 
 export default function MatchUI() {
 	const {
@@ -17,16 +18,19 @@ export default function MatchUI() {
 		initializeLobby,
 	} = useLobbyStore()
 	const {
-		drawnCard,
-		addToHand,
-		setDrawnCard,
-		drawPile,
-		removeFromDeck,
-		hand,
-		initializeDeck,
+		deck: {
+			drawnCard,
+			addToHand,
+			setDrawnCard,
+			drawPile,
+			removeFromDeck,
+			hand,
+			initializeDeck,
+			setDeck,
+		},
 		setCharacterName,
 		characterName,
-	} = useDeckStore()
+	} = useMatchStore()
 
 	const { initializedPage, setInitializedPage } = useFlagStore()
 
@@ -52,7 +56,6 @@ export default function MatchUI() {
 	useSocket({
 		eventName: 'playerUpdated',
 		callBack: (player) => {
-			console.log('Player updated:', player)
 			updatePlayer(player)
 		},
 	})
@@ -64,8 +67,30 @@ export default function MatchUI() {
 			initializeLobby(lobby)
 			const myCharacter = lobby.players.find((p) => p.id === socket.id)?.character
 			if (!myCharacter) throw new Error('Your character was not found')
-			initializeDeck(decks[myCharacter])
+
+			console.log('players', lobby.match)
+			if (lobby.match.players.length === 2) {
+				// If a match has already started (ie this is a refresh), dont reinitialize the deck
+				const playerName = lobby.players.find((p) => p.id === socket.id)?.name
+				const myPlayer = lobby.match.players.find((p) => p.playerName === playerName)
+				if (!myPlayer) throw new Error('Your player was not found in the match')
+				const { drawnCard, hand, drawPile, discardPile } = myPlayer
+				setDeck({ drawnCard, hand, drawPile, discardPile })
+				setCharacterName(myPlayer.characterName)
+				return
+			}
+
+			const deckObj = initializeDeck(decks[myCharacter])
 			setCharacterName(myCharacter)
+
+			// Send over info as a MatchPlayer object
+			const myPlayer = lobby.players.find((p) => p.id === socket.id)
+			socket.emit('saveMatchPlayer', {
+				playerName: myPlayer?.name,
+				characterName: myPlayer?.character,
+				...deckObj,
+				isTurn: false,
+			})
 		},
 	})
 
@@ -74,13 +99,20 @@ export default function MatchUI() {
 			addToHand(drawnCard)
 			removeFromDeck(drawnCard)
 			setDrawnCard(undefined)
+			socket.emit('updatePlayerDeck', myPlayerName, {
+				drawnCard: undefined,
+				drawPile: drawPile.slice(1),
+				hand: [...hand, drawnCard],
+			})
 		} else {
 			setDrawnCard(drawPile[0])
+			socket.emit('updatePlayerDeck', myPlayerName, { drawnCard: drawPile[0] })
 		}
-	}, [addToHand, drawPile, drawnCard, removeFromDeck, setDrawnCard])
+	}, [addToHand, drawPile, drawnCard, hand, myPlayerName, removeFromDeck, setDrawnCard])
 
 	return (
 		<>
+			<OpponentDisplay />
 			<div className='size-full flex justify-center items-center border border-white'>
 				<Text as='h1' className='text-3xl'>
 					Game Board

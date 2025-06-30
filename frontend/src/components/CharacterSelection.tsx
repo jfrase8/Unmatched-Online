@@ -35,8 +35,6 @@ export default function CharacterSelection() {
 
 	const hasChosen = players.some((p) => p.name === myPlayerName && p.character)
 
-	console.log('!!', players, hasChosen, myPlayerName, selectedCharacter)
-
 	const panelID = 'panel1'
 	const panel = getPanelState('panel1')
 
@@ -106,7 +104,6 @@ export default function CharacterSelection() {
 	useSocket({
 		eventName: 'matchStarted',
 		callBack: () => {
-			console.log('!! Match started')
 			lockLobby()
 
 			// Navigate

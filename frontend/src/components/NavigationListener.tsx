@@ -10,7 +10,6 @@ export function NavigationListener() {
 		// Subscribe to the 'onResolved' event for navigation
 		const unsubscribe = router.subscribe('onResolved', () => {
 			if (!isInitialLoad.current) {
-				console.log('Navigation completed')
 				setInitializedPage(false) // Set flag to false when navigation completes
 			}
 			isInitialLoad.current = false

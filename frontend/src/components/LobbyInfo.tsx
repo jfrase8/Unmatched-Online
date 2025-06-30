@@ -22,7 +22,6 @@ export default function LobbyInfo() {
 	useSocket({
 		eventName: 'lobbyJoined',
 		callBack: (lobby) => {
-			console.log('!! Someone new joined:', lobby)
 			const newPlayer = lobby.players[lobby.players.length - 1]
 			if (!newPlayer) throw new Error('Lobby only has 1 player when expecting a second')
 			addPlayer(newPlayer)

@@ -1,41 +1,43 @@
 import { MatchPlayerType } from '../../common/types/MatchPlayerType'
-import { PlayerType } from '../../common/types/PlayerType'
 import { PlayableCard } from '../../frontend/src/constants/deckInfo'
+import { MatchType } from '../../common/types/MatchType'
+import { CharacterNameEnum } from '../../common/enums/CharacterNameEnum'
 
-export default class Match {
+export default class Match implements MatchType {
 	players: MatchPlayer[]
 	constructor(players: MatchPlayer[]) {
 		this.players = players
 	}
+	addPlayer(player: MatchPlayerType) {
+		this.players.push(new MatchPlayer(player))
+	}
+	findPlayer(playerName: string) {
+		return this.players.find((player) => player.playerName === playerName)
+	}
 }
 
-class MatchPlayer implements MatchPlayerType {
-	playerInfo: PlayerType
+export class MatchPlayer implements MatchPlayerType {
+	playerName: string
+	characterName: CharacterNameEnum
 	hand: PlayableCard[]
 	drawPile: PlayableCard[]
 	discardPile: PlayableCard[]
 	drawnCard: PlayableCard
 	isTurn: boolean
 
-	constructor(
-		playerInfo: PlayerType,
-		hand: PlayableCard[],
-		drawPile: PlayableCard[],
-		discardPile: PlayableCard[],
-		drawnCard: PlayableCard,
-		isTurn: boolean
-	) {
-		this.playerInfo = playerInfo
-		this.hand = hand
-		this.drawPile = drawPile
-		this.discardPile = discardPile
-		this.drawnCard = drawnCard
-		this.isTurn = isTurn
+	constructor(matchPlayer: MatchPlayerType) {
+		this.playerName = matchPlayer.playerName
+		this.characterName = matchPlayer.characterName
+		this.hand = matchPlayer.hand
+		this.drawPile = matchPlayer.drawPile
+		this.discardPile = matchPlayer.discardPile
+		this.drawnCard = matchPlayer.drawnCard
+		this.isTurn = matchPlayer.isTurn
 	}
 
 	get() {
 		return {
-			playerInfo: this.playerInfo,
+			playerName: this.playerName,
 			hand: this.hand,
 			drawPile: this.drawPile,
 			discardPile: this.discardPile,

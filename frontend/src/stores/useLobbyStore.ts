@@ -39,7 +39,6 @@ export const useLobbyStore = create<LobbyState>()((set, get) => {
 
 		saveUnchangingValues: () => {
 			const { unchangingValues } = get()
-			console.log('Saving unchanging values:', unchangingValues)
 			localSave('unchangingValues-lobby', unchangingValues)
 		},
 		initializeLobby: (lobby) => {
@@ -48,11 +47,7 @@ export const useLobbyStore = create<LobbyState>()((set, get) => {
 
 			if (!myPlayerName) throw new Error('Your player name was not found')
 
-			console.log('Initializing lobby:', lobby, myPlayerName)
-
 			const localSave = localLoad('unchangingValues-lobby') as UnchangingValuesType
-
-			console.log('Loaded save:', localSave)
 
 			set({
 				...lobby,
@@ -73,7 +68,6 @@ export const useLobbyStore = create<LobbyState>()((set, get) => {
 		},
 		updatePlayer: (player) => {
 			const { players } = get()
-			console.log('Updating player:', player)
 			set({
 				players: players.map((p) =>
 					p.name === player.name ? ('opts' in player ? { ...p, ...player.opts } : player) : p

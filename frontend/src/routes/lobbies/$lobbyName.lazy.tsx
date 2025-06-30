@@ -25,7 +25,6 @@ function LobbyScreen() {
 	const lobbyNameFromParams = Route.useParams().lobbyName
 
 	useEffect(() => {
-		console.log(initializedPage)
 		// Initialize data after a reload or when first joining a new lobby
 		if (!initializedPage) {
 			// If this is our first time loading the page, use the player name we set before navigating
