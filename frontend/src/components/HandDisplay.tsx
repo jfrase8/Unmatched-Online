@@ -2,6 +2,7 @@ import { Card } from '../constants/deckInfo'
 import { useHoveredElements } from '../hooks/useHoveredElemens'
 import { useState } from 'react'
 import { cn } from '../utils/cn'
+import Text from './Text'
 
 interface HandDisplayProps {
 	cards: Card[]
@@ -80,23 +81,44 @@ export function CardDisplay({
 
 	const lowestIndex = !hoveredElements.some((e) => Number(e.getAttribute('data-index')) > index)
 
+	const cardSelected = selected === index
+
 	return (
 		<>
 			<button
 				className={cn(
 					'shadow-lg rounded-md transition-all duration-500 border border-black h-full card',
 					index !== 0 && getMargin(),
-					hovering && lowestIndex && 'z-[100] scale-[110%]',
-					selected === index && 'z-[100] scale-[110%] brightness-125'
+					hovering && lowestIndex && selected === -1 && 'z-[100] scale-[110%]',
+					cardSelected && 'z-[100] scale-[110%] brightness-125'
 				)}
 				onMouseMove={handleHover}
 				onMouseLeave={handleMouseLeave}
 				data-index={index}
-				onClick={() => (selected === index ? setSelected(-1) : setSelected(index))}
+				onClick={() => (cardSelected ? setSelected(-1) : setSelected(index))}
 			>
 				<img src={imagePath} className={'aspect-[--card-aspect] size-full rounded-md'} />
+				{cardSelected && (
+					<div className='flex flex-col gap-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+						<button
+							className={`hover:bg-cyan-500 hover:animate-none duration-500 transition-colors 
+								bg-cyan-600 rounded-full shadow-xl px-4 py-2 animate-pulse`}
+						>
+							<Text as='h1' className='text-[1.3rem]'>
+								Play
+							</Text>
+						</button>
+						<button
+							className={`hover:bg-gray-600 duration-500 transition-colors bg-gray-500 shadow-xl px-4`}
+						>
+							<Text as='h2' className='text-[1.0rem]'>
+								Cancel
+							</Text>
+						</button>
+					</div>
+				)}
 			</button>
-			{selected === index && (
+			{cardSelected && (
 				<img
 					src={imagePath}
 					className='fixed top-0 right-0 h-[30rem] aspect-[--card-aspect] z-[10]'
