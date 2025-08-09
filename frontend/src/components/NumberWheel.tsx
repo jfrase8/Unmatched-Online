@@ -1,12 +1,21 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 interface NumberWheelProps {
 	min?: number
 	max?: number
 	selectedNumber?: number
+	color?: string
 }
 
-export default function NumberWheel({ min = 0, max = 10, selectedNumber = 10 }: NumberWheelProps) {
+export default function NumberWheel({
+	min = 0,
+	max = 10,
+	selectedNumber = 10,
+	color = 'white',
+}: NumberWheelProps) {
+	const [currentNumber, setCurrentNumber] = useState<number>(max)
+	const [wheelRotation, setWheelRotation] = useState<number | undefined>(undefined)
+
 	const numberList = useMemo(
 		() => Array.from({ length: max - min + 1 }, (_, i) => i + min),
 		[min, max]
@@ -32,20 +41,41 @@ export default function NumberWheel({ min = 0, max = 10, selectedNumber = 10 }: 
 		return `rotate(${getAngle(index) + 90}deg)`
 	}
 
-	const wheelRotation = useMemo(() => {
+	// Update prev and current indexes when selectedNumber changes
+	useEffect(() => {
+		if (selectedNumber === currentNumber) return
+
 		const selectedIndex = numberList.indexOf(selectedNumber)
-		const maxIndex = numberList.indexOf(max)
+		const maxIndex = numberList.length - 1
 		const relativeIndex = (selectedIndex - maxIndex + numberList.length) % numberList.length
 		const fraction = relativeIndex / numberList.length
-		const angle = fraction * 360
-		return `rotate(${-angle}deg)`
-	}, [numberList, selectedNumber, max])
+		const angle = fraction * 360 * -1
+		const invert = angle > 0 ? angle - 360 : angle + 360
+
+		const rotation = wheelRotation ?? 0
+
+		const closest = Math.abs(angle - rotation) < Math.abs(invert - rotation) ? angle : invert
+		const farthest = closest === angle ? invert : angle
+
+		// Rotate in the correct direction
+		if (selectedNumber > currentNumber) {
+			if (closest < rotation) setWheelRotation(closest)
+			else setWheelRotation(farthest)
+		} else if (selectedNumber < currentNumber) {
+			if (closest > rotation) setWheelRotation(closest)
+			else setWheelRotation(farthest)
+		}
+
+		setCurrentNumber(selectedNumber)
+	}, [currentNumber, numberList, selectedNumber, wheelRotation])
+
+	console.log(color)
 
 	return (
 		<div className='bg-black rounded-full size-[10rem] flex justify-center items-center relative'>
 			<div
 				className='relative size-[80%] transition-transform duration-500'
-				style={{ transform: wheelRotation }}
+				style={{ transform: `rotate(${wheelRotation}deg)` }}
 			>
 				{numberList.map((n, i) => (
 					<div
@@ -68,7 +98,7 @@ export default function NumberWheel({ min = 0, max = 10, selectedNumber = 10 }: 
 						<circle cx='50' cy='8' r='10' fill='black' />
 					</mask>
 				</defs>
-				<circle cx='50' cy='50' r='50' fill='#e5e7eb' mask='url(#holeMask)' />
+				<circle cx='50' cy='50' r='50' fill={color} mask='url(#holeMask)' />
 			</svg>
 			<div className='absolute size-[20%] bg-black rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2' />
 		</div>

@@ -1,12 +1,11 @@
 import { useLobbyStore } from 'src/stores/useLobbyStore'
-import { CharacterColorEnum } from '../../../common/enums/CharacterColorEnum'
-import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import Text from './Text'
 import useSocket from 'src/hooks/useSocket'
 import LockedIcon from 'src/assets/svg/locked.svg?react'
 import UnlockedIcon from 'src/assets/svg/unlocked.svg?react'
 import { cn } from 'src/utils/cn'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
+import { getCharacterColor } from 'src/utils/getCharacterColor'
 
 export default function LobbyInfo() {
 	const {
@@ -48,11 +47,8 @@ export default function LobbyInfo() {
 			</div>
 			<div className='flex gap-4 xl:gap-0 xl:flex-col'>
 				{players.map((player) => {
-					const characterKey = (
-						Object.keys(CharacterNameEnum) as Array<keyof typeof CharacterNameEnum>
-					).find((key) => CharacterNameEnum[key] === player.character)
 					// Get the character's color based on its key in CharacterColorEnum
-					const playerColor = characterKey ? CharacterColorEnum[characterKey] : 'white'
+					const playerColor = getCharacterColor(player.character) ?? 'white'
 					return (
 						<div className='flex items-center gap-1' key={player.id}>
 							<Text as='h2' className='text-white' style={{ color: playerColor }}>

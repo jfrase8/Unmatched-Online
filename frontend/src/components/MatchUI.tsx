@@ -11,6 +11,7 @@ import { useFlagStore } from 'src/stores/useFlagStore'
 import useSocket from 'src/hooks/useSocket'
 import OpponentDisplay from './OpponentDisplay'
 import NumberWheel from './NumberWheel'
+import { getCharacterColor } from 'src/utils/getCharacterColor'
 
 export default function MatchUI() {
 	const {
@@ -121,7 +122,7 @@ export default function MatchUI() {
 			</div>
 			{/* Hand Area */}
 			<div className='flex w-full h-[50%] justify-center items-center border border-white gap-4'>
-				<NumberWheel max={11} min={0} selectedNumber={7} />
+				<NumberWheel max={16} min={0} selectedNumber={4} color={getCharacterColor(characterName)} />
 				<HandDisplay cards={hand} />
 				{characterName && (
 					<DeckDisplay
