@@ -1,5 +1,5 @@
 import { Card } from '../constants/deckInfo'
-import { useHoveredElements } from '../hooks/useHoveredElemens'
+import { useHoveredElements } from '../hooks/useHoveredElements'
 import { useState } from 'react'
 import { cn } from '../utils/cn'
 import Text from './Text'

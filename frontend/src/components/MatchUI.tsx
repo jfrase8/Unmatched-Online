@@ -122,7 +122,7 @@ export default function MatchUI() {
 			</div>
 			{/* Hand Area */}
 			<div className='flex w-full h-[50%] justify-center items-center border border-white gap-4'>
-				<NumberWheel max={16} min={0} selectedNumber={4} color={getCharacterColor(characterName)} />
+				<NumberWheel max={16} min={0} selectedNumber={8} color={getCharacterColor(characterName)} />
 				<HandDisplay cards={hand} />
 				{characterName && (
 					<DeckDisplay

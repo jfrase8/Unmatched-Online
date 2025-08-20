@@ -69,8 +69,6 @@ export default function NumberWheel({
 		setCurrentNumber(selectedNumber)
 	}, [currentNumber, numberList, selectedNumber, wheelRotation])
 
-	console.log(color)
-
 	return (
 		<div className='bg-black rounded-full size-[10rem] flex justify-center items-center relative'>
 			<div
