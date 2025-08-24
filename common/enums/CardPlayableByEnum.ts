@@ -1,4 +1,4 @@
-export enum CardPlayableByEnum {
+export const enum CardPlayableByEnum {
 	MAIN,
 	SIDEKICK,
 	ANY,

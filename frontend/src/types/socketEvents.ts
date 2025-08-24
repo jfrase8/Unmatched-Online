@@ -1,10 +1,13 @@
 import { LobbyType } from '../../../common/types/LobbyType'
 import { PlayerType } from '../../../common/types/PlayerType'
+import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
 
 export interface SocketEvents {
+	[ServerEmitEnum.ERROR_MESSAGE]: string
+	[ServerEmitEnum.LOBBY_NAME_VALID]: void
+	[ServerEmitEnum.NAME_VALID]: void
+	[ServerEmitEnum.LOBBY_JOINED]: LobbyType
 	lobbyCreated: LobbyType
-	lobbyJoined: LobbyType
-	errorMessage: string
 	setLobby: LobbyType
 	lobbyReturned: LobbyType
 	characterChosen: PlayerType

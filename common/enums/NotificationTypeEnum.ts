@@ -1,3 +1,3 @@
-export enum NotificationTypeEnum {
+export const enum NotificationTypeEnum {
 	ERROR = 'error',
 }

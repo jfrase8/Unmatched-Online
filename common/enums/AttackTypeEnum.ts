@@ -1,4 +1,4 @@
-export enum AttackTypeEnum {
+export const enum AttackTypeEnum {
 	MELEE = 'Melee',
 	RANGED = 'Ranged',
 }

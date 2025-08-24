@@ -1,4 +1,4 @@
-export enum CardTypeEnum {
+export const enum CardTypeEnum {
 	ATTACK = 'Attack',
 	DEFENSE = 'Defense',
 	VERSATILE = 'Versatile',

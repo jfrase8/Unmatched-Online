@@ -3,11 +3,12 @@ import { Server } from 'socket.io'
 import express from 'express'
 import compression from 'compression-next'
 import LobbySystem from './classes/LobbySystem.mts'
-import { CharacterNameEnum } from '../common/enums/CharacterNameEnum'
-import { PlayerType } from '../common/types/PlayerType'
-import emitError from './utils/emitError.mts'
-import { MatchPlayerType } from '../common/types/MatchPlayerType'
-import { DeckObj } from '../common/types/DeckObj'
+import { CharacterNameEnum } from '../common/enums/CharacterNameEnum.ts'
+import { PlayerType } from '../common/types/PlayerType.ts'
+import { MatchPlayerType } from '../common/types/MatchPlayerType.ts'
+import { DeckObj } from '../common/types/DeckObj.ts'
+import { ServerEmitEnum } from '../common/enums/ServerEmitEnum.ts'
+import { ClientEmitEnum } from '../common/enums/ClientEmitEnum.ts'
 
 const lobbySystem = new LobbySystem()
 
@@ -28,39 +29,57 @@ const io = new Server(createServer(app), {
 io.on('connection', (socket) => {
 	console.log('User connected:', socket.id)
 
+	// Emits an error event to the client
+	const emitError = (error: string) => {
+		socket.emit('errorMessage', error)
+	}
+
+	// Checks if the name for a lobby is valid
+	socket.on(ClientEmitEnum.CHECK_LOBBY_NAME, (lobbyName: string, type: 'create' | 'join') => {
+		const lobby = lobbySystem.getLobbyWithName(lobbyName)
+		if (lobby && type === 'create') emitError('A lobby with this name already exists')
+		else if (!lobby && type === 'join') emitError('No lobby with this name found')
+		else socket.emit(ServerEmitEnum.LOBBY_NAME_VALID)
+	})
+
+	// Checks if the player name is valid
+	socket.on(ClientEmitEnum.CHECK_NAME, (lobbyName: string, name: string) => {
+		const lobby = lobbySystem.getLobbyWithName(lobbyName)
+		const nameExists = lobby?.players.find((player) => player.name === name)
+		if (nameExists) emitError('A player with that name is already in the lobby')
+		else socket.emit(ServerEmitEnum.NAME_VALID)
+	})
+
 	// Creates a new lobby with this player as host
-	socket.on('createLobby', (lobbyName: string, host: PlayerType) => {
-		// Check if a lobby with this name already exists
-		if (lobbySystem.getLobbyWithName(lobbyName))
-			emitError(socket, 'A lobby with this name already exists')
+	socket.on(ClientEmitEnum.CREATE_LOBBY, (lobbyName: string, host: PlayerType) => {
+		// Check if the lobby exists
+		const lobby = lobbySystem.getLobbyWithName(lobbyName)
+		if (lobby) emitError('A lobby with this name already exists')
 		// Create a new lobby object
-		else {
-			const lobby = lobbySystem.createLobby(lobbyName, host)
-			socket.emit('lobbyJoined', lobby.get())
-			console.log('Player joined lobby:', lobby)
-		}
+		const newLobby = lobbySystem.createLobby(lobbyName, host)
+		socket.emit(ServerEmitEnum.LOBBY_JOINED, newLobby.get())
 	})
 
 	// Joins the lobby with specified lobby name
-	socket.on('joinLobby', (lobbyName: string, player: PlayerType) => {
+	socket.on(ClientEmitEnum.JOIN_LOBBY, (lobbyName: string, player: PlayerType) => {
 		const lobby = lobbySystem.getLobbyWithName(lobbyName)
 		// Check if the lobby exists
-		if (!lobby) emitError(socket, 'A lobby with this name does not exist')
+		if (!lobby) emitError('A lobby with this name does not exist')
 		// Check if the lobby is already full
-		else if (lobby.players.length === lobby.maxPlayers) emitError(socket, 'Lobby full')
+		else if (lobby.players.length === lobby.maxPlayers) emitError('Lobby full')
 		// Check if game has already started
-		else if (lobby.locked) emitError(socket, 'This game has already started')
+		else if (lobby.locked) emitError('This game has already started')
 		// Add this player to the lobby
 		else {
 			lobby.join(player)
-			lobby.emitEvent('lobbyJoined', io, lobby.get())
+			lobby.emitEvent(ServerEmitEnum.LOBBY_JOINED, io, lobby.get())
 		}
 	})
 
 	// Get the lobby with specified name
 	socket.on('getLobby', (lobbyName: string) => {
 		const lobby = lobbySystem.getLobbyWithName(lobbyName)
-		if (!lobby) return emitError(socket, 'A lobby with this name does not exist')
+		if (!lobby) return emitError('A lobby with this name does not exist')
 		socket.emit('lobbyReturned', lobby.get())
 	})
 
@@ -98,7 +117,7 @@ io.on('connection', (socket) => {
 	socket.on('startMatch', (playerID: string) => {
 		console.log(playerID)
 		const lobby = lobbySystem.getLobbyWithID(playerID)
-		if (!lobby) return emitError(socket, 'Player not found in a lobby')
+		if (!lobby) return emitError('Player not found in a lobby')
 		lobby.set({ locked: true })
 		lobby.emitEvent('matchStarted', io)
 	})
