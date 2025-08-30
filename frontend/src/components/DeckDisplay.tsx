@@ -1,9 +1,9 @@
-import { Card } from '../constants/deckInfo'
+import { Card, PlayableCard } from '../../../common/constants/deckInfo'
 import FlippableCard from './FlippableCard'
 import Text from './Text'
 
 interface DeckDisplayProps {
-	cards: Card[]
+	cards: PlayableCard[]
 	drawnCard: Card | undefined
 	onClick: () => void
 	cardBack: string

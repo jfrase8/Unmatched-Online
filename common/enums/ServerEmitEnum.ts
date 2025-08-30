@@ -3,4 +3,6 @@ export const enum ServerEmitEnum {
 	LOBBY_NAME_VALID = 'lobbyNameValid',
 	NAME_VALID = 'nameValid',
 	LOBBY_JOINED = 'lobbyJoined',
+	CHARACTER_CHOSEN = 'characterChosen',
+	MATCH_STARTED = 'matchStarted',
 }

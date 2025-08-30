@@ -24,7 +24,7 @@ export default function CreateJoinLobby() {
 	const router = useRouter()
 
 	// Stores
-	const { setMyName } = useLobbyStore()
+	const { updateLobby } = useLobbyStore()
 
 	// Hooks
 	const { getPanelState, open, close, changeDir } = useSlidingPanel()
@@ -111,13 +111,14 @@ export default function CreateJoinLobby() {
 		eventName: ServerEmitEnum.LOBBY_JOINED,
 		callBack: (lobby) => {
 			// Reset lobby local storage
-			localReset('unchangingValues-lobby')
+			localReset('lobby-storage')
 
-			// Set player name
-			setMyName(typedName)
+			// Set initial lobby data
+			console.log('Setting lobby store data:', lobby, typedName)
+			updateLobby({ ...lobby, myPlayerName: typedName, lobbyName: lobby.lobbyName })
 
 			// Navigate
-			router.navigate({ to: `/lobbies/${lobby.name}` })
+			router.navigate({ to: `/lobbies/${lobby.lobbyName}` })
 		},
 	})
 

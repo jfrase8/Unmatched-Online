@@ -1,19 +1,18 @@
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
-import { useCharacterData } from '../hooks/useCharacterInfo'
-import { decks } from '../constants/deckInfo'
+import { decks } from '../../../common/constants/deckInfo'
 
 import { sortDeck } from '../utils/sort'
 import { BlurredPopup } from './BlurredPopup'
 import { capitalizeFirstLetter } from 'src/utils/capitalizeFirstLetter'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
 import FlippableCard from './FlippableCard'
-import { characters } from 'src/constants/characterInfo'
 import clsx from 'clsx'
 import Text from './Text'
 import Arrow from 'src/assets/svg/down_arrow.svg?react'
 import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import { SortTypeEnum } from '../../../common/enums/SortTypeEnum'
+import { characters } from '../../../common/constants/characterInfo'
 
 interface CharacterInfoPopupProps {
 	/** The name of the character to show the info for */
@@ -25,21 +24,28 @@ interface CharacterInfoPopupProps {
 }
 
 /** Modal component that shows when clicking on view more for a character when choosing a character to play */
-export default function CharacterInfoPopup({ character, setShowPopup, infoContent }: CharacterInfoPopupProps) {
-	const data = useCharacterData(character)
+export default function CharacterInfoPopup({
+	character,
+	setShowPopup,
+	infoContent,
+}: CharacterInfoPopupProps) {
+	const data = characters[character]
 
-	const headerText = useMemo(
-		() => `${data?.title} ${capitalizeFirstLetter(infoContent)} Info`,
-		[data?.title, infoContent]
-	)
+	const headerText = `${character} ${capitalizeFirstLetter(infoContent)} Info`
 
 	const big = useBreakpoint('big')
 	const sm = useBreakpoint('sm')
 	const xs = useBreakpoint('xs')
 	const xxs = useBreakpoint('xxs')
 
-	const cardSize = useMemo(() => (sm ? 'h-[45rem]' : xs ? 'h-[35rem]' : xxs ? 'h-[28rem]' : 'h-[25rem]'), [sm, xs, xxs])
-	const topPadding = useMemo(() => (sm ? 'pt-4' : xs ? 'pt-16' : xxs ? 'pt-24' : 'pt-48'), [sm, xs, xxs])
+	const cardSize = useMemo(
+		() => (sm ? 'h-[45rem]' : xs ? 'h-[35rem]' : xxs ? 'h-[28rem]' : 'h-[25rem]'),
+		[sm, xs, xxs]
+	)
+	const topPadding = useMemo(
+		() => (sm ? 'pt-4' : xs ? 'pt-16' : xxs ? 'pt-24' : 'pt-48'),
+		[sm, xs, xxs]
+	)
 
 	const [flip, setFlip] = useState(false)
 
@@ -63,7 +69,13 @@ export default function CharacterInfoPopup({ character, setShowPopup, infoConten
 			) : (
 				<>
 					{!big && (
-						<div className={clsx('flex gap-2 justify-center items-center', topPadding, !sm && 'flex-col')}>
+						<div
+							className={clsx(
+								'flex gap-2 justify-center items-center',
+								topPadding,
+								!sm && 'flex-col'
+							)}
+						>
 							<Text as='h1' className='text-[1.8rem]'>
 								Click to Flip
 							</Text>
@@ -72,12 +84,15 @@ export default function CharacterInfoPopup({ character, setShowPopup, infoConten
 					)}
 					<div className='flex size-full justify-center items-center'>
 						{big ? (
-							<img src={data.characterSheet} className='size-[85%] object-contain aspect-[1277/911]' />
+							<img
+								src={data.characterSheet}
+								className='size-[85%] object-contain aspect-[1277/911]'
+							/>
 						) : (
 							<button className='size-fit' onClick={() => setFlip((prev) => !prev)}>
 								<FlippableCard
-									front={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.front ?? ''}
-									back={characters.find((c) => c.title === CharacterNameEnum.MEDUSA)?.splitCharacterSheet?.back ?? ''}
+									front={characters[CharacterNameEnum.MEDUSA].splitCharacterSheet.front}
+									back={characters[CharacterNameEnum.MEDUSA].splitCharacterSheet.back}
 									flip={flip}
 									imageClassName={cardSize}
 								/>

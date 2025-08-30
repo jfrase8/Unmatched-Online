@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { forwardRef } from 'react'
-import { OptionObj } from '../constants/characterInfo'
+import { OptionObj } from '../../../common/constants/characterInfo'
 import { cn } from '../utils/cn'
 import OptionCard from './OptionCard'
 import { useLobbyStore } from 'src/stores/useLobbyStore'

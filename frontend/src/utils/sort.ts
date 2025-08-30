@@ -1,6 +1,6 @@
 /** Sort takes a character's deck and sorts it based on the specified method. */
 
-import { Deck } from '../constants/deckInfo'
+import { Deck } from '../../../common/constants/deckInfo'
 import { CardTypeEnum } from '../../../common/enums/CardTypeEnum'
 import { SortTypeEnum } from '../../../common/enums/SortTypeEnum'
 

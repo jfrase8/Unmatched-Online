@@ -5,25 +5,18 @@ import LockedIcon from 'src/assets/svg/locked.svg?react'
 import UnlockedIcon from 'src/assets/svg/unlocked.svg?react'
 import { cn } from 'src/utils/cn'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
-import { getCharacterColor } from 'src/utils/getCharacterColor'
+import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
+import { CharacterColorMap } from '../../../common/constants/CharacterColor'
 
 export default function LobbyInfo() {
-	const {
-		maxPlayers,
-		players,
-		addPlayer,
-		host,
-		unchangingValues: { lobbyName },
-	} = useLobbyStore()
+	const { maxPlayers, players, host, lobbyName, updateLobby } = useLobbyStore()
 
 	const xl = useBreakpoint('xl')
 
 	useSocket({
-		eventName: 'lobbyJoined',
+		eventName: ServerEmitEnum.LOBBY_JOINED,
 		callBack: (lobby) => {
-			const newPlayer = lobby.players[lobby.players.length - 1]
-			if (!newPlayer) throw new Error('Lobby only has 1 player when expecting a second')
-			addPlayer(newPlayer)
+			updateLobby(lobby)
 		},
 	})
 
@@ -48,7 +41,7 @@ export default function LobbyInfo() {
 			<div className='flex gap-4 xl:gap-0 xl:flex-col'>
 				{players.map((player) => {
 					// Get the character's color based on its key in CharacterColorEnum
-					const playerColor = getCharacterColor(player.character) ?? 'white'
+					const playerColor = player.character ? CharacterColorMap[player.character] : 'white'
 					return (
 						<div className='flex items-center gap-1' key={player.id}>
 							<Text as='h2' className='text-white' style={{ color: playerColor }}>

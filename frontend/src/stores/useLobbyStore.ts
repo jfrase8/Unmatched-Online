@@ -1,13 +1,9 @@
 import { create } from 'zustand'
 import { PlayerType } from '../../../common/types/PlayerType'
-import { LobbyType } from '../../../common/types/LobbyType'
+import { persist } from 'zustand/middleware'
 import { socket } from 'src/utils/socket'
-import { localLoad, localSave } from 'src/utils/localStorage'
-
-type UnchangingValuesType = {
-	myPlayerName: string
-	lobbyName: string
-}
+import { LobbyType } from '../../../common/types/LobbyType'
+import { ClientEmitEnum } from '../../../common/enums/ClientEmitEnum'
 
 interface LobbyState {
 	players: PlayerType[]
@@ -15,72 +11,58 @@ interface LobbyState {
 	host: string
 	locked: boolean
 
-	unchangingValues: UnchangingValuesType
+	// Values saved to local storage so that they don't reset on refresh
+	myPlayerName: string
+	lobbyName: string
 
-	saveUnchangingValues: () => void
-	initializeLobby: (lobby: LobbyType) => void
-	setMyName: (name: string) => void
-	setLobbyName: (host: string) => void
-	lockLobby: () => void
-	updatePlayer: (player: { name: string; opts: Partial<PlayerType> } | PlayerType) => void
-	addPlayer: (player: PlayerType) => void
-	removePlayer: (player: PlayerType) => void
+	updateLobby: (values: Partial<LobbyState>) => void
+
+	fetchLobby: () => void
 }
 
-export const useLobbyStore = create<LobbyState>()((set, get) => {
-	return {
-		name: '',
-		players: [],
-		maxPlayers: undefined,
-		host: '',
-		locked: false,
+export const useLobbyStore = create<LobbyState>()(
+	persist(
+		(set, get) => {
+			return {
+				players: [],
+				maxPlayers: undefined,
+				host: '',
+				locked: false,
 
-		unchangingValues: { myPlayerName: '', lobbyName: '' },
+				myPlayerName: '',
+				lobbyName: '',
 
-		saveUnchangingValues: () => {
-			const { unchangingValues } = get()
-			localSave('unchangingValues-lobby', unchangingValues)
-		},
-		initializeLobby: (lobby) => {
-			const { saveUnchangingValues } = get()
-			const myPlayerName = lobby.players.find((p) => p.id === socket.id)?.name
+				updateLobby: (values) => set({ ...values }),
 
-			if (!myPlayerName) throw new Error('Your player name was not found')
-
-			const localSave = localLoad('unchangingValues-lobby') as UnchangingValuesType
-
-			set({
-				...lobby,
-				unchangingValues: localSave || { myPlayerName, lobbyName: lobby.name },
-			})
-			if (!localSave) saveUnchangingValues()
+				fetchLobby: () => {
+					const { myPlayerName, lobbyName } = get()
+					console.log('uhhh', myPlayerName)
+					if (myPlayerName && lobbyName) {
+						console.log('!! Fetching lobby with socket')
+						socket.emit(
+							// Event name
+							ClientEmitEnum.GET_AFTER_REFRESH,
+							// Params
+							{ lobbyName, playerName: myPlayerName },
+							// Callback function
+							(lobbyData: LobbyType) =>
+								set({
+									...lobbyData,
+								})
+						)
+					}
+				},
+			}
 		},
-		setMyName: (name: string) => {
-			const { unchangingValues } = get()
-			set({ unchangingValues: { ...unchangingValues, myPlayerName: name } })
-		},
-		setLobbyName: (lobbyName: string) => {
-			const { unchangingValues } = get()
-			set({ unchangingValues: { ...unchangingValues, lobbyName } })
-		},
-		lockLobby: () => {
-			set({ locked: true })
-		},
-		updatePlayer: (player) => {
-			const { players } = get()
-			set({
-				players: players.map((p) =>
-					p.name === player.name ? ('opts' in player ? { ...p, ...player.opts } : player) : p
-				),
-			})
-		},
-		addPlayer: (player) => {
-			const { players } = get()
-			set({ players: [...players, player] })
-		},
-		removePlayer: (player) => {
-			const { players } = get()
-			set({ players: players.filter((p) => p.id !== player.id) })
-		},
-	}
-})
+		{
+			name: 'lobby-storage',
+			partialize: (state) => ({ myPlayerName: state.myPlayerName, lobbyName: state.lobbyName }),
+			onRehydrateStorage: () => (state) => {
+				if (state) {
+					// Call socket after rehydration
+					state.fetchLobby()
+				}
+			},
+		}
+	)
+)

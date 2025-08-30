@@ -1,11 +1,11 @@
 import ScrollableCardOptions from '../components/ScrollableCardOptions'
 import Text from '../components/Text'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CharacterDescription from '../components/CharacterDescription'
 import SlidingPanel from '../components/SlidingPanel'
 import { DirectionalEnum } from '../../../common/enums/DirectionalEnum'
 import { useBreakpoint } from '../hooks/useBreakpoint'
-import { OptionObj, options } from '../constants/characterInfo'
+import { OptionObj, options } from '../../../common/constants/characterInfo'
 import useSlidingPanel from '../hooks/useSlidingPanel'
 import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
@@ -14,22 +14,22 @@ import CharacterInfoPopup from './CharacterInfoPopup'
 import { cn } from 'src/utils/cn'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
 import { useRouter } from '@tanstack/react-router'
+import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
+import { LobbyType } from '../../../common/types/LobbyType'
+import { useMyPlayer } from 'src/hooks/useMyPlayer'
 
 /** Component for selecting a character when in a lobby. */
+
 export default function CharacterSelection() {
-	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(undefined) // The character the user has selected
+	const { host, players, maxPlayers, myPlayerName, updateLobby } = useLobbyStore()
+	const myPlayer = useMyPlayer()
+	const [selectedCharacter, setSelectedCharacter] = useState<OptionObj | undefined>(
+		options.find((c) => c.title === myPlayer?.character)
+	) // The character the user has selected
 	const [displayCharacter, setDisplayCharacter] = useState<OptionObj | undefined>(undefined) // The character that should be displayed on the panel
 	const [isClosing, setIsClosing] = useState(false) // Track if the panel is currently closing
 	const [showOverlay, setShowOverlay] = useState<string | undefined>(undefined) // Whether a characters deck/hero overlay should show
 
-	const {
-		host,
-		lockLobby,
-		updatePlayer,
-		unchangingValues: { myPlayerName },
-		players,
-		maxPlayers,
-	} = useLobbyStore()
 	const router = useRouter()
 	const { getPanelState, changeDir, open, close } = useSlidingPanel()
 
@@ -80,53 +80,40 @@ export default function CharacterSelection() {
 	const xl = useBreakpoint('xl')
 	const xxl = useBreakpoint('2xl')
 
+	// For switching the panel direction on breakpoint changing
 	useEffect(() => {
 		if (xl) changeDir(panelID, DirectionalEnum.LEFT)
 		else changeDir(panelID, DirectionalEnum.DOWN)
 	}, [changeDir, xl])
 
-	// Set selected character after a refresh
-	useEffect(() => {
-		if (hasChosen && !panel.isOpen)
-			setSelectedCharacter(
-				options.find((c) => c.title === players.find((p) => p.name === myPlayerName)?.character)
-			)
-	}, [hasChosen, myPlayerName, panel.isOpen, players])
-
 	// Socket events
 	useSocket({
-		eventName: 'characterChosen',
-		callBack: (player) => {
-			updatePlayer(player)
+		eventName: ServerEmitEnum.CHARACTER_CHOSEN,
+		callBack: (players) => {
+			updateLobby({ players })
 		},
 	})
 
 	useSocket({
-		eventName: 'matchStarted',
-		callBack: () => {
-			lockLobby()
+		eventName: ServerEmitEnum.MATCH_STARTED,
+		callBack: (lobby: LobbyType) => {
+			updateLobby(lobby)
 
 			// Navigate
 			router.navigate({ to: `/match` })
 		},
 	})
 
-	const optionsClassName = useMemo(
-		() => (selectedCharacter && xl ? 'transition-transform duration-700 translate-x-[50%]' : ''),
-		[selectedCharacter, xl]
-	)
-
-	const buttonText = useMemo(() => (hasChosen ? 'Cancel' : 'Ready'), [hasChosen])
-
 	const isHost = myPlayerName === host
 	const allPlayersChosen = players.every((p) => p.character) && players.length === maxPlayers
 
-	const disabled = useMemo(
-		() =>
-			!selectedCharacter ||
-			players.some((p) => p.name !== myPlayerName && p.character === selectedCharacter.title),
-		[myPlayerName, players, selectedCharacter]
-	)
+	const optionsClassName =
+		selectedCharacter && xl ? 'transition-transform duration-700 translate-x-[50%]' : ''
+	const buttonText = hasChosen ? 'Cancel' : 'Ready'
+
+	const disabled =
+		!selectedCharacter ||
+		players.some((p) => p.name !== myPlayerName && p.character === selectedCharacter.title)
 
 	return (
 		<>

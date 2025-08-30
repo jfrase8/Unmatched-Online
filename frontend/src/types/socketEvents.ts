@@ -7,11 +7,10 @@ export interface SocketEvents {
 	[ServerEmitEnum.LOBBY_NAME_VALID]: void
 	[ServerEmitEnum.NAME_VALID]: void
 	[ServerEmitEnum.LOBBY_JOINED]: LobbyType
-	lobbyCreated: LobbyType
 	setLobby: LobbyType
 	lobbyReturned: LobbyType
-	characterChosen: PlayerType
-	matchStarted: void
+	[ServerEmitEnum.CHARACTER_CHOSEN]: PlayerType[]
+	[ServerEmitEnum.MATCH_STARTED]: LobbyType
 	playerUpdated: PlayerType
 }
 

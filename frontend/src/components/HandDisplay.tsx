@@ -1,4 +1,4 @@
-import { Card } from '../constants/deckInfo'
+import { Card } from '../../../common/constants/deckInfo'
 import { useHoveredElements } from '../hooks/useHoveredElements'
 import { useState } from 'react'
 import { cn } from '../utils/cn'

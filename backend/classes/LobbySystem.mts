@@ -2,7 +2,8 @@ import { CharacterNameEnum } from '../../common/enums/CharacterNameEnum'
 import { PlayerType } from '../../common/types/PlayerType'
 import { LobbyType } from '../../common/types/LobbyType'
 import { Server } from 'socket.io'
-import Match from './Match.mts'
+import { PlayableCard } from '../../common/constants/deckInfo'
+import { createDeck } from '../utils/createDeck.mts'
 
 export default class LobbySystem {
 	lobbies: Lobby[]
@@ -19,7 +20,7 @@ export default class LobbySystem {
 
 	// Get the lobby with this specific name
 	getLobbyWithName(lobbyName: string) {
-		return this.lobbies.find((lobby) => lobby.name === lobbyName)
+		return this.lobbies.find((lobby) => lobby.lobbyName === lobbyName)
 	}
 
 	// Get the lobby containing a specific player's ID
@@ -33,20 +34,18 @@ export default class LobbySystem {
 }
 
 class Lobby implements LobbyType {
-	name: string
+	lobbyName: string
 	players: Player[]
 	maxPlayers: number
 	locked: boolean
 	host: string
-	match: Match
 
 	constructor(name: string, players: Player[], maxPlayers = 2, host: string) {
-		this.name = name
+		this.lobbyName = name
 		this.players = players
 		this.maxPlayers = maxPlayers
 		this.locked = false
 		this.host = host
-		this.match = new Match([])
 	}
 
 	emitEvent(event: string, io: Server, data?: unknown, excludePlayerIDs?: string[]) {
@@ -68,14 +67,20 @@ class Lobby implements LobbyType {
 		return this.players.find((player) => player.name === playerName)
 	}
 
+	createDecks() {
+		this.players.forEach((player) => {
+			if (!player.character) throw new Error('Player does not have a character')
+			player.set({ drawPile: createDeck(player.character) })
+		})
+	}
+
 	get() {
 		return {
-			name: this.name,
+			lobbyName: this.lobbyName,
 			players: this.players,
 			maxPlayers: this.maxPlayers,
 			locked: this.locked,
 			host: this.host,
-			match: this.match,
 		}
 	}
 	set(update: Partial<Lobby>) {
@@ -88,9 +93,46 @@ class Player implements PlayerType {
 	name: string
 	character?: CharacterNameEnum
 
-	constructor(id: string, name: string) {
+	// Values for when a match has started
+	hand?: PlayableCard[]
+	drawPile?: PlayableCard[]
+	discardPile?: PlayableCard[]
+	drawnCard?: PlayableCard
+	isTurn: boolean
+
+	constructor(id: string, name: string, isTurn = false) {
 		this.id = id
 		this.name = name
+		this.isTurn = isTurn
+	}
+
+	shuffleDeck() {
+		if (!this.drawPile) throw new Error('No deck to shuffle')
+		const shuffledDeck = [...this.drawPile]
+		for (let i = this.drawPile.length - 1; i > 0; i--) {
+			// Generate random index from 0 to i
+			const j = Math.floor(Math.random() * (i + 1))
+			// Swap elements at i and j
+			;[shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]]
+		}
+		this.drawPile = shuffledDeck
+	}
+
+	drawStartingHand() {
+		if (!this.drawPile) throw new Error('Player does not have a deck')
+		this.hand = this.drawPile.splice(0, 5)
+	}
+
+	drawCard() {
+		if (!this.drawPile) throw new Error('Player does not have a deck')
+		this.drawnCard = this.drawPile[0]
+		return this.drawnCard
+	}
+
+	addCardToHand(card: PlayableCard) {
+		this.hand?.push(card)
+		this.drawnCard = undefined
+		return this.drawPile?.shift()
 	}
 
 	get() {
@@ -98,6 +140,11 @@ class Player implements PlayerType {
 			id: this.id,
 			name: this.name,
 			character: this.character,
+			hand: this.hand,
+			drawPile: this.drawPile,
+			discardPile: this.discardPile,
+			drawnCard: this.drawnCard,
+			isTurn: this.isTurn,
 		}
 	}
 	set(update: Partial<Player>) {

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { characters, OptionObj } from '../constants/characterInfo'
+import { characters, OptionObj } from '../../../common/constants/characterInfo'
 import Text from './Text'
 import Toggle from './Toggle'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
@@ -12,7 +12,11 @@ interface CharacterDescriptionProps {
 	onHeroClick: () => void
 }
 
-export default function CharacterDescription({ selected, onDeckClick, onHeroClick }: CharacterDescriptionProps) {
+export default function CharacterDescription({
+	selected,
+	onDeckClick,
+	onHeroClick,
+}: CharacterDescriptionProps) {
 	const [toggle, setToggle] = useState<ToggleType>(toggleOptions[0])
 
 	const xs = useBreakpoint('xs')
@@ -20,7 +24,7 @@ export default function CharacterDescription({ selected, onDeckClick, onHeroClic
 	if (!selected) return null
 
 	// Get the full character info from selected
-	const character = characters.find((c) => c.title === selected.title)
+	const character = characters[selected.title]
 	if (!character) throw Error('Selected character info not found')
 
 	return (
@@ -38,7 +42,10 @@ export default function CharacterDescription({ selected, onDeckClick, onHeroClic
 					<>
 						<div className='flex flex-col justify-center w-[50%] h-full'>
 							<Text as='h1'>Hero Ability</Text>
-							<HeroAbilityInfo specialAbility={character.specialAbility} onHeroClick={onHeroClick} />
+							<HeroAbilityInfo
+								specialAbility={character.specialAbility}
+								onHeroClick={onHeroClick}
+							/>
 						</div>
 						<div className='flex flex-col justify-center items-center h-full w-[30%]'>
 							<Text as='h1'>Deck Info</Text>

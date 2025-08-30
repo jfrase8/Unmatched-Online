@@ -26,5 +26,11 @@
 			"src/*": ["src/*"] // Maps src/* to src/
 		}
 	},
-	"include": ["src", "common/enums"]
+	"include": [
+		"src",
+		"common/enums",
+		"../common/constants/characterInfo.ts",
+		"../common/constants/deckInfo.ts",
+		"../common/constants/universalCards.ts"
+	]
 }

@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { OptionObj } from '../constants/characterInfo'
+import { OptionObj } from '../../../common/constants/characterInfo'
 import Text from './Text'
 import { useMemo } from 'react'
 
@@ -12,8 +12,17 @@ interface OptionCardProps {
 	playerWhoSelected?: string
 }
 
-export default function OptionCard({ option, onClick, isSelected, className, playerWhoSelected }: OptionCardProps) {
-	const displayedName = useMemo(() => (playerWhoSelected ? playerWhoSelected : ''), [playerWhoSelected])
+export default function OptionCard({
+	option,
+	onClick,
+	isSelected,
+	className,
+	playerWhoSelected,
+}: OptionCardProps) {
+	const displayedName = useMemo(
+		() => (playerWhoSelected ? playerWhoSelected : ''),
+		[playerWhoSelected]
+	)
 	return (
 		<button
 			className={clsx(

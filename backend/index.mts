@@ -5,10 +5,10 @@ import compression from 'compression-next'
 import LobbySystem from './classes/LobbySystem.mts'
 import { CharacterNameEnum } from '../common/enums/CharacterNameEnum.ts'
 import { PlayerType } from '../common/types/PlayerType.ts'
-import { MatchPlayerType } from '../common/types/MatchPlayerType.ts'
-import { DeckObj } from '../common/types/DeckObj.ts'
 import { ServerEmitEnum } from '../common/enums/ServerEmitEnum.ts'
 import { ClientEmitEnum } from '../common/enums/ClientEmitEnum.ts'
+import { LobbyType } from '../common/types/LobbyType.ts'
+import { PlayableCard } from '../common/constants/deckInfo.ts'
 
 const lobbySystem = new LobbySystem()
 
@@ -77,13 +77,27 @@ io.on('connection', (socket) => {
 	})
 
 	// Get the lobby with specified name
-	socket.on('getLobby', (lobbyName: string) => {
+	socket.on(ClientEmitEnum.GET_LOBBY, (lobbyName: string, ack: (lobby: LobbyType) => void) => {
 		const lobby = lobbySystem.getLobbyWithName(lobbyName)
-		if (!lobby) return emitError('A lobby with this name does not exist')
-		socket.emit('lobbyReturned', lobby.get())
+		if (!lobby) return emitError('Error getting lobby with name: ' + lobbyName)
+		ack(lobby.get())
 	})
 
-	//
+	// Get the lobby and update the player stored id
+	type UpdatePlayerID = { lobbyName: string; playerName: string }
+	socket.on(
+		ClientEmitEnum.GET_AFTER_REFRESH,
+		({ lobbyName, playerName }: UpdatePlayerID, ack: (lobby: LobbyType) => void) => {
+			console.log('Get after refresh:', { lobbyName, playerName })
+			const lobby = lobbySystem.getLobbyWithName(lobbyName)
+			if (!lobby) return emitError('Error getting lobby with name: ' + lobbyName)
+
+			lobby.players.find((p) => p.name === playerName)?.set({ id: socket.id })
+
+			ack(lobby.get())
+		}
+	)
+
 	socket.on('updatePlayerID', (lobbyName: string, playerID: string, playerName: string) => {
 		const lobby = lobbySystem.getLobbyWithName(lobbyName)
 		if (!lobby) throw new Error('Lobby not found')
@@ -101,42 +115,85 @@ io.on('connection', (socket) => {
 	})
 
 	// Set the player's chosen character
-	socket.on('chooseCharacter', (playerID: string, characterName?: CharacterNameEnum) => {
-		const lobby = lobbySystem.getLobbyWithID(playerID)
-		const player = lobby?.getPlayerWithID(playerID)
+	socket.on(
+		ClientEmitEnum.CHOOSE_CHARACTER,
+		(playerID: string, characterName?: CharacterNameEnum) => {
+			const lobby = lobbySystem.getLobbyWithID(playerID)
+			const player = lobby?.getPlayerWithID(playerID)
 
-		console.log(characterName, player)
+			console.log(characterName, player)
 
-		if (!lobby || !player) throw new Error('Player not found in a lobby')
+			if (!lobby || !player) throw new Error('Player not found in a lobby')
 
-		player.set({ character: characterName })
+			player.set({ character: characterName })
 
-		lobby.emitEvent('characterChosen', io, player.get())
-	})
+			console.log('Player chosen character:', lobby.get().players)
 
-	socket.on('startMatch', (playerID: string) => {
-		console.log(playerID)
+			lobby.emitEvent(ServerEmitEnum.CHARACTER_CHOSEN, io, lobby.get().players)
+		}
+	)
+
+	// Starts the game
+	socket.on(ClientEmitEnum.START_MATCH, (playerID: string) => {
 		const lobby = lobbySystem.getLobbyWithID(playerID)
 		if (!lobby) return emitError('Player not found in a lobby')
 		lobby.set({ locked: true })
-		lobby.emitEvent('matchStarted', io)
+
+		lobby.createDecks()
+
+		// Shuffle all player's decks and draw their starting hand
+		lobby.players.forEach((player) => {
+			if (!player.character) return
+			player.shuffleDeck()
+			player.drawStartingHand()
+		})
+
+		lobby.emitEvent(ServerEmitEnum.MATCH_STARTED, io, lobby.get())
 	})
 
-	socket.on('saveMatchPlayer', (matchPlayer: MatchPlayerType) => {
-		const lobby = lobbySystem.getLobbyWithPlayerName(matchPlayer.playerName)
-		console.log('Match Player:', matchPlayer, lobbySystem.lobbies[0])
-		if (!lobby) throw new Error('Player not found in a lobby')
-		lobby.match.addPlayer(matchPlayer)
-		console.log('Match player saved:', lobby.match.players)
-	})
-
-	socket.on('updatePlayerDeck', (playerName: string, playerDeck: Partial<DeckObj>) => {
+	// Draws a card and sets it as the players drawn card
+	socket.on(ClientEmitEnum.DRAW_CARD, (ack: (lobby: LobbyType) => void) => {
+		console.log('Player drawing card')
 		const lobby = lobbySystem.getLobbyWithID(socket.id)
 		if (!lobby) throw new Error('Socket id not found in a lobby')
-		const player = lobby.match.findPlayer(playerName)
+		const player = lobby.getPlayerWithID(socket.id)
 		if (!player) throw new Error('Player not found in a this lobby')
-		player.set({ ...playerDeck })
+		player.drawCard()
+
+		console.log('Player drawn card:', player.get().drawnCard)
+
+		ack(lobby.get())
 	})
+
+	// Adds a card to the player's hand
+	socket.on(
+		ClientEmitEnum.ADD_CARD_TO_HAND,
+		(drawnCard: PlayableCard, ack: (lobby: LobbyType) => void) => {
+			const lobby = lobbySystem.getLobbyWithID(socket.id)
+			if (!lobby) throw new Error('Socket id not found in a lobby')
+			const player = lobby.getPlayerWithID(socket.id)
+			if (!player) throw new Error('Player not found in a this lobby')
+			player.addCardToHand(drawnCard)
+
+			ack(lobby.get())
+		}
+	)
+
+	// socket.on('saveMatchPlayer', (matchPlayer: MatchPlayerType) => {
+	// 	const lobby = lobbySystem.getLobbyWithPlayerName(matchPlayer.playerName)
+	// 	console.log('Match Player:', matchPlayer, lobbySystem.lobbies[0])
+	// 	if (!lobby) throw new Error('Player not found in a lobby')
+	// 	lobby.match.addPlayer(matchPlayer)
+	// 	console.log('Match player saved:', lobby.match.players)
+	// })
+
+	// socket.on('updatePlayerDeck', (playerName: string, playerDeck: Partial<DeckObj>) => {
+	// 	const lobby = lobbySystem.getLobbyWithID(socket.id)
+	// 	if (!lobby) throw new Error('Socket id not found in a lobby')
+	// 	const player = lobby.match.findPlayer(playerName)
+	// 	if (!player) throw new Error('Player not found in a this lobby')
+	// 	player.set({ ...playerDeck })
+	// })
 })
 
 app.use(compression())

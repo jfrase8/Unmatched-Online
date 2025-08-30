@@ -1,4 +1,4 @@
-import { PlayableCard } from '../../frontend/src/constants/deckInfo'
+import { PlayableCard } from '../constants/deckInfo'
 
 export interface DeckObj {
 	drawPile: PlayableCard[]
