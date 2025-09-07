@@ -7,11 +7,10 @@ export interface SocketEvents {
 	[ServerEmitEnum.LOBBY_NAME_VALID]: void
 	[ServerEmitEnum.NAME_VALID]: void
 	[ServerEmitEnum.LOBBY_JOINED]: LobbyType
-	setLobby: LobbyType
-	lobbyReturned: LobbyType
 	[ServerEmitEnum.CHARACTER_CHOSEN]: PlayerType[]
 	[ServerEmitEnum.MATCH_STARTED]: LobbyType
-	playerUpdated: PlayerType
+	[ServerEmitEnum.PLAYER_DREW_CARD]: LobbyType
+	[ServerEmitEnum.PLAYER_PLAYED_CARD]: LobbyType
 }
 
 export type SocketCallback<T extends keyof SocketEvents> = (data: SocketEvents[T]) => void

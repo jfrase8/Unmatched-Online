@@ -1,8 +1,8 @@
-import { CharacterNameEnum } from '../enums/CharacterNameEnum'
-import { AttackTypeEnum } from '../enums/AttackTypeEnum'
-import { SidekickNameEnum } from '../enums/SidekickNameEnum'
-import { Deck, decks } from './deckInfo'
-import { CharacterColor, CharacterColorMap } from './CharacterColor'
+import { CharacterNameEnum } from '../enums/CharacterNameEnum.ts'
+import { AttackTypeEnum } from '../enums/AttackTypeEnum.ts'
+import { SidekickNameEnum } from '../enums/SidekickNameEnum.ts'
+import { Deck, decks } from './deckInfo.ts'
+import { CharacterColor, CharacterColorMap } from './CharacterColor.ts'
 
 export type Character = {
 	title: CharacterNameEnum

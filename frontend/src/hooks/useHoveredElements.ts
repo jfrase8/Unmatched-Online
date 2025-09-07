@@ -7,7 +7,7 @@ export function useHoveredElements(querySelector?: string) {
 	const [hoveredElements, setHoveredElements] = useState<Element[]>([])
 
 	const handleHover = useCallback(
-		(event: React.MouseEvent<HTMLButtonElement>) => {
+		(event: React.MouseEvent<HTMLDivElement>) => {
 			// Get all elements at the current mouse position
 			const elements = document.elementsFromPoint(event.clientX, event.clientY)
 

@@ -9,6 +9,7 @@ import { ServerEmitEnum } from '../common/enums/ServerEmitEnum.ts'
 import { ClientEmitEnum } from '../common/enums/ClientEmitEnum.ts'
 import { LobbyType } from '../common/types/LobbyType.ts'
 import { PlayableCard } from '../common/constants/deckInfo.ts'
+import { CardTypeEnum } from '../common/enums/CardTypeEnum.ts'
 
 const lobbySystem = new LobbySystem()
 
@@ -146,6 +147,7 @@ io.on('connection', (socket) => {
 			if (!player.character) return
 			player.shuffleDeck()
 			player.drawStartingHand()
+			player.setStats()
 		})
 
 		lobby.emitEvent(ServerEmitEnum.MATCH_STARTED, io, lobby.get())
@@ -176,26 +178,37 @@ io.on('connection', (socket) => {
 			player.addCardToHand(drawnCard)
 
 			ack(lobby.get())
+			// Show all players that this player drew a card
+			lobby.emitEvent(ServerEmitEnum.PLAYER_DREW_CARD, io, lobby.get(), [socket.id])
 		}
 	)
 
-	// socket.on('saveMatchPlayer', (matchPlayer: MatchPlayerType) => {
-	// 	const lobby = lobbySystem.getLobbyWithPlayerName(matchPlayer.playerName)
-	// 	console.log('Match Player:', matchPlayer, lobbySystem.lobbies[0])
-	// 	if (!lobby) throw new Error('Player not found in a lobby')
-	// 	lobby.match.addPlayer(matchPlayer)
-	// 	console.log('Match player saved:', lobby.match.players)
-	// })
+	// Play the card from players hand
+	socket.on(ClientEmitEnum.PLAY_CARD, (card: PlayableCard) => {
+		const lobby = lobbySystem.getLobbyWithID(socket.id)
+		if (!lobby) throw new Error('Socket id not found in a lobby')
+		const player = lobby.getPlayerWithID(socket.id)
+		if (!player) throw new Error('Player not found in a this lobby')
 
-	// socket.on('updatePlayerDeck', (playerName: string, playerDeck: Partial<DeckObj>) => {
-	// 	const lobby = lobbySystem.getLobbyWithID(socket.id)
-	// 	if (!lobby) throw new Error('Socket id not found in a lobby')
-	// 	const player = lobby.match.findPlayer(playerName)
-	// 	if (!player) throw new Error('Player not found in a this lobby')
-	// 	player.set({ ...playerDeck })
-	// })
+		console.log('Player played card:', card)
+
+		switch (card.type) {
+			case CardTypeEnum.ATTACK:
+				// Check if the player can attack
+				//lobby.checkAttackOptions()
+				const opponent = lobby.players.find((p) => p.id !== socket.id)
+				if (!opponent) throw new Error('Opponent not found in a lobby')
+				player.attack(opponent, card)
+			case CardTypeEnum.DEFENSE:
+				player.defend(card)
+			case CardTypeEnum.SCHEME:
+				player.playScheme(card)
+		}
+
+		// Show all players that this player played a card
+		lobby.emitEvent(ServerEmitEnum.PLAYER_PLAYED_CARD, io, lobby.get())
+	})
 })
-
 app.use(compression())
 app.use(path, express.static('public'))
 

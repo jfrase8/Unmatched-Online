@@ -1,9 +1,11 @@
-import { CharacterNameEnum } from '../../common/enums/CharacterNameEnum'
-import { PlayerType } from '../../common/types/PlayerType'
-import { LobbyType } from '../../common/types/LobbyType'
+import { CharacterNameEnum } from '../../common/enums/CharacterNameEnum.ts'
+import { PlayerStatsType, PlayerType } from '../../common/types/PlayerType.ts'
+import { LobbyType } from '../../common/types/LobbyType.ts'
 import { Server } from 'socket.io'
-import { PlayableCard } from '../../common/constants/deckInfo'
+import { PlayableCard } from '../../common/constants/deckInfo.ts'
 import { createDeck } from '../utils/createDeck.mts'
+import { characters } from '../../common/constants/characterInfo.ts'
+import { CombatRoleEnum } from '../../common/enums/CombatRoleEnum.ts'
 
 export default class LobbySystem {
 	lobbies: Lobby[]
@@ -94,16 +96,20 @@ class Player implements PlayerType {
 	character?: CharacterNameEnum
 
 	// Values for when a match has started
+	stats?: PlayerStatsType
 	hand?: PlayableCard[]
 	drawPile?: PlayableCard[]
 	discardPile?: PlayableCard[]
 	drawnCard?: PlayableCard
 	isTurn: boolean
+	combatRole: CombatRoleEnum
+	combatCard?: PlayableCard
 
 	constructor(id: string, name: string, isTurn = false) {
 		this.id = id
 		this.name = name
 		this.isTurn = isTurn
+		this.combatRole = CombatRoleEnum.NONE
 	}
 
 	shuffleDeck() {
@@ -133,6 +139,57 @@ class Player implements PlayerType {
 		this.hand?.push(card)
 		this.drawnCard = undefined
 		return this.drawPile?.shift()
+	}
+
+	// Starts an attack phase
+	attack(defender: Player, attackCard: PlayableCard) {
+		this.combatRole = CombatRoleEnum.ATTACKER
+		this.combatCard = attackCard
+		defender.set({ combatRole: CombatRoleEnum.DEFENDER })
+	}
+
+	// Defends against an attack
+	defend(defenseCard: PlayableCard) {
+		this.combatCard = defenseCard
+	}
+
+	// Plays the scheme card
+	playScheme(schemeCard: PlayableCard) {
+		// Do the effects on the scheme card //
+
+		// ! Temporary Effect
+		if (!this.stats?.mainCharacter || !this.character)
+			throw new Error('Player does not have a main character')
+
+		// Gain up to 2 health points (don't go over max health)
+		const newHealth = this.stats.mainCharacter.health + 2
+		if (newHealth > characters[this.character].stats.health)
+			this.stats.mainCharacter.health = characters[this.character].stats.health
+		else this.stats.mainCharacter.health += 2
+
+		// Discard the scheme card
+		this.hand = this.hand?.filter((card) => card.id !== schemeCard.id)
+		this.discardPile?.push(schemeCard)
+	}
+
+	setStats() {
+		if (!this.character) throw new Error('Player does not have a character')
+		const characterData = characters[this.character]
+
+		const sidekick = (() => {
+			if (!characterData.sideKick) return undefined
+			if (characterData.sideKick.amount !== 1)
+				return Array.from({ length: characterData.sideKick.amount }, () => ({
+					health: characterData.sideKick.health,
+				}))
+			return { health: characterData.sideKick.health }
+		})()
+		this.stats = {
+			mainCharacter: {
+				health: characterData.stats.health,
+			},
+			sidekick,
+		}
 	}
 
 	get() {

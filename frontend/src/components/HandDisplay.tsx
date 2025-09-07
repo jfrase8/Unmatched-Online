@@ -1,11 +1,17 @@
-import { Card } from '../../../common/constants/deckInfo'
+import { Card, PlayableCard } from '../../../common/constants/deckInfo'
 import { useHoveredElements } from '../hooks/useHoveredElements'
 import { useState } from 'react'
 import { cn } from '../utils/cn'
 import Text from './Text'
+import HandDisplayWrapper from './HandDisplayWrapper'
+import { getCardMargin } from 'src/utils/getCardMargin'
+import { ClientEmitEnum } from '../../../common/enums/ClientEmitEnum'
+import { socket } from 'src/utils/socket'
+import { CardTypeEnum } from '../../../common/enums/CardTypeEnum'
 
 interface HandDisplayProps {
-	cards: Card[]
+	cards: PlayableCard[]
+	isOpponent?: boolean
 }
 export default function HandDisplay({ cards }: HandDisplayProps) {
 	const { handleHover, hoveredElements, handleMouseLeave } = useHoveredElements('.card')
@@ -13,42 +19,39 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 
 	return (
 		<>
-			<div className='w-[40%] bg-slate-700 h-[30vh] rounded-lg shadow-lg'>
-				<div className='flex items-center max-w-full z-[1] h-full overflow-x-auto overflow-y-hidden transition-all duration-500'>
-					<div className='flex gap-2 min-w-max p-4 transition-all duration-500 h-full'>
-						{cards.map((card, i) => {
-							return (
-								<CardDisplay
-									key={i}
-									{...card}
-									index={i}
-									cardsInHand={cards.length}
-									hoveredElements={hoveredElements}
-									handleHover={handleHover}
-									handleMouseLeave={handleMouseLeave}
-									setSelected={setSelected}
-									selected={selected}
-								/>
-							)
-						})}
-					</div>
-				</div>
-			</div>
+			<HandDisplayWrapper>
+				{cards.map((card, i) => {
+					return (
+						<CardDisplay
+							key={i}
+							card={card}
+							index={i}
+							cardsInHand={cards.length}
+							hoveredElements={hoveredElements}
+							handleHover={handleHover}
+							handleMouseLeave={handleMouseLeave}
+							setSelected={setSelected}
+							selected={selected}
+						/>
+					)
+				})}
+			</HandDisplayWrapper>
 		</>
 	)
 }
 
 interface CardDisplayProps {
+	card: PlayableCard
 	index: number
 	cardsInHand: number
 	hoveredElements: Element[]
-	handleHover: (event: React.MouseEvent<HTMLButtonElement>) => void
+	handleHover: (event: React.MouseEvent<HTMLDivElement>) => void
 	handleMouseLeave: () => void
 	selected: number
 	setSelected: (index: number) => void
 }
 export function CardDisplay({
-	imagePath,
+	card,
 	index,
 	cardsInHand,
 	hoveredElements,
@@ -57,38 +60,23 @@ export function CardDisplay({
 	selected,
 	setSelected,
 }: Card & CardDisplayProps) {
-	const getMargin = () => {
-		if (cardsInHand < 4) return '-ml-[1rem]'
-		switch (cardsInHand) {
-			case 4:
-				return '-ml-[2rem]'
-			case 5:
-				return '-ml-[3rem]'
-			case 6:
-				return '-ml-[4.2rem]'
-			case 7:
-				return '-ml-[5.4rem]'
-			case 8:
-				return '-ml-[6.3rem]'
-			case 9:
-				return '-ml-[7rem]'
-			case 10:
-				return '-ml-[7.5rem]'
-		}
-		if (cardsInHand > 10) return '-ml-[8rem]'
-	}
 	const hovering = hoveredElements.some((e) => Number(e.getAttribute('data-index')) === index)
 
 	const lowestIndex = !hoveredElements.some((e) => Number(e.getAttribute('data-index')) > index)
 
 	const cardSelected = selected === index
 
+	const playCard = () => {
+		socket.emit(ClientEmitEnum.PLAY_CARD, card)
+		if (card.type === CardTypeEnum.SCHEME) setSelected(-1)
+	}
+
 	return (
 		<>
-			<button
+			<div
 				className={cn(
-					'shadow-lg rounded-md transition-all duration-500 border border-black h-full card',
-					index !== 0 && getMargin(),
+					'card shadow-lg rounded-md transition-all duration-500 border border-black h-full hover:cursor-pointer',
+					index !== 0 && getCardMargin(cardsInHand),
 					hovering && lowestIndex && selected === -1 && 'z-[100] scale-[110%]',
 					cardSelected && 'z-[100] scale-[110%] brightness-125'
 				)}
@@ -97,12 +85,16 @@ export function CardDisplay({
 				data-index={index}
 				onClick={() => (cardSelected ? setSelected(-1) : setSelected(index))}
 			>
-				<img src={imagePath} className={'aspect-[--card-aspect] size-full rounded-md'} />
+				<img src={card.imagePath} className={'aspect-[--card-aspect] size-full rounded-md'} />
 				{cardSelected && (
 					<div className='flex flex-col gap-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
 						<button
 							className={`hover:bg-cyan-500 hover:animate-none duration-500 transition-colors 
 								bg-cyan-600 rounded-full shadow-xl px-4 py-2 animate-pulse`}
+							onClick={(e) => {
+								e.stopPropagation()
+								playCard()
+							}}
 						>
 							<Text as='h1' className='text-[1.3rem]'>
 								Play
@@ -117,10 +109,10 @@ export function CardDisplay({
 						</button>
 					</div>
 				)}
-			</button>
+			</div>
 			{cardSelected && (
 				<img
-					src={imagePath}
+					src={card.imagePath}
 					className='fixed top-0 right-0 h-[30rem] aspect-[--card-aspect] z-[10]'
 				/>
 			)}

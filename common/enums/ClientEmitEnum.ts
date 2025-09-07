@@ -9,4 +9,5 @@ export const enum ClientEmitEnum {
 	START_MATCH = 'startMatch',
 	DRAW_CARD = 'drawCard',
 	ADD_CARD_TO_HAND = 'addCardToHand',
+	PLAY_CARD = 'playCard',
 }

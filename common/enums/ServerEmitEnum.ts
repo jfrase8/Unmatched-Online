@@ -5,4 +5,6 @@ export const enum ServerEmitEnum {
 	LOBBY_JOINED = 'lobbyJoined',
 	CHARACTER_CHOSEN = 'characterChosen',
 	MATCH_STARTED = 'matchStarted',
+	PLAYER_DREW_CARD = 'playerDrewCard',
+	PLAYER_PLAYED_CARD = 'playerPlayedCard',
 }
