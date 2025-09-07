@@ -4,29 +4,29 @@ import CloseIcon from 'src/assets/svg/close.svg?react'
 import { useExternalClick } from 'src/hooks/useExternalClick'
 import { cn } from 'src/utils/cn'
 
-interface BlurredPopupProps<T> {
+interface BlurredModalProps<T> {
 	children: ReactNode
-	/** The text to display in the header of the popup */
+	/** The text to display in the header of the modal */
 	headerText: string
-	/** The color of the border of the popup */
+	/** The color of the border of the modal */
 	borderColor?: string
-	/** The state function for setting the popup type that should show */
-	setShowPopup: Dispatch<SetStateAction<T>>
+	/** The state function for setting the modal type that should show */
+	setShowModal: Dispatch<SetStateAction<T>>
 	/** The class name for the text in the header */
 	textClassName?: string
-	/** The class name for the wrapper of the popup */
+	/** The class name for the wrapper of the modal */
 	wrapperClassName?: string
 }
-export function BlurredPopup<T extends string | boolean | undefined>({
+export function BlurredModal<T extends string | boolean | undefined>({
 	children,
 	headerText,
 	borderColor = 'gray',
-	setShowPopup,
+	setShowModal,
 	textClassName,
 	wrapperClassName,
-}: BlurredPopupProps<T>) {
+}: BlurredModalProps<T>) {
 	const externalClickRef = useExternalClick(() =>
-		setShowPopup((prev) => (typeof prev === 'boolean' ? false : undefined) as T)
+		setShowModal((prev) => (typeof prev === 'boolean' ? false : undefined) as T)
 	)
 
 	return (
@@ -50,7 +50,9 @@ export function BlurredPopup<T extends string | boolean | undefined>({
 					</Text>
 					<button
 						className='size-fit absolute top-[.3rem] right-[.3rem]'
-						onClick={() => setShowPopup((prev) => (typeof prev === 'boolean' ? false : undefined) as T)}
+						onClick={() =>
+							setShowModal((prev) => (typeof prev === 'boolean' ? false : undefined) as T)
+						}
 					>
 						<CloseIcon className='size-6 fill-white' />
 					</button>

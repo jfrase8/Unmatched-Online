@@ -13,6 +13,7 @@ import { useMyPlayer } from 'src/hooks/useMyPlayer'
 import useSocket from 'src/hooks/useSocket'
 import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
 import { characters } from '../../../common/constants/characterInfo'
+import LoadingState from './LoadingState'
 
 export default function MatchUI() {
 	const { updateLobby } = useLobbyStore()
@@ -47,7 +48,7 @@ export default function MatchUI() {
 	})
 
 	if (!myPlayer || !myPlayer.character || !myPlayer.drawPile || !myPlayer.hand || !myPlayer.stats)
-		return null
+		return <LoadingState />
 
 	const { drawnCard, hand, drawPile, character, stats } = myPlayer
 

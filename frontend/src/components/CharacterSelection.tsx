@@ -10,13 +10,13 @@ import useSlidingPanel from '../hooks/useSlidingPanel'
 import colors from 'tailwindcss/colors'
 import useSocket from '../hooks/useSocket'
 import { socket } from '../utils/socket'
-import CharacterInfoPopup from './CharacterInfoPopup'
 import { cn } from 'src/utils/cn'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
 import { useRouter } from '@tanstack/react-router'
 import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
 import { LobbyType } from '../../../common/types/LobbyType'
 import { useMyPlayer } from 'src/hooks/useMyPlayer'
+import CharacterInfoModal from './CharacterInfoModal'
 
 /** Component for selecting a character when in a lobby. */
 
@@ -118,9 +118,9 @@ export default function CharacterSelection() {
 	return (
 		<>
 			{selectedCharacter && showOverlay && (
-				<CharacterInfoPopup
+				<CharacterInfoModal
 					character={selectedCharacter.title}
-					setShowPopup={setShowOverlay}
+					setShowModal={setShowOverlay}
 					infoContent={showOverlay}
 				/>
 			)}

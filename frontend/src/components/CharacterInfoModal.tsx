@@ -3,7 +3,6 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { decks } from '../../../common/constants/deckInfo'
 
 import { sortDeck } from '../utils/sort'
-import { BlurredPopup } from './BlurredPopup'
 import { capitalizeFirstLetter } from 'src/utils/capitalizeFirstLetter'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
 import FlippableCard from './FlippableCard'
@@ -13,22 +12,23 @@ import Arrow from 'src/assets/svg/down_arrow.svg?react'
 import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
 import { SortTypeEnum } from '../../../common/enums/SortTypeEnum'
 import { characters } from '../../../common/constants/characterInfo'
+import { BlurredModal } from './BlurredModal'
 
-interface CharacterInfoPopupProps {
+interface CharacterInfoModalProps {
 	/** The name of the character to show the info for */
 	character: CharacterNameEnum
-	/** The state function for setting the popup type that should show */
-	setShowPopup: Dispatch<SetStateAction<string | undefined>>
-	/** The state value for the popup type that should show */
+	/** The state function for setting the modal type that should show */
+	setShowModal: Dispatch<SetStateAction<string | undefined>>
+	/** The state value for the modal type that should show */
 	infoContent: string
 }
 
 /** Modal component that shows when clicking on view more for a character when choosing a character to play */
-export default function CharacterInfoPopup({
+export default function CharacterInfoModal({
 	character,
-	setShowPopup,
+	setShowModal,
 	infoContent,
-}: CharacterInfoPopupProps) {
+}: CharacterInfoModalProps) {
 	const data = characters[character]
 
 	const headerText = `${character} ${capitalizeFirstLetter(infoContent)} Info`
@@ -54,10 +54,10 @@ export default function CharacterInfoPopup({
 	const sortedImages = sortDeck(decks[character], SortTypeEnum.TYPE).map((card) => card.imagePath)
 
 	return (
-		<BlurredPopup
+		<BlurredModal
 			headerText={headerText}
 			borderColor={data.bgColor}
-			setShowPopup={setShowPopup}
+			setShowModal={setShowModal}
 			textClassName={clsx(!xxs && 'text-[1.2rem]')}
 		>
 			{infoContent === 'deck' ? (
@@ -101,6 +101,6 @@ export default function CharacterInfoPopup({
 					</div>
 				</>
 			)}
-		</BlurredPopup>
+		</BlurredModal>
 	)
 }

@@ -1,4 +1,4 @@
-import { Card, PlayableCard } from '../../../common/constants/deckInfo'
+import { PlayableCard } from '../../../common/constants/deckInfo'
 import { useHoveredElements } from '../hooks/useHoveredElements'
 import { useState } from 'react'
 import { cn } from '../utils/cn'
@@ -11,7 +11,6 @@ import { CardTypeEnum } from '../../../common/enums/CardTypeEnum'
 
 interface HandDisplayProps {
 	cards: PlayableCard[]
-	isOpponent?: boolean
 }
 export default function HandDisplay({ cards }: HandDisplayProps) {
 	const { handleHover, hoveredElements, handleMouseLeave } = useHoveredElements('.card')
@@ -20,21 +19,19 @@ export default function HandDisplay({ cards }: HandDisplayProps) {
 	return (
 		<>
 			<HandDisplayWrapper>
-				{cards.map((card, i) => {
-					return (
-						<CardDisplay
-							key={i}
-							card={card}
-							index={i}
-							cardsInHand={cards.length}
-							hoveredElements={hoveredElements}
-							handleHover={handleHover}
-							handleMouseLeave={handleMouseLeave}
-							setSelected={setSelected}
-							selected={selected}
-						/>
-					)
-				})}
+				{cards.map((card, i) => (
+					<CardDisplay
+						key={i}
+						card={card}
+						index={i}
+						cardsInHand={cards.length}
+						hoveredElements={hoveredElements}
+						handleHover={handleHover}
+						handleMouseLeave={handleMouseLeave}
+						setSelected={setSelected}
+						selected={selected}
+					/>
+				))}
 			</HandDisplayWrapper>
 		</>
 	)
@@ -59,7 +56,7 @@ export function CardDisplay({
 	handleMouseLeave,
 	selected,
 	setSelected,
-}: Card & CardDisplayProps) {
+}: CardDisplayProps) {
 	const hovering = hoveredElements.some((e) => Number(e.getAttribute('data-index')) === index)
 
 	const lowestIndex = !hoveredElements.some((e) => Number(e.getAttribute('data-index')) > index)
