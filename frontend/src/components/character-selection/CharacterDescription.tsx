@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { characters, OptionObj } from '../../../common/constants/characterInfo'
-import Text from './Text'
-import Toggle from './Toggle'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
 import { cn } from 'src/utils/cn'
-import Btn from './Btn'
+import { characters, OptionObj } from '../../../../common/constants/characterInfo'
+import Toggle from '../shared/Toggle'
+import Text from '../shared/Text'
+import Btn from '../shared/Btn'
 
 interface CharacterDescriptionProps {
 	selected: OptionObj | undefined

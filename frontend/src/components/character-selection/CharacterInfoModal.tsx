@@ -1,18 +1,19 @@
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
-import { decks } from '../../../common/constants/deckInfo'
+import { decks } from '../../../../common/constants/deckInfo'
 
-import { sortDeck } from '../utils/sort'
+import { sortDeck } from '../../utils/sort'
 import { capitalizeFirstLetter } from 'src/utils/capitalizeFirstLetter'
 import { useBreakpoint } from 'src/hooks/useBreakpoint'
-import FlippableCard from './FlippableCard'
+import FlippableCard from '../shared/FlippableCard'
 import clsx from 'clsx'
-import Text from './Text'
+import Text from '../shared/Text'
 import Arrow from 'src/assets/svg/down_arrow.svg?react'
-import { CharacterNameEnum } from '../../../common/enums/CharacterNameEnum'
-import { SortTypeEnum } from '../../../common/enums/SortTypeEnum'
-import { characters } from '../../../common/constants/characterInfo'
-import { BlurredModal } from './BlurredModal'
+import { CharacterNameEnum } from '../../../../common/enums/CharacterNameEnum'
+import { SortTypeEnum } from '../../../../common/enums/SortTypeEnum'
+import { characters } from '../../../../common/constants/characterInfo'
+import { BlurredModal } from '../shared/BlurredModal'
+import GridList from '../shared/GridList'
 
 interface CharacterInfoModalProps {
 	/** The name of the character to show the info for */
@@ -61,11 +62,7 @@ export default function CharacterInfoModal({
 			textClassName={clsx(!xxs && 'text-[1.2rem]')}
 		>
 			{infoContent === 'deck' ? (
-				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 justify-items-center gap-4 overflow-y-auto w-full p-8'>
-					{sortedImages.map((img) => (
-						<img src={img} key={img} />
-					))}
-				</div>
+				<GridList items={sortedImages} />
 			) : (
 				<>
 					{!big && (

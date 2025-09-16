@@ -1,6 +1,6 @@
 import { Card, PlayableCard } from '../../../common/constants/deckInfo'
-import FlippableCard from './FlippableCard'
-import Text from './Text'
+import FlippableCard from './shared/FlippableCard'
+import Text from './shared/Text'
 
 interface DeckDisplayProps {
 	cards: PlayableCard[]
@@ -10,13 +10,13 @@ interface DeckDisplayProps {
 }
 export default function DeckDisplay({ cards, drawnCard, onClick, cardBack }: DeckDisplayProps) {
 	return (
-		<div className='flex flex-col h-[30vh] gap-2'>
+		<div className='flex flex-col h-[30vh] gap-2 justify-center items-center'>
 			<div className='h-[5vh] w-full bg-slate-700 flex justify-center items-center shadow-lg rounded-lg'>
 				<Text as='h1' className='text-center text-[1.2rem]'>
 					Cards Left: {cards.length}
 				</Text>
 			</div>
-			<div className='flex h-[25vh] justify-end items-center gap-4 pr-6'>
+			<div className='flex h-[25vh] justify-end items-center'>
 				{cards.length > 0 && (
 					<button className='relative aspect-[250/349] h-full group' onClick={onClick}>
 						{!drawnCard && (
@@ -32,13 +32,6 @@ export default function DeckDisplay({ cards, drawnCard, onClick, cardBack }: Dec
 						<FlippableCard front={cardBack} back={drawnCard?.imagePath} flip={!!drawnCard} />
 					</button>
 				)}
-				<div className='h-full aspect-[250/349]'>
-					<div className='flex flex-col justify-start items-center w-full h-full bg-black border border-white rounded-3xl p-2'>
-						<Text as='h1' className='text-white text-[1.8rem] text-center'>
-							Discarded cards
-						</Text>
-					</div>
-				</div>
 			</div>
 		</div>
 	)

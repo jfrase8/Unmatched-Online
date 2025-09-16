@@ -5,7 +5,6 @@ import { Deck, decks } from './deckInfo.ts'
 import { CharacterColor, CharacterColorMap } from './CharacterColor.ts'
 
 export type Character = {
-	title: CharacterNameEnum
 	description: string
 	specialAbility: string
 	optionBg: string
@@ -41,7 +40,7 @@ export const characters = {
 			amount: 3,
 		},
 		deck: decks.Medusa,
-	},
+	} as Character,
 	[CharacterNameEnum.SINBAD]: {
 		description:
 			'With every thrilling voyage, he grows in wisdom and power. Get to him and the faithful Porter quickly, before his experience makes him nigh unstoppable and your story ends too soon.',
@@ -61,7 +60,7 @@ export const characters = {
 			amount: 1,
 		},
 		deck: decks.Sinbad,
-	},
+	} as Character,
 	[CharacterNameEnum.ALICE]: {
 		description: `Big trouble in a little package. She's been through the looking glass and came back with a vorpal blade and the Jabberwock in tow. Catch her at the wrong size, and it'll be checkmate for you.`,
 		specialAbility: `When you place Alice, choose whether she starts the game BIG or SMALL.
@@ -82,7 +81,7 @@ export const characters = {
 			amount: 1,
 		},
 		deck: decks.Alice,
-	},
+	} as Character,
 	[CharacterNameEnum.KING_ARTHUR]: {
 		description:
 			'With mighty Excalibur in his mailed fist and the tricky Merlin at his back, his greatest weapon is his faith and willingness to sacrifice to see that deed is done.',
@@ -103,7 +102,7 @@ export const characters = {
 			amount: 1,
 		},
 		deck: decks[CharacterNameEnum.KING_ARTHUR],
-	},
+	} as Character,
 }
 
 export type CharacterStats = {

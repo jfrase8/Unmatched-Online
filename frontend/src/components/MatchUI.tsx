@@ -1,19 +1,18 @@
 import { decks } from '../../../common/constants/deckInfo'
 import DeckDisplay from './DeckDisplay'
 import HandDisplay from './HandDisplay'
-import Text from './Text'
+import Text from './shared/Text'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
 import { socket } from 'src/utils/socket'
-import OpponentDisplay from './OpponentDisplay'
-import NumberWheel from './NumberWheel'
+import OpponentDisplay from './opponent/OpponentDisplay'
 import { ClientEmitEnum } from '../../../common/enums/ClientEmitEnum'
 import { LobbyType } from '../../../common/types/LobbyType'
-import { CharacterColorMap } from '../../../common/constants/CharacterColor'
 import { useMyPlayer } from 'src/hooks/useMyPlayer'
 import useSocket from 'src/hooks/useSocket'
 import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
-import { characters } from '../../../common/constants/characterInfo'
-import LoadingState from './LoadingState'
+import LoadingState from './shared/LoadingState'
+import CharacterInventory from './inventories/CharacterInventory'
+import DiscardPile from './DiscardPile'
 
 export default function MatchUI() {
 	const { updateLobby } = useLobbyStore()
@@ -48,11 +47,9 @@ export default function MatchUI() {
 	})
 
 	if (!myPlayer || !myPlayer.character || !myPlayer.drawPile || !myPlayer.hand || !myPlayer.stats)
-		return <LoadingState />
+		return <LoadingState isFullscreen />
 
-	const { drawnCard, hand, drawPile, character, stats } = myPlayer
-
-	const characterData = characters[character]
+	const { drawnCard, hand, drawPile, character } = myPlayer
 
 	return (
 		<>
@@ -64,12 +61,7 @@ export default function MatchUI() {
 			</div>
 			{/* Hand Area */}
 			<div className='flex w-full h-[50%] justify-center items-center border border-white gap-4'>
-				<NumberWheel
-					max={characterData.stats.health}
-					min={0}
-					selectedNumber={stats.mainCharacter.health}
-					color={CharacterColorMap[character]}
-				/>
+				<CharacterInventory character={character} player={myPlayer} />
 				<HandDisplay cards={hand} />
 				{character && (
 					<DeckDisplay
@@ -79,6 +71,7 @@ export default function MatchUI() {
 						cardBack={decks[character].cardBack}
 					/>
 				)}
+				<DiscardPile cards={myPlayer.discardPile ?? []} title='Discard Pile' />
 			</div>
 		</>
 	)

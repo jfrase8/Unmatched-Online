@@ -1,10 +1,10 @@
 import { useNavigate } from '@tanstack/react-router'
-import Text from './Text'
 import clsx from 'clsx'
-import { cn } from '../utils/cn'
-import { useBreakpoint } from '../hooks/useBreakpoint'
 import { navBarIcons } from 'src/constants/navBarIcons'
+import { useBreakpoint } from 'src/hooks/useBreakpoint'
+import { cn } from 'src/utils/cn'
 import { toCamelCase } from 'src/utils/toCamelCase'
+import Text from '../shared/Text'
 
 interface NavbarPageProps {
 	pageTitle: string

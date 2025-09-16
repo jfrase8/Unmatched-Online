@@ -1,7 +1,7 @@
 import clsx from 'clsx'
-import { OptionObj } from '../../../common/constants/characterInfo'
-import Text from './Text'
 import { useMemo } from 'react'
+import Text from '../shared/Text'
+import { OptionObj } from '../../../../common/constants/characterInfo'
 
 interface OptionCardProps {
 	option: OptionObj

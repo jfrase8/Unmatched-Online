@@ -14,4 +14,6 @@ export type PlayerType = {
 }
 
 export type PlayerStatsType = { mainCharacter: { health: number }; sidekick?: SidekickType }
-export type SidekickType = { health: number } | { health: number }[]
+export type SidekickType = SingleSidekickType | MultiSidekickType
+export type SingleSidekickType = { health: number }
+export type MultiSidekickType = { health: number }[]

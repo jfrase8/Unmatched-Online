@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Text from './Text'
+import Text from './shared/Text'
 import { cn } from '../utils/cn'
 import { NotificationTypeEnum } from '../../../common/enums/NotificationTypeEnum'
 import ErrorIcon from 'src/assets/svg/error.svg?react'
@@ -11,7 +11,10 @@ interface NotificationListProps {
 export default function NotificationList({ notifList, className }: NotificationListProps) {
 	return (
 		<div
-			className={cn('fixed size-fit flex flex-col-reverse items-center gap-4 max-h-[13rem] overflow-auto', className)}
+			className={cn(
+				'fixed size-fit flex flex-col-reverse items-center gap-4 max-h-[13rem] overflow-auto',
+				className
+			)}
 		>
 			{notifList.map((notif) => (
 				<Notification key={notif.id} {...notif} />
@@ -48,7 +51,9 @@ function Notification({ message, fade, className, type }: NotificationProps) {
 				className
 			)}
 		>
-			{type === NotificationTypeEnum.ERROR && <ErrorIcon className='size-8 stroke-black stroke-2' />}
+			{type === NotificationTypeEnum.ERROR && (
+				<ErrorIcon className='size-8 stroke-black stroke-2' />
+			)}
 			<Text as='h2'>{message}</Text>
 		</div>
 	)

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
-import { ToggleType } from './CharacterDescription'
 import { cn } from 'src/utils/cn'
+import { ToggleType } from '../character-selection/CharacterDescription'
 
 interface ToggleProps {
 	toggleOptions: ToggleType[]

@@ -72,7 +72,7 @@ class Lobby implements LobbyType {
 	createDecks() {
 		this.players.forEach((player) => {
 			if (!player.character) throw new Error('Player does not have a character')
-			player.set({ drawPile: createDeck(player.character) })
+			player.set({ drawPile: createDeck(player.character), discardPile: [] })
 		})
 	}
 

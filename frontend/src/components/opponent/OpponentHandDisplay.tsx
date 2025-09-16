@@ -1,7 +1,7 @@
 import { useOpponent } from 'src/hooks/useOpponent'
-import HandDisplayWrapper from './HandDisplayWrapper'
+import HandDisplayWrapper from '../HandDisplayWrapper'
 import { getCardMargin } from 'src/utils/getCardMargin'
-import { decks } from '../../../common/constants/deckInfo'
+import { decks } from '../../../../common/constants/deckInfo'
 import { cn } from 'src/utils/cn'
 
 export default function OpponentHandDisplay() {

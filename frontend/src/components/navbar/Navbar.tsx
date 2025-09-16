@@ -1,7 +1,7 @@
 import MainMenuButton from './MainMenuButton'
 import GradientBar from './GradientBar'
-import NavbarPage from './NavbarPage'
 import { useRouterState } from '@tanstack/react-router'
+import NavbarPage from './NavbarPage'
 
 export default function Navbar() {
 	// Get the state of the current route

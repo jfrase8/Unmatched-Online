@@ -1,5 +1,5 @@
 import { useLobbyStore } from 'src/stores/useLobbyStore'
-import Text from './Text'
+import Text from './shared/Text'
 import useSocket from 'src/hooks/useSocket'
 import LockedIcon from 'src/assets/svg/locked.svg?react'
 import UnlockedIcon from 'src/assets/svg/unlocked.svg?react'

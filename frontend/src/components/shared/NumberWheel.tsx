@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import clsx from 'clsx'
+import { useEffect, useId, useMemo, useState } from 'react'
 
 interface NumberWheelProps {
 	min?: number
 	max?: number
 	selectedNumber?: number
 	color?: string
+	bg?: string
+	size?: 'large' | 'small'
 }
 
 export default function NumberWheel({
@@ -12,7 +15,11 @@ export default function NumberWheel({
 	max = 10,
 	selectedNumber = 10,
 	color = 'white',
+	bg,
+	size = 'large',
 }: NumberWheelProps) {
+	const patternId = useId() // unique per render tree
+
 	const [currentNumber, setCurrentNumber] = useState<number>(max)
 	const [wheelRotation, setWheelRotation] = useState<number | undefined>(undefined)
 
@@ -69,16 +76,37 @@ export default function NumberWheel({
 		setCurrentNumber(selectedNumber)
 	}, [currentNumber, numberList, selectedNumber, wheelRotation])
 
+	const wheelSize = size === 'large' ? 'size-[10rem]' : 'size-[8rem]'
+	const textSize = size === 'large' ? 'text-base' : 'text-xs'
+
 	return (
-		<div className='bg-black rounded-full size-[10rem] flex justify-center items-center relative'>
+		<div
+			className={clsx(
+				'rounded-full flex justify-center items-center relative overflow-hidden',
+				wheelSize
+			)}
+		>
+			{/* Black background Circle */}
+			<div className='absolute inset-0'>
+				<svg viewBox='0 0 100 100' className='size-full'>
+					<circle cx='50' cy='50' r='50' fill='black' />
+				</svg>
+			</div>
+
+			{/* Numbers on Wheel */}
 			<div
 				className='relative size-[80%] transition-transform duration-500'
-				style={{ transform: `rotate(${wheelRotation}deg)` }}
+				style={{
+					transform: `rotate(${wheelRotation}deg)`,
+				}}
 			>
 				{numberList.map((n, i) => (
 					<div
 						key={n}
-						className='bg-black text-white size-[20%] flex justify-center items-center absolute'
+						className={clsx(
+							'text-white size-[20%] flex justify-center items-center absolute',
+							textSize
+						)}
 						style={{
 							left: getLeftPosition(i),
 							top: getTopPosition(i),
@@ -89,15 +117,37 @@ export default function NumberWheel({
 					</div>
 				))}
 			</div>
-			<svg className='absolute size-full p-1' viewBox='0 0 100 100' preserveAspectRatio='none'>
+
+			{/* Character Background Circle With Hole */}
+			<svg className='absolute size-full p-1' viewBox='0 0 100 100'>
 				<defs>
+					{bg && (
+						<pattern id={patternId} patternUnits='userSpaceOnUse' width='100' height='100'>
+							<image
+								href={bg}
+								x='0'
+								y='0'
+								width='100'
+								height='100'
+								preserveAspectRatio='xMidYMid slice'
+							/>
+						</pattern>
+					)}
 					<mask id='holeMask' x='0' y='0' width='100' height='100' maskUnits='userSpaceOnUse'>
 						<rect width='100' height='100' fill='white' />
-						<circle cx='50' cy='8' r='10' fill='black' />
+						<circle cx='50' cy='7.5' r='9.5' fill='black' />
 					</mask>
 				</defs>
-				<circle cx='50' cy='50' r='50' fill={color} mask='url(#holeMask)' />
+				<circle
+					cx='50'
+					cy='50'
+					r='50'
+					fill={bg ? `url(#${patternId})` : color}
+					mask='url(#holeMask)'
+				/>
 			</svg>
+
+			{/* Black Middle Circle */}
 			<div className='absolute size-[20%] bg-black rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2' />
 		</div>
 	)

@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
-import CharacterSelection from '../../components/CharacterSelection'
+import CharacterSelection from '../../components/character-selection/CharacterSelection'
 import LobbyInfo from '../../components/LobbyInfo'
 
 export const Route = createLazyFileRoute('/lobbies/$lobbyName')({
