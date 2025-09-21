@@ -18,25 +18,30 @@ interface LobbyState {
 	updateLobby: (values: Partial<LobbyState>) => void
 
 	fetchLobby: () => void
+
+	reset: () => void
+}
+
+const DefaultState = {
+	players: [],
+	maxPlayers: undefined,
+	host: '',
+	locked: false,
+
+	myPlayerName: '',
+	lobbyName: '',
 }
 
 export const useLobbyStore = create<LobbyState>()(
 	persist(
 		(set, get) => {
 			return {
-				players: [],
-				maxPlayers: undefined,
-				host: '',
-				locked: false,
-
-				myPlayerName: '',
-				lobbyName: '',
+				...DefaultState,
 
 				updateLobby: (values) => set({ ...values }),
 
 				fetchLobby: () => {
 					const { myPlayerName, lobbyName } = get()
-					console.log('uhhh', myPlayerName)
 					if (myPlayerName && lobbyName) {
 						console.log('!! Fetching lobby with socket')
 						socket.emit(
@@ -51,6 +56,10 @@ export const useLobbyStore = create<LobbyState>()(
 								})
 						)
 					}
+				},
+
+				reset: () => {
+					set(DefaultState)
 				},
 			}
 		},

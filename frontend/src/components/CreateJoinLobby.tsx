@@ -110,7 +110,7 @@ export default function CreateJoinLobby() {
 	useSocket({
 		eventName: ServerEmitEnum.LOBBY_JOINED,
 		callBack: (lobby) => {
-			// Reset lobby local storage
+			// Reset lobby local storage and zustand
 			localReset('lobby-storage')
 
 			// Set initial lobby data
