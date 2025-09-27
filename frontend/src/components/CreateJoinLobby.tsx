@@ -13,12 +13,12 @@ import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useLobbyStore } from 'src/stores/useLobbyStore'
 import Text from './shared/Text'
 import TextInput from './shared/TextInput'
-import Btn from './shared/Btn'
 import BackArrow from 'src/assets/svg/back_arrow_filled.svg?react'
 import { localReset } from 'src/utils/localStorage'
 import clsx from 'clsx'
 import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
 import { ClientEmitEnum } from '../../../common/enums/ClientEmitEnum'
+import { Button } from 'react-aria-components'
 
 export default function CreateJoinLobby() {
 	const router = useRouter()
@@ -158,16 +158,15 @@ export default function CreateJoinLobby() {
 						value={typedName}
 						onChange={(e) => setTypedName(e.target.value)}
 					/>
-					<Btn
-						onClick={() => socket.emit(ClientEmitEnum.CHECK_NAME, typedLobbyName, typedName)}
-						disabled={typedName === ''}
-						className={cn(
-							'w-full font-navBarButtons text-white',
-							typedName === '' && 'text-slate-500'
-						)}
+					<Button
+						onPress={() => socket.emit(ClientEmitEnum.CHECK_NAME, typedLobbyName, typedName)}
+						isDisabled={typedName === ''}
+						className={({ isDisabled }) =>
+							cn('w-full font-navBarButtons text-white', isDisabled && 'text-slate-500')
+						}
 					>
 						Confirm
-					</Btn>
+					</Button>
 				</div>
 			) : (
 				<div
