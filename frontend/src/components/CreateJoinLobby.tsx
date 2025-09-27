@@ -18,7 +18,7 @@ import { localReset } from 'src/utils/localStorage'
 import clsx from 'clsx'
 import { ServerEmitEnum } from '../../../common/enums/ServerEmitEnum'
 import { ClientEmitEnum } from '../../../common/enums/ClientEmitEnum'
-import { Button } from 'react-aria-components'
+import { Button } from './shared/Button'
 
 export default function CreateJoinLobby() {
 	const router = useRouter()
@@ -141,15 +141,16 @@ export default function CreateJoinLobby() {
 			<NotificationList notifList={notifList} className='top-40 left-[50%] -translate-x-[50%]' />
 			{showNamePopup ? (
 				<div className='relative w-[25rem] h-[50%] bg-slate-700 rounded-xl p-4 pt-8 border-2 border-slate-800 shadow-lg flex flex-col gap-4 justify-center items-center'>
-					<button
-						onClick={() => {
+					<Button
+						onPress={() => {
 							setWentBack(true)
 							setShowNamePopup(false)
 						}}
-						className='size-fit transition-colors duration-500 fill-slate-300 hover:fill-slate-800 absolute top-1 left-2'
+						isIcon
+						className='absolute top-1 left-1'
 					>
-						<BackArrow className='size-8' />
-					</button>
+						<BackArrow className='size-6' />
+					</Button>
 					<Text as='h1' className='pl-4 leading-none'>
 						Enter your name:
 					</Text>
@@ -161,9 +162,7 @@ export default function CreateJoinLobby() {
 					<Button
 						onPress={() => socket.emit(ClientEmitEnum.CHECK_NAME, typedLobbyName, typedName)}
 						isDisabled={typedName === ''}
-						className={({ isDisabled }) =>
-							cn('w-full font-navBarButtons text-white', isDisabled && 'text-slate-500')
-						}
+						className='w-full'
 					>
 						Confirm
 					</Button>
@@ -197,9 +196,9 @@ export default function CreateJoinLobby() {
 							isOpen={createPanel.isOpen}
 							dir={createPanel.dir}
 						>
-							<button
+							<Button
 								className={cn(
-									`hover:brightness-90 w-[15rem] p-4 font-navBarButtons text-white bg-slate-800 transition-transform duration-500`,
+									`w-[15rem] p-4 border-none rounded-none focus:ring-0`,
 									getButtonStyles(createPanel)
 								)}
 								onClick={() =>
@@ -207,7 +206,7 @@ export default function CreateJoinLobby() {
 								}
 							>
 								{createButtonText}
-							</button>
+							</Button>
 						</SlidingPanel>
 
 						<SlidingPanel
@@ -225,17 +224,17 @@ export default function CreateJoinLobby() {
 							isOpen={joinPanel.isOpen}
 							dir={joinPanel.dir}
 						>
-							<button
+							<Button
 								className={cn(
-									`hover:brightness-90 w-[15rem] p-4 font-navBarButtons text-white bg-slate-800 transition-transform duration-500`,
+									`w-[15rem] p-4 border-none rounded-none focus:ring-0`,
 									getButtonStyles(joinPanel)
 								)}
-								onClick={() =>
+								onPress={() =>
 									!joinPanel.isOpen ? openPanel(joinPanelID) : checkLobbyName('join')
 								}
 							>
 								{joinButtonText}
-							</button>
+							</Button>
 						</SlidingPanel>
 					</div>
 				</div>

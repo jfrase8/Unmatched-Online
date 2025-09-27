@@ -19,7 +19,17 @@ export default {
 			fontSize: {
 				xxs: '0.725rem', // Custom size smaller than text-xs
 			},
+			keyframes: {
+				wave: {
+					'0%': { 'background-position': '0% 50%' },
+					'25%': { 'background-position': '100% 50%' },
+					'100%': { 'background-position': '0% 50%' },
+				},
+			},
+			animation: {
+				wave: 'wave 0.5s',
+			},
 		},
 	},
-	plugins: [],
+	plugins: [require('tailwindcss-react-aria-components')],
 }
