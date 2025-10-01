@@ -18,8 +18,10 @@ import GridList from '../shared/GridList'
 interface CharacterInfoModalProps {
 	/** The name of the character to show the info for */
 	character: CharacterNameEnum
-	/** The state function for setting the modal type that should show */
-	setShowModal: Dispatch<SetStateAction<string | undefined>>
+	/** The state value for if the modal should be open */
+	showModal: boolean
+	/** The state function for setting whether the modal is open */
+	setShowModal: Dispatch<SetStateAction<boolean>>
 	/** The state value for the modal type that should show */
 	infoContent: string
 }
@@ -28,6 +30,7 @@ interface CharacterInfoModalProps {
 export default function CharacterInfoModal({
 	character,
 	setShowModal,
+	showModal,
 	infoContent,
 }: CharacterInfoModalProps) {
 	const data = characters[character]
@@ -59,6 +62,7 @@ export default function CharacterInfoModal({
 			headerText={headerText}
 			borderColor={data.bgColor}
 			setShowModal={setShowModal}
+			showModal={showModal}
 			textClassName={clsx(!xxs && 'text-[1.2rem]')}
 		>
 			{infoContent === 'deck' ? (
@@ -79,7 +83,7 @@ export default function CharacterInfoModal({
 							<Arrow className='fill-white size-10' />
 						</div>
 					)}
-					<div className='flex size-full justify-center items-center'>
+					<div className='flex size-full overflow-hidden justify-center items-center'>
 						{big ? (
 							<img
 								src={data.characterSheet}

@@ -17,6 +17,7 @@ import { useMyPlayer } from 'src/hooks/useMyPlayer'
 import CharacterInfoModal from './CharacterInfoModal'
 import CharacterDescription from './CharacterDescription'
 import ScrollableCardOptions from './ScrollableCardOptions'
+import { Button } from '../shared/Button'
 
 /** Component for selecting a character when in a lobby. */
 
@@ -28,7 +29,8 @@ export default function CharacterSelection() {
 	) // The character the user has selected
 	const [displayCharacter, setDisplayCharacter] = useState<OptionObj | undefined>(undefined) // The character that should be displayed on the panel
 	const [isClosing, setIsClosing] = useState(false) // Track if the panel is currently closing
-	const [showOverlay, setShowOverlay] = useState<string | undefined>(undefined) // Whether a characters deck/hero overlay should show
+	const [showModal, setShowModal] = useState<boolean>(false)
+	const [infoContent, setInfoContent] = useState<'hero' | 'deck' | undefined>(undefined)
 
 	const router = useRouter()
 	const { getPanelState, changeDir, open, close } = useSlidingPanel()
@@ -115,13 +117,21 @@ export default function CharacterSelection() {
 		!selectedCharacter ||
 		players.some((p) => p.name !== myPlayerName && p.character === selectedCharacter.title)
 
+	const showModalContent = (content: 'hero' | 'deck') => {
+		setInfoContent(content)
+		setShowModal(true)
+	}
+
+	console.log('!!', showModal, infoContent)
+
 	return (
 		<>
-			{selectedCharacter && showOverlay && (
+			{selectedCharacter && infoContent && (
 				<CharacterInfoModal
 					character={selectedCharacter.title}
-					setShowModal={setShowOverlay}
-					infoContent={showOverlay}
+					showModal={showModal}
+					setShowModal={setShowModal}
+					infoContent={infoContent}
 				/>
 			)}
 			<div
@@ -145,8 +155,8 @@ export default function CharacterSelection() {
 								>
 									<CharacterDescription
 										selected={displayCharacter}
-										onDeckClick={() => setShowOverlay('deck')}
-										onHeroClick={() => setShowOverlay('hero')}
+										onDeckClick={() => showModalContent('deck')}
+										onHeroClick={() => showModalContent('hero')}
 									/>
 								</div>
 							}
@@ -162,12 +172,9 @@ export default function CharacterSelection() {
 							/>
 						</SlidingPanel>
 					</div>
-					<button
-						className={cn(
-							'py-4 px-24 rounded-lg transition-all duration-[670ms]',
-							selectedCharacter && 'hover:brightness-90 mt-[16rem] xl:m-0',
-							isClosing && 'm-0'
-						)}
+					<Button
+						className={cn('xl:m-0 w-[235px] py-3 text-lg', isClosing && 'm-0')}
+						variant='generic'
 						style={{
 							backgroundColor: !disabled
 								? !hasChosen
@@ -175,28 +182,27 @@ export default function CharacterSelection() {
 									: colors.slate['300']
 								: 'gray',
 						}}
-						onClick={() => {
+						onPress={() => {
 							socket.emit(
 								'chooseCharacter',
 								socket.id,
 								hasChosen ? undefined : selectedCharacter?.title
 							)
 						}}
-						disabled={disabled}
+						isDisabled={disabled}
 					>
 						{buttonText}
-					</button>
+					</Button>
 					{allPlayersChosen && isHost && (
-						<button
-							className={cn(
-								'py-4 rounded-lg animate-pulse bg-cyan-400 w-[235px] hover:animate-none hover:bg-cyan-400'
-							)}
-							onClick={() => {
+						<Button
+							variant='pulsing'
+							onPress={() => {
 								socket.emit('startMatch', socket.id)
 							}}
+							className='w-[235px] py-3 text-lg'
 						>
 							Start Game
-						</button>
+						</Button>
 					)}
 				</div>
 			</div>

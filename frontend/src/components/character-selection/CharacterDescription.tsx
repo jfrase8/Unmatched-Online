@@ -4,7 +4,8 @@ import { cn } from 'src/utils/cn'
 import { characters, OptionObj } from '../../../../common/constants/characterInfo'
 import Toggle from '../shared/Toggle'
 import Text from '../shared/Text'
-import Btn from '../shared/Btn'
+import { Button } from '../shared/Button'
+import { CharacterColor } from '../../../../common/constants/CharacterColor'
 
 interface CharacterDescriptionProps {
 	selected: OptionObj | undefined
@@ -45,6 +46,7 @@ export default function CharacterDescription({
 							<HeroAbilityInfo
 								specialAbility={character.specialAbility}
 								onHeroClick={onHeroClick}
+								color={character.bgColor}
 							/>
 						</div>
 						<div className='flex flex-col justify-center items-center h-full w-[30%]'>
@@ -80,9 +82,10 @@ function DeckInfoCard({ cardBack, onDeckClick }: DeckInfoCardProps) {
 
 interface HeroAbilityProps {
 	specialAbility: string
+	color?: string
 	onHeroClick: () => void
 }
-function HeroAbilityInfo({ specialAbility, onHeroClick }: HeroAbilityProps) {
+function HeroAbilityInfo({ specialAbility, color, onHeroClick }: HeroAbilityProps) {
 	const xs = useBreakpoint('xs')
 
 	return (
@@ -95,7 +98,14 @@ function HeroAbilityInfo({ specialAbility, onHeroClick }: HeroAbilityProps) {
 			<Text as='h2' className='text-white text-base'>
 				{specialAbility}
 			</Text>
-			<Btn onClick={onHeroClick}>More Info</Btn>
+			<Button
+				onPress={onHeroClick}
+				variant='generic'
+				style={{ ['--hover-background' as CharacterColor]: color }}
+				className='hover:bg-[--hover-background]'
+			>
+				More Info
+			</Button>
 		</div>
 	)
 }

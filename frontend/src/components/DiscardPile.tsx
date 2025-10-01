@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { PlayableCard } from '../../../common/constants/deckInfo'
-import Btn from './shared/Btn'
 import Text from './shared/Text'
 import { BlurredModal } from './shared/BlurredModal'
 import GridList from './shared/GridList'
+import { Button } from './shared/Button'
 
 interface DiscardPileProps {
 	cards: PlayableCard[]
@@ -22,7 +22,12 @@ export default function DiscardPile({ cards, title }: DiscardPileProps) {
 					style={{ backgroundImage: `url(${cards[cards.length - 1].imagePath})` }}
 					onClick={() => setShowModal(true)}
 				>
-					<Btn className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>View</Btn>
+					<Button
+						className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+						onPress={() => setShowModal(true)}
+					>
+						View
+					</Button>
 				</div>
 			)}
 			{showModal && (
