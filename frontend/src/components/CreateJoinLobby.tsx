@@ -201,9 +201,13 @@ export default function CreateJoinLobby() {
 									`w-[15rem] p-4 border-none rounded-none focus:ring-0`,
 									getButtonStyles(createPanel)
 								)}
-								onClick={() =>
-									!createPanel.isOpen ? openPanel(createPanelID) : checkLobbyName('create')
-								}
+								onClick={() => {
+									if (createPanel.isOpen) {
+										checkLobbyName('create')
+									} else {
+										openPanel(createPanelID)
+									}
+								}}
 							>
 								{createButtonText}
 							</Button>

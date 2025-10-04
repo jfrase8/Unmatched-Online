@@ -1,10 +1,25 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { DirectionalEnum } from '../../../common/enums/DirectionalEnum'
 
 /** Hook for managing multiple SlidingPanel components */
 export default function useSlidingPanel() {
 	// Store the state for each panel using an object
-	const [panels, setPanels] = useState<Record<string, { dir: DirectionalEnum; isOpen: boolean }>>({})
+	const [panels, setPanels] = useState<Record<string, { dir: DirectionalEnum; isOpen: boolean }>>(
+		{}
+	)
+
+	// Sound for opening panels
+	const openSoundRef = useRef<HTMLAudioElement | null>(null)
+
+	const playSound = () => {
+		if (!openSoundRef.current) {
+			openSoundRef.current = new Audio('/assets/sounds/slide.wav')
+		}
+		openSoundRef.current.currentTime = 0
+		openSoundRef.current.playbackRate = 2.5
+		openSoundRef.current.volume = 0.3
+		openSoundRef.current.play()
+	}
 
 	// Helper function to change the direction of a specific panel
 	const changeDir = useCallback((panelId: string, dir: DirectionalEnum) => {
@@ -20,6 +35,7 @@ export default function useSlidingPanel() {
 			...prevPanels,
 			[panelId]: { dir, isOpen: true },
 		}))
+		playSound()
 	}, [])
 
 	// Close a specific panel

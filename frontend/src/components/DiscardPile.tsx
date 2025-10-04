@@ -31,7 +31,7 @@ export default function DiscardPile({ cards, title }: DiscardPileProps) {
 				</div>
 			)}
 			{showModal && (
-				<BlurredModal headerText={title} setShowModal={setShowModal}>
+				<BlurredModal headerText={title} setShowModal={setShowModal} showModal={showModal}>
 					<GridList items={cards.map((card) => card.imagePath)} />
 				</BlurredModal>
 			)}
