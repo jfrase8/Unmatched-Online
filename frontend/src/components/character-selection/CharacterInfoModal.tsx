@@ -63,7 +63,7 @@ export default function CharacterInfoModal({
 			borderColor={data.bgColor}
 			setShowModal={setShowModal}
 			showModal={showModal}
-			textClassName={clsx(!xxs && 'text-[1.2rem]')}
+			textClassName={clsx(!xs && 'text-[1.5rem]', !xxs && 'text-[1.2rem]')}
 		>
 			{infoContent === 'deck' ? (
 				<GridList items={sortedImages} />

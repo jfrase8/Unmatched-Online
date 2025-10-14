@@ -2,7 +2,7 @@ import { Dispatch, ReactNode, SetStateAction } from 'react'
 import Text from './Text'
 import CloseIcon from 'src/assets/svg/close.svg?react'
 import { cn } from 'src/utils/cn'
-import { Dialog, Modal, ModalOverlay } from 'react-aria-components'
+import { Button, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 import clsx from 'clsx'
 
 interface BlurredModalProps {
@@ -45,7 +45,7 @@ export function BlurredModal({
 			<Modal>
 				<Dialog
 					className={cn(
-						'cursor-default fixed inset-10 rounded-lg flex flex-col justify-start items-center z-[100] backdrop-blur bg-black/50 border-l-4 border-b-4',
+						'cursor-default fixed inset-10 rounded-lg flex flex-col justify-start items-center z-[100] backdrop-blur bg-black/50 border-l-8 border-b-8',
 						wrapperClassName
 					)}
 					style={{ borderColor: borderColor }}
@@ -53,17 +53,20 @@ export function BlurredModal({
 					{({ close }) => (
 						<>
 							<div
-								className='h-[2.5rem] w-full rounded-tr-lg flex items-center justify-center'
+								className='relative min-h-16 w-full rounded-tr-lg rounded-tl-sm flex items-center justify-center'
 								style={{
 									backgroundColor: borderColor,
 								}}
 							>
-								<Text as='h1' className={textClassName}>
+								<Text as='h1' className={cn('text-3xl', textClassName)}>
 									{headerText}
 								</Text>
-								<button className='size-fit absolute top-[.3rem] right-[.3rem]' onClick={close}>
-									<CloseIcon className='size-6 fill-white' />
-								</button>
+								<Button
+									className='group absolute top-3 right-3 size-fit flex justify-center items-center'
+									onPress={close}
+								>
+									<CloseIcon className='transition-transform duration-500 size-9 fill-white group-hover:scale-110' />
+								</Button>
 							</div>
 							{children}
 						</>
