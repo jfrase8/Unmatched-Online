@@ -1,9 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
+import { PointerEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import MapConfig from '../../constants/MapConfig';
 import LocationRenderer, { MapLocation } from './MapLocation';
 import PathsRenderer from './PathRenderer';
 import UseDrag from './UseDrag';
 import UseScroll from './UseScroll';
+import UseMouse from './UseMouse';
 
 function Clamp(val: number, min: number, max: number): number {
     return (Math.min(Math.max(val, min), max));
@@ -161,13 +162,38 @@ export default function GameBoard() {
 
     // let [isDragging, setIsDragging] = useState(false);
     let targetRef = useRef(null);
-    let {wheelY} = UseScroll(targetRef.current);
-    let {offsetX, offsetY} = UseDrag(targetRef.current, 1 - 1/wheelY);
+    let {deltaY} = UseScroll(targetRef.current);
+    let {mouseX, mouseY, isMouseOver} = UseMouse(targetRef.current);
+    // let {offsetX, offsetY} = UseDrag(targetRef.current, 1 - 1/wheelY);
+
+    let [displayDimensions, setDisplayDimensions] = useState({
+        left: 0,
+        top: 0,
+        right: MapConfig.WIDTH,
+        bottom: MapConfig.HEIGHT/2,
+    });
+
+    useEffect(() => {
+        if (deltaY == 0 || isMouseOver == false)
+            return;
+        let scale = deltaY < 0 ? 0.8 : 1.2;
+        setDisplayDimensions({
+            left: displayDimensions.left * scale,
+            top: displayDimensions.top * scale,
+            right: displayDimensions.right * scale,
+            bottom: displayDimensions.bottom * scale,
+        });
+    }, [deltaY, isMouseOver]);
 
     return(
         <div className='relative size-full flex border border-white overflow-hidden' ref={targetRef}>
             {/* TODO: width and height & remove border */}
-            <svg className='absolute border' viewBox={`${offsetX - wheelY/2} ${offsetY} ${MapConfig.WIDTH + wheelY} ${MapConfig.HEIGHT}`} width={MapConfig.WIDTH} height={MapConfig.HEIGHT}>
+            <svg
+                className='absolute border'
+                viewBox={`${displayDimensions.left} ${displayDimensions.top} ${displayDimensions.right} ${displayDimensions.bottom}`}
+                width={MapConfig.WIDTH}
+                height={MapConfig.HEIGHT}
+            >
                 {/* Background Image */}
 
                 {/* Pathways (because they should be behind) */}
