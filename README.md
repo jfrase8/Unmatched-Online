@@ -1,50 +1,21 @@
-# React + TypeScript + Vite
+# Unmatched Online — Turn-Based Multiplayer Board Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Unmatched Online is a full-stack, turn-based multiplayer web game inspired by the *Unmatched* board game. The application enables players to join shared game sessions, interact with cards in real time, and play seamlessly across mobile and desktop devices with a polished, animated UI.
 
-Currently, two official plugins are available:
+## Features
+- Turn-based multiplayer gameplay with real-time updates  
+- Lobby system for joining and managing shared game sessions  
+- Interactive card mechanics, including hand drawing and card playing  
+- Clean, animated UI with responsive interactions  
+- Fully responsive design supporting mobile and desktop screens  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Frontend:** React, TypeScript, Tailwind CSS, TanStack, React Aria  
+- **Backend / Networking:** Socket.io  
+- **Architecture:** Real-time client-server communication with session-based matchmaking  
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Key Highlights
+- **Real-Time Multiplayer Communication:** Implemented Socket.io-based client-server messaging to synchronize game state and player actions instantly across connected clients.  
+- **Session-Based Lobby System:** Built a lobby system that allows players to create or join game sessions, ensuring all participants connect to the same match.  
+- **Core Card Game Mechanics:** Orchestrated card drawing, hand management, and card playing logic with interactive UI components that provide clear visual feedback and smooth animations.  
+- **Polished, Responsive UI:** Optimized a fully responsive frontend using Tailwind and React Aria to ensure accessible, touch-friendly gameplay across mobile and desktop devices.  
