@@ -11,7 +11,7 @@ Unmatched Online is a full-stack, turn-based multiplayer web game inspired by th
 
 ## Tech Stack
 - **Frontend:** React, TypeScript, Tailwind CSS, TanStack, React Aria  
-- **Backend / Networking:** Socket.io  
+- **Backend / Networking:** Typescript, Socket.io
 - **Architecture:** Real-time client-server communication with session-based matchmaking  
 
 ## Key Highlights
