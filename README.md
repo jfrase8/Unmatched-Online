@@ -13,6 +13,9 @@ Unmatched Online is a full-stack, turn-based multiplayer web game inspired by th
 ### Interactive UI
 ![ui](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExazBqbGJwdTl2emxlcjN5bWI2cmdxcnNnenphdmJ6NnA1ZGh1dGE2YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YRPRdOK2phcoHiWHrv/giphy.gif)
 
+### Responsive Design
+![responsive](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3lrZGc3bmQ1MDc4cDJyanUxeDNkYWZkaXc3NzBkdmJnYzVvd2s5aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/FjoqR7qQ5w6cqL2L9k/giphy.gif)
+
 
 ## Tech Stack
 - **Frontend:** React, TypeScript, Tailwind CSS, TanStack, React Aria  
