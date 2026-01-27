@@ -6,9 +6,10 @@ export interface MapLocation {
     y: number
     zones: string[]
     connections: MapLocation[]
+    characters: string[]
 }
 
-export default function LocationRenderer({x, y, zones} : Omit<MapLocation, 'connections'>) {
+export default function LocationRenderer({x, y, zones} : Omit<Omit<MapLocation, 'connections'>, 'characters'>) {
     const [hovered, setHovered] = useState(false);
     const patternId = `${x}.${y}.testPattern`;
     const r = hovered ? MapConfig.LOCATION_R_HOVERED : MapConfig.LOCATION_R;
@@ -45,7 +46,6 @@ export default function LocationRenderer({x, y, zones} : Omit<MapLocation, 'conn
                 stroke={MapConfig.STROKE}
                 strokeWidth={MapConfig.STROKE_WIDTH}
             />
-            
         </>
     );
 }

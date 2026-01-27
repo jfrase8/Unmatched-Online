@@ -16,6 +16,7 @@
 
 	/* Cards */
 	--card-aspect: calc(250px / 349px);
+	overscroll-behavior: none;
 }
 
 * {

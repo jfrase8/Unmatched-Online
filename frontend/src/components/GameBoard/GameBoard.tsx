@@ -1,10 +1,11 @@
-import { PointerEventHandler, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import MapConfig from '../../constants/MapConfig';
 import LocationRenderer, { MapLocation } from './MapLocation';
 import PathsRenderer from './PathRenderer';
 import UseDrag from './UseDrag';
 import UseScroll from './UseScroll';
 import UseMouse from './UseMouse';
+import PlayerRenderer from './PlayerRenderer';
 
 function Clamp(val: number, min: number, max: number): number {
     return (Math.min(Math.max(val, min), max));
@@ -27,7 +28,7 @@ function ShuffleArr<T>(arr: T[]) {
 }
 
 function TryAddLocation(locations: MapLocation[], x: number, y: number): boolean {
-    let newLocation: MapLocation = { x, y, zones: [], connections: [] };
+    let newLocation: MapLocation = { x, y, zones: [], connections: [], characters: [] };
     if (IsLocationValid(locations, newLocation)) {
         locations.push(newLocation);
         return true;
@@ -141,14 +142,20 @@ function GenerateMapZones(locations: MapLocation[]) {
     // }
 }
 
+function PlaceCharacters(locations: MapLocation[]) {
+    var location = ShuffleArr(locations)[0];
+    location.characters.push('red');
+    location.characters.push('blue');
+    location.characters.push('pink');
+    location.characters.push('orange');
+}
+
 // TODO: generate a realistic number of spaces
 // TODO: evenly distribute the spaces (springs/poisson?)
 // TODO: color the graph coherently
-// TODO: connect the nodes
 // TODO: store the map in the context
 // TODO: generate the map on the server
-// TODO: scaling
-// TODO: display character
+// TODO: scaling (scaling exists, but it's not satisfying)
 // TODO: fade by hovered zones
 // TODO: secondary enlargement for movable spaces
 // TODO: Unique keys
@@ -157,40 +164,30 @@ export default function GameBoard() {
         let mapLocations = GenerateMapLocations();
         GenerateMapConnections(mapLocations);
         GenerateMapZones(mapLocations);
+        PlaceCharacters(mapLocations);
+        PlaceCharacters(mapLocations);
+        PlaceCharacters(mapLocations);
         return mapLocations;
     }, []);
 
-    // let [isDragging, setIsDragging] = useState(false);
     let targetRef = useRef(null);
-    let {deltaY} = UseScroll(targetRef.current);
-    let {mouseX, mouseY, isMouseOver} = UseMouse(targetRef.current);
-    // let {offsetX, offsetY} = UseDrag(targetRef.current, 1 - 1/wheelY);
-
-    let [displayDimensions, setDisplayDimensions] = useState({
-        left: 0,
-        top: 0,
-        right: MapConfig.WIDTH,
-        bottom: MapConfig.HEIGHT/2,
-    });
+    let [scale, setScale] = useState(1);
+    let {isMouseOver} = UseMouse(targetRef.current);
+    let {deltaY} = UseScroll(targetRef.current, isMouseOver);
+    let {offsetX, offsetY} = UseDrag(targetRef.current, 1 * scale);
 
     useEffect(() => {
-        if (deltaY == 0 || isMouseOver == false)
+        if (deltaY == 0)
             return;
-        let scale = deltaY < 0 ? 0.8 : 1.2;
-        setDisplayDimensions({
-            left: displayDimensions.left * scale,
-            top: displayDimensions.top * scale,
-            right: displayDimensions.right * scale,
-            bottom: displayDimensions.bottom * scale,
-        });
-    }, [deltaY, isMouseOver]);
+        let factor = deltaY < 0 ? 0.95 : 1.05;
+        setScale(oldScale => oldScale * factor);
+    }, [deltaY]);
 
     return(
         <div className='relative size-full flex border border-white overflow-hidden' ref={targetRef}>
-            {/* TODO: width and height & remove border */}
             <svg
-                className='absolute border'
-                viewBox={`${displayDimensions.left} ${displayDimensions.top} ${displayDimensions.right} ${displayDimensions.bottom}`}
+                className='absolute'
+                viewBox={`${offsetX} ${offsetY} ${MapConfig.WIDTH * scale} ${MapConfig.HEIGHT * scale}`}
                 width={MapConfig.WIDTH}
                 height={MapConfig.HEIGHT}
             >
@@ -210,6 +207,10 @@ export default function GameBoard() {
                 */}
                 {mapLocations.map(location => (
                     <LocationRenderer x={location.x} y={location.y} zones={location.zones}/>
+                ))};
+
+                {mapLocations.map(location => (
+                    <PlayerRenderer x={location.x} y={location.y} characters={location.characters}/>
                 ))};
             </svg>
         </div>
